@@ -328,6 +328,27 @@
                 </li>
                 </ul>
 
+                <h3>❓ 왜 언리얼에서는 Crash가 날 수 있는 코드를 작성했을까?</h3>
+
+                <ul>
+                <li>언리얼은 <code>UFUNCTION</code> 시스템을 통해 Blueprint나 C++ 모두에서 함수 호출을 가능하게 함.</li>
+                <li>이를 실제로 호출하는 방식이 바로 <code>UObject::ProcessEvent()</code></li>
+                <li>이때 <code>CreateUObject</code>의 <code>Execute</code>와 다르게 <code>ProcessEvent</code> 함수를 호출함.
+                    <ul>
+                    <li><code>TDelegate::CreateUObject</code>는 일반적인 C++ 객체 함수 포인터를 안전하게 바인딩</li>
+                    <li>하지만 <strong>UFUNCTION 기반 Delegate는</strong> <code>ProcessEvent</code>를 사용하여 호출</li>
+                    </ul>
+                </li>
+                <li><strong>ProcessEvent 는 기본적으로 유효한 UObject 에서 호출 가능하기 때문에</strong> 당연히 유효성 검증은 프로그래머가 실시하도록 만들어진 함수
+                    <ul>
+                    <li>왜 유효한 UObject 인지 직접 검사하지 않는 이유는 <strong>성능 상 문제일 가능성이 높음</strong></li>
+                    <li><strong>UFUNCTION 은</strong> (애니메이션, 타이머, 블프 이벤트 등등) 많이 호출되기 때문에 
+                        <code>ProcessEvent</code>가 있는 모든 곳에 유효성을 검사하는 로직을 추가하면 <strong>비용이 클 것으로 보임</strong></li>
+                    <li>실제로 <code>AnimNotify</code> 도 캐릭터가 사라지면 Crash 가 가능함.</li>
+                    </ul>
+                </li>
+                </ul>
+
                 <h2>CreateUObject 바인딩</h2>
 
                 <hr></hr>
