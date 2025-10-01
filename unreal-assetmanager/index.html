@@ -238,7 +238,7 @@
                 <br>
                 <h2>에셋 매니저를 사용하는 이유</h2>
                 <hr>
-                1. 에셋 로드를 위해 경로를 직접 작성, 에디터에서 클래스 레퍼런스 연결하는 걸 막을 수 있다.
+                <b>1. 에셋 로드를 위해 경로를 직접 작성, 에디터에서 클래스 레퍼런스 연결하는 걸 막을 수 있다.</b>
                 <ul>
                     <li>에셋 경로를 직접 작성하고 있는 경우</li>
                     <!-- HTML generated using hilite.me --><div style="background: #262220; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: #DDD0C0">LoadObject(</span><span style="color: #C9B98F">&quot;/Game/Characters/Hero/BP_Hero.BP_Hero&quot;</span><span style="color: #DDD0C0">);</span>
@@ -253,7 +253,7 @@
 
                 <br>
 
-                2. 원하는 에셋을 원하는 때에 로드, 언로드할 수 있다.
+                <b>2. 원하는 에셋을 원하는 때에 로드, 언로드할 수 있다.</b>
 
                 <br>
                 <br>
@@ -273,7 +273,7 @@
                         <li>PrimaryDataAsset 을 상속받은 BP 또는 DA 가 해당 된다.</li>
                     </ul>
                 </ul>
-                
+                <br>
                 <ul>
                     <li><b>PrimaryAsset 은 이름 그대로 주요한 에셋으로, 직접 관리하고 싶은 최상위 에셋이다.</b></li>
                     <ul>
@@ -281,12 +281,11 @@
                         <li>Primary 이 SecondaryAsset 참조하거나 사용하려는 경우 언리얼 엔진이 자동으로 세컨더리 에셋을 로드한다.</li>
                     </ul>
                 </ul>
-
+                <br>
                 <ul>
-                    <li>예제를 보면 UBSCharacterDefinition 은 PrimaryAsset, 멤버 변수는 SecondaryAsset 이다.</li>
+                    <li><b></B>예제를 보면 UBSCharacterDefinition 은 PrimaryAsset, 멤버 변수는 SecondaryAsset 이다.</b></li>
                     <li><b>이제 PrimaryAssetID 로 경로나, 레퍼런스 필요 없이 검색하여 에셋을 가져올 수 있다.</b></li>
-
-                </ul>
+                
 <pre style="font-family:monospace;color: rgb(216, 222, 233); background-color: rgb(46, 52, 64); font-weight: 400; "><span style="color: rgb(129, 161, 193); font-weight: 400;">class</span> <span style="color: rgb(143, 188, 187); font-weight: 400;">BISHOUJO_DOOM_API</span> UBSCharacterDefinition : <span style="color: rgb(129, 161, 193); font-weight: 400;">public</span> UPrimaryDataAsset
 {
     <span style="color: rgb(143, 188, 187); font-weight: 400;">GENERATED_BODY</span>()
@@ -318,6 +317,7 @@
     <span style="color: rgb(143, 188, 187); font-weight: 400;">UPROPERTY</span>(EditdefaultsOnly, BlueprintReadOnly, Category = <span style="color: rgb(163, 190, 140); font-weight: 400;">"UBSCharacterDefinition"</span>)
     TSoftClassPtr&lt;USkeletalMesh&gt; TestSkeletalMeshClass;
 };</pre>
+</ul>
                 <br>
 
                 <ul>
@@ -335,7 +335,6 @@
                     <ul>
                         <li>주의할 점: 커스텀 에셋매니저를 사용하려면 프로젝트 세팅에서 설정해주어야 한다.</li>
                     </ul>
-                </ul>
              <pre style="font-family:monospace;color: rgb(216, 222, 233); background-color: rgb(46, 52, 64); font-weight: 400; "><span style="color: rgb(136, 192, 208); font-weight: 400;"><span style="color: rgb(143, 188, 187); font-weight: 400;">const</span> FPrimaryAssetId <span style="color: rgb(143, 188, 187); font-weight: 400;">CharacterDefID</span><span style="color: rgb(216, 222, 233); font-weight: 400;">(<span style="color: rgb(163, 190, 140); font-weight: 400;">"Character"</span>, InTag.GetTagLeafName())</span></span>;
 
 <span style="color: rgb(76, 86, 106); font-weight: 400;">// 1. CharacterDefinition 비동기 로드</span>
@@ -370,6 +369,8 @@ UBSAssetManager::<span style="color: rgb(143, 188, 187); font-weight: 400;">Get<
     <span style="color: rgb(76, 86, 106); font-weight: 400;">// 비동기 로딩 시작</span>
     <span style="color: rgb(143, 188, 187); font-weight: 400;">LoadAssetList</span>(AssetsToLoad, InLoadCompleteDelegate, FStreamableManager::AsyncLoadHighPriority);
 }</pre>
+                </ul>
+
                 <br>
 
                 <h3>프라이머리 에셋 로드 시</h3>
@@ -378,21 +379,26 @@ UBSAssetManager::<span style="color: rgb(143, 188, 187); font-weight: 400;">Get<
                     <li><b>세컨더리 에셋인 TSoftClassPtr 의 TestSkeletalMeshClass 는 자동으로 로드가 된다.</b></li>
                     <ul>
                         <li>독립형 게임 모드에서도 확인 완료</li>
-                        <li>자동으로 로드되지 않게 하려면, StreamableMananger 를 사용해 직접 로드해야 한다.</li>
+                        <li>자동으로 로드되지 않게 하려면, StreamableMananger 로 직접 로드해야 한다.</li>
                     </ul>
-                </ul>
 <pre style="font-family:monospace;color: rgb(216, 222, 233); background-color: rgb(46, 52, 64); font-weight: 400; ">FStreamableManager&amp; StreamableManager = UAssetManager::<span style="color: rgb(143, 188, 187); font-weight: 400;">GetStreamableManager</span>();
 <span style="color: rgb(129, 161, 193); font-weight: 400;">auto</span> bLoadComplete = StreamableManager.<span style="color: rgb(143, 188, 187); font-weight: 400;">IsAsyncLoadComplete</span>(NewCharacterDef-&gt;TestSkeletalMeshClass.<span style="color: rgb(143, 188, 187); font-weight: 400;">ToSoftObjectPath</span>());
 <span style="color: rgb(143, 188, 187); font-weight: 400;">UE_LOG</span>(LogBS, Log, <span style="color: rgb(143, 188, 187); font-weight: 400;">TEXT</span>(<span style="color: rgb(163, 190, 140); font-weight: 400;">"UBSCharacterDefManagerComponent::TestSkeletalMeshClass bLoadComplete = %d"</span>),  bLoadComplete);</pre>
+                </ul>
+
+                <br>
+
                 <ul>
                     <li><b>세컨더리 에셋 안의 자식들도 자동으로 로드가 된다.</b></li>
                  
-                </ul>
            <pre style="font-family:monospace;color: rgb(216, 222, 233); background-color: rgb(46, 52, 64); font-weight: 400; "><span style="color: rgb(129, 161, 193); font-weight: 400;">auto</span> bLoadComplete = StreamableManager.<span style="color: rgb(143, 188, 187); font-weight: 400;">IsAsyncLoadComplete</span>(NewCharacterDef-&gt;TestSkeletalMeshClass.<span style="color: rgb(143, 188, 187); font-weight: 400;">ToSoftObjectPath</span>());
 <span style="color: rgb(143, 188, 187); font-weight: 400;">UE_LOG</span>(LogBS, Log, <span style="color: rgb(143, 188, 187); font-weight: 400;">TEXT</span>(<span style="color: rgb(163, 190, 140); font-weight: 400;">"UBSCharacterDefManagerComponent::TestSkeletalMeshClass bLoadComplete = %d"</span>),  bLoadComplete);
 
 bLoadComplete = StreamableManager.<span style="color: rgb(143, 188, 187); font-weight: 400;">IsAsyncLoadComplete</span>(NewCharacterDef-&gt;DefaultPawnData-&gt;TestPawnMeshClass.<span style="color: rgb(143, 188, 187); font-weight: 400;">ToSoftObjectPath</span>());
 <span style="color: rgb(143, 188, 187); font-weight: 400;">UE_LOG</span>(LogBS, Log, <span style="color: rgb(143, 188, 187); font-weight: 400;">TEXT</span>(<span style="color: rgb(163, 190, 140); font-weight: 400;">"UBSCharacterDefManagerComponent::TestPawnMeshClass bLoadComplete = %d"</span>),  bLoadComplete);</pre>
+                </ul>
+
+                <br>
 
                 <ul>
                     <li><b>결론 : 프라이머리 에셋을 로드하면, 세컨더리 에셋들은 모두 자동으로 로드된다.</b></li>
