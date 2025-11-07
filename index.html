@@ -416,7 +416,7 @@
                 name: 'CatchHim',
                 subtitle: '총 12명 팀, 싱글플레이 액션 러닝 게임 개발 프로젝트',
                 icon: "./images/CatchHim.png",
-                count: 0,
+                count: "1개의 글",
                 gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
             },
             {
@@ -424,7 +424,7 @@
                 name: 'Nirvana',
                 subtitle: '총 20명 팀, 멀티 액션 로그라이크 게임 개발 프로젝트',
                 icon: "./images/Nirvana.png",
-                count: 0,
+                count: "1개의 글",
                 gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
             },
             {
@@ -432,7 +432,7 @@
                 name: 'Unreal Modular Gameplay',
                 subtitle: 'Epic Games의 Lyra Starter Game을 분석하여 팀 협업 환경에 최적화된 프레임워크로 발전 ',
                 icon: "./images/Modular.png",
-                count: 13,
+                count: "14개의 글",
                 gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
             },
             {
@@ -440,13 +440,31 @@
                 name: 'StaticMesh 편집 에디터 개발',
                 subtitle: 'Unreal 의 Slate UI 프레임워크를 사용하여 커스텀 StaticMesh 편집 에디터 개발',
                 icon: "./images/Mesh.png",
-                count: 0,
+                count: "0개의 글",
                 gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
             },
         ];
 
         const projects = [
             {
+                category: 'nirvana',
+                date: '2025년 11월 07일',
+                title: 'Nirvana 프로젝트',
+                excerpt: '총 22명의 팀원이 8개월동안 협업하였고,UE5를 사용하여 제작했습니다. 클라이언트 프로그래머(파트장)를 맡아 진행했습니다.',
+                tags: ['UnrealEngine', 'GameFramework'],
+                link: '/nirvana-portfolio/',
+                icon: '🎯'
+            },
+            {
+                category: 'catchhim',
+                date: '2025년 11월 07일',
+                title: 'CatchHim 프로젝트',
+                excerpt: '총 20명의 팀원이 3개월동안 협업하였고,Unity를 사용하여 제작했습니다. 클라이언트 프로그래머(파트장)를 맡아 진행했습니다.',
+                tags: ['Unity', 'GameFramework'],
+                link: '/catchhim-portfolio/',
+                icon: '🎯'
+            },
+            { 
                 category: 'unreal-modular-gameplay',
                 date: '2025년 11월 07일',
                 title: '장력을 이용한 웹스윙 구현',
@@ -594,7 +612,7 @@
                 <div class="category-body">
                     <div class="category-title">${cat.name}</div>
                     <div class="category-subtitle">${cat.subtitle}</div> 
-                    <div class="category-count">${cat.count}개의 글</div>
+                    <div class="category-count">${cat.count}</div>
                 </div>
             </div>
         `).join('');

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catchim 프로젝트</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* 기본 스타일 */
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: #4a90e2;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* 헤더 스타일 */
+        header {
+            background-color: #fff;
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .header-container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .header-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .header-nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .header-nav li {
+            margin-left: 25px;
+        }
+
+        .header-nav a {
+            font-size: 16px;
+            font-weight: 400;
+            color: #555;
+            transition: color 0.3s ease;
+        }
+
+        .header-nav a:hover {
+            color: #000;
+        }
+
+        /* 메인 콘텐츠 스타일 (게시글 상세 페이지용) */
+        main {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .post-detail {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .post-detail .post-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .post-detail .post-meta {
+            font-size: 15px;
+            color: #888;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+
+        .post-detail .post-tags span {
+            display: inline-block;
+            background-color: #e0e0e0;
+            color: #666;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            margin-right: 8px;
+            margin-top: 5px;
+        }
+
+        .post-detail .post-content {
+            margin-top: 25px;
+            font-size: 17px;
+            color: #444;
+        }
+
+        /* 게시글 본문 내 스타일 */
+        .post-content h2, .post-content h3, .post-content h4 {
+            color: #333;
+            margin-top: 35px;
+            margin-bottom: 15px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+        .post-content h2 { font-size: 28px; }
+        .post-content h3 { font-size: 24px; }
+        .post-content h4 { font-size: 20px; }
+
+        .post-content p {
+            margin-bottom: 1em; /* 단락 간 간격 */
+        }
+
+        .post-content ul, .post-content ol {
+            margin-left: 25px;
+            margin-bottom: 1em;
+        }
+        .post-content li {
+            margin-bottom: 0.5em;
+        }
+        
+        /* 코드 블록 스타일 */
+        .post-content pre {
+            background-color: #282c34; /* Dark background for code */
+            color: #abb2bf; /* Light text color */
+            padding: 15px 20px;
+            border-radius: 8px;
+            overflow-x: auto; /* Horizontal scroll for long lines */
+            margin: 25px 0;
+            font-family: 'Roboto Mono', monospace; /* Monospace font for code */
+            font-size: 15px;
+            line-height: 1.4;
+            white-space: pre-wrap; /* 자동 줄바꿈 */
+        }
+
+        .post-content code {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1em;
+            background-color: #e0e0e0; 
+            padding: 2px 5px;
+            border-radius: 4px;
+            color: #c7254e;
+        }
+        .post-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        /* 표 스타일 */
+        .post-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+
+        .post-content th, .post-content td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .post-content th {
+            background-color: #f8f9fa;
+            font-weight: 700;
+        }
+
+        .post-content tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        /* 푸터 스타일 */
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 50px;
+            color: #777;
+            font-size: 14px;
+            border-top: 1px solid #eee;
+        }
+    </style>
+    <script type="text/x-mathjax-config">
+
+    MathJax.Hub.Config({
+
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+
+    });
+
+    </script>
+
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="header-title">
+                <a href="/">내 GitHub Pages</a>
+            </div>
+            <nav class="header-nav">
+                <ul>
+                    <li><a href="#">블로그</a></li>
+                    <li><a href="#">태그</a></li>
+                    <li><a href="#">소개</a></li>
+                    <li><a href="https://github.com/TaehunKim0" target="_blank">GitHub</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <article class="post-detail">
+            <h1 class="post-title">Catchim 프로젝트</h1>
+            <div class="post-meta">
+                <span class="post-date">2025년 11월 07일</span>
+                <div class="post-tags">
+                    <span>#Unity</span>
+                </div>
+            </div>
+
+            <div class="post-content">
+                <h2>개요</h2>
+                <hr>
+                <p>22.09 ~ 22.11 청강문화산업대학교에서 개발했습니다.</p>
+                <p>경찰로 위장한 도둑이 주인공의 강아지를 훔쳐, 그 뒤를 추적하는 ‘<b>러닝 액션 게임</b>’ 입니다.</p>
+                <p>개발 종료 후 교내에서 시연 후 마무리되었던 프로젝트입니다.</p>
+
+                <image src="./resource/CatchHim.png" width="700px" height="400px" />
+
+                <br>
+
+                <br>
+                <p><b>총 20명의 팀원이 3개월동안 협업하였고,Unity를 사용하여 제작했습니다.</b></p>
+                <p><b>클라이언트 프로그래머(파트장)를 맡아 진행했습니다.</b></p>
+                
+                <br>
+                <b>클라이언트 프로그래머로서,</b>
+                <ul> 
+                    <p>1. 주인공 캐릭터의 이동 및 가속 시스템 구현</p>
+                    <p>2. 주인공 캐릭터의 펀치 시스템 구현</p>
+                    <p>3. 주인공 캐릭터의 초고속 질주 시스템 구현</p>
+                </ul>
+
+                <br>
+
+                <b>파트장으로서,</b>
+                <ul> 
+                    <p>1. 타 파트들과 소통을 하며 플밍 파트(본인 포함 3명)의 일정 조율, 업무 분배 및 지시</p>
+                    <p>2. 노션 페이지를 통해 프로그래머 파트 공지</p>
+                    <p>3. 프로젝트의 버전 관리 (모든 파트의 커밋 규칙 및 충돌 관리)</p>
+                    <p>4. 프로젝트 파일 규칙 관리</p>
+                </ul>
+
+                <br><br>
+
+                <h2>영상</h2>
+                <hr>
+                <iframe
+                    width="750" 
+                    height="400" 
+                    src="https://www.youtube.com/embed/pJJ61rYmmeQ?controls=0"
+                    title="YouTube video player" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    allowfullscreen>
+                </iframe>
+                
+                
+                <br><br>
+
+                <h2>포트폴리오</h2>
+                <hr>
+                <iframe src="./resource/Catchim.pdf" width="100%" height="800px" style="border: none;">
+                    PDF 파일을 볼 수 없습니다. <a href="./pdf/Catchim.pdf">다운로드</a>하세요.
+                </iframe>
+
+                <br><br>
+                <h2>다운로드 링크</h2>
+                <hr>
+                <a href="https://drive.google.com/file/d/1i1eCk8IkVM6egzj4bSwBPEu8PJgTwDL-/view?usp=sharing" target="_blank">
+                    Google Drive 링크로 다운로드
+                </a>
+                <br><br>
+                <image src="./resource/Download.png" width="700px" height="400px" />
+                
+
+            </div>
+
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 [TaehunKim0]. All rights reserved.</p>
+    </footer>
+</body>
+</html>
