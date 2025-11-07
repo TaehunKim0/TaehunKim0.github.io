@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>장력 방식으로 웹스윙 구현</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* 기본 스타일 */
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: #4a90e2;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* 헤더 스타일 */
+        header {
+            background-color: #fff;
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .header-container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .header-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .header-nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .header-nav li {
+            margin-left: 25px;
+        }
+
+        .header-nav a {
+            font-size: 16px;
+            font-weight: 400;
+            color: #555;
+            transition: color 0.3s ease;
+        }
+
+        .header-nav a:hover {
+            color: #000;
+        }
+
+        /* 메인 콘텐츠 스타일 (게시글 상세 페이지용) */
+        main {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .post-detail {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .post-detail .post-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .post-detail .post-meta {
+            font-size: 15px;
+            color: #888;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+
+        .post-detail .post-tags span {
+            display: inline-block;
+            background-color: #e0e0e0;
+            color: #666;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            margin-right: 8px;
+            margin-top: 5px;
+        }
+
+        .post-detail .post-content {
+            margin-top: 25px;
+            font-size: 17px;
+            color: #444;
+        }
+
+        /* 게시글 본문 내 스타일 */
+        .post-content h2, .post-content h3, .post-content h4 {
+            color: #333;
+            margin-top: 35px;
+            margin-bottom: 15px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+        .post-content h2 { font-size: 28px; }
+        .post-content h3 { font-size: 24px; }
+        .post-content h4 { font-size: 20px; }
+
+        .post-content p {
+            margin-bottom: 1em; /* 단락 간 간격 */
+        }
+
+        .post-content ul, .post-content ol {
+            margin-left: 25px;
+            margin-bottom: 1em;
+        }
+        .post-content li {
+            margin-bottom: 0.5em;
+        }
+        
+        /* 코드 블록 스타일 */
+        .post-content pre {
+            background-color: #282c34; /* Dark background for code */
+            color: #abb2bf; /* Light text color */
+            padding: 15px 20px;
+            border-radius: 8px;
+            overflow-x: auto; /* Horizontal scroll for long lines */
+            margin: 25px 0;
+            font-family: 'Roboto Mono', monospace; /* Monospace font for code */
+            font-size: 15px;
+            line-height: 1.4;
+            white-space: pre-wrap; /* 자동 줄바꿈 */
+        }
+
+        .post-content code {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1em;
+            background-color: #e0e0e0; 
+            padding: 2px 5px;
+            border-radius: 4px;
+            color: #c7254e;
+        }
+        .post-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        /* 표 스타일 */
+        .post-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+
+        .post-content th, .post-content td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .post-content th {
+            background-color: #f8f9fa;
+            font-weight: 700;
+        }
+
+        .post-content tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        /* 푸터 스타일 */
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 50px;
+            color: #777;
+            font-size: 14px;
+            border-top: 1px solid #eee;
+        }
+    </style>
+    <script type="text/x-mathjax-config">
+
+    MathJax.Hub.Config({
+
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+
+    });
+
+    </script>
+
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="header-title">
+                <a href="/">내 GitHub Pages</a>
+            </div>
+            <nav class="header-nav">
+                <ul>
+                    <li><a href="#">블로그</a></li>
+                    <li><a href="#">태그</a></li>
+                    <li><a href="#">소개</a></li>
+                    <li><a href="https://github.com/TaehunKim0" target="_blank">GitHub</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <article class="post-detail">
+            <h1 class="post-title">장력 방식으로 웹스윙 구현</h1>
+            <div class="post-meta">
+                <span class="post-date">2025년 11월 07일</span>
+                <div class="post-tags">
+                    <span>#UnrealEngine</span>
+                </div>
+            </div>
+            <div class="post-content">
+
+                <h2>개요</h2>
+                <hr>
+                웹스윙을 구현하기 위해 처음에는 원운동 이론을 기반 으로 접근했다. 
+                등속 원운동부터 시작해서 중력의 영향을 받아 속력이 변화하는 비등속 원운동으로 발전시킬 계획이 었는데… 문제가 있었다.
+                <br> <br>
+                게임은 시뮬레이션이 아니기 때문에, 정해진 원운동 궤적으로만 움직이는 경우에 플레이어의 입력 처리, 외부 힘, 지형과의
+                충돌처리 적인 부분에서 예외 처리하는 것이 한계가 있었고 동적인 움직임을 구현하는 게 힘들었다.
+                <br><br>
+                따라서, 다른 접근 방법을 찾아보던 중 줄의 장력을 이용한 방식으로 전환했다.
+
+                <br><br>
+                <image src="./images/Webswing.gif" width="750" height="400"></image>
+
+                <br><br>
+
+                <h2>장력 방식</h2>
+                <hr>
+                <p>장력 방식은 <b>줄이 캐릭터를 부착점 쪽으로 당기는 힘</b>을 매 프레임 계산한다.</p>
+                <p>이는 원운동의 구심력과 유사하지만, 고정된 궤적이 아닌 <b>현재 상태(속력, 방향)</b> 에 반응하도록 되어</p>
+                <p>있어서 캐릭터가 어떤 Velocity 를 가지던 상관없게 되었다.</p>
+
+                <br>
+                <p>구현 방식은 간단하다.</p>
+                <p><b>캐릭터가 줄과 반대방향으로 갈수록 더 세게 줄 방향으로 캐릭터를 당긴다.</b></p>
+<!-- HTML generated using hilite.me --><div style="background: #1d2331; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: #D4D2C8">FVector </span><span style="color: #FFD173">UAT_WebSwing::CalculateStringTension</span><span style="color: #D4D2C8">(</span><span style="color: #73D0FF">float</span><span style="color: #D4D2C8"> InVelocityClampMin, </span><span style="color: #73D0FF">float</span><span style="color: #D4D2C8"> InVelocityClampMax) </span><span style="color: #FFAD66">const</span>
+<span style="color: #D4D2C8">{</span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">auto</span><span style="color: #D4D2C8"> MovementComp </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> Cast</span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8">ACharacter</span><span style="color: #FFAD66">&gt;</span><span style="color: #D4D2C8">(GetAvatarActor())</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">GetMovementComponent();</span>
+<span style="color: #D4D2C8">    FVector CurrentVelocity </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> MovementComp</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">Velocity.GetClampedToSize(InVelocityClampMin, InVelocityClampMax);</span>
+<span style="color: #D4D2C8">    FVector ToCharacterDirection </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> GetAvatarActor()</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">GetActorLocation() </span><span style="color: #FFAD66">-</span><span style="color: #D4D2C8"> TargetAttachPoint;</span>
+
+<span style="color: #D4D2C8">    </span><span style="color: #73D0FF">float</span><span style="color: #D4D2C8"> Dot </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> FVector</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">DotProduct(CurrentVelocity, ToCharacterDirection);</span>
+<span style="color: #D4D2C8">    </span><span style="color: #7E8AA1">// 현재 줄과 캐릭터의 Velocity 방향이 비슷할 수록 장력이 더 세진다.</span>
+
+<span style="color: #D4D2C8">		</span><span style="color: #73D0FF">float</span><span style="color: #D4D2C8"> TensionPower </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> </span><span style="color: #DFBFFF">-1.f</span><span style="color: #D4D2C8">;</span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">return</span><span style="color: #D4D2C8"> ToCharacterDirection.GetSafeNormal() </span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> Dot </span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> TensionPower; </span>
+<span style="color: #D4D2C8">    </span><span style="color: #7E8AA1">//반대 방향으로 힘 주기</span>
+<span style="color: #D4D2C8">}</span>
+
+<span style="color: #73D0FF">void</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">UAT_WebSwing::TickTask</span><span style="color: #D4D2C8">(</span><span style="color: #73D0FF">float</span><span style="color: #D4D2C8"> DeltaTime)</span>
+<span style="color: #D4D2C8">{</span>
+<span style="color: #D4D2C8">		...</span>
+<span style="color: #D4D2C8">		FVector StringTension </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> CalculateStringTension(...)</span>
+<span style="color: #D4D2C8">		ResultForce </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> StringTension </span><span style="color: #FFAD66">+</span><span style="color: #D4D2C8"> ForwardPushingForce </span><span style="color: #FFAD66">+</span><span style="color: #D4D2C8"> IncreaseSpeedAtBottomOfArc</span>
+<span style="color: #D4D2C8">		MovementComp</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">AddForce(ResultForce);</span>
+<span style="color: #D4D2C8">		</span>
+<span style="color: #D4D2C8">		...</span>
+<span style="color: #D4D2C8">}</span>
+</pre></div>
+
+
+
+                <br><br>
+                <h2>캐릭터에 가하는 여러 힘</h2>
+                <hr>
+<!-- HTML generated using hilite.me --><div style="background: #1d2331; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: #73D0FF">void</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">UAT_WebSwing::TickTask</span><span style="color: #D4D2C8">(</span><span style="color: #73D0FF">float</span><span style="color: #D4D2C8"> DeltaTime)</span>
+<span style="color: #D4D2C8">{</span>
+<span style="color: #D4D2C8">    Super</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">TickTask(DeltaTime);</span>
+
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">auto</span><span style="color: #D4D2C8"> AvatarActor </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> GetGameplayTaskAvatar(</span><span style="color: #FFAD66">this</span><span style="color: #D4D2C8">);</span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">auto</span><span style="color: #D4D2C8"> MovementComp </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> Cast</span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8">ACharacter</span><span style="color: #FFAD66">&gt;</span><span style="color: #D4D2C8">(AvatarActor)</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">GetCharacterMovement(); </span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">auto</span><span style="color: #D4D2C8"> CameraBoom </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> Cast</span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8">ABSCharacter</span><span style="color: #FFAD66">&gt;</span><span style="color: #D4D2C8">(AvatarActor)</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">CameraBoom;</span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">auto</span><span style="color: #D4D2C8"> CameraDirection </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> CameraBoom</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">GetForwardVector();</span>
+<span style="color: #D4D2C8">    CameraDirection.Z </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> </span><span style="color: #DFBFFF">0.0f</span><span style="color: #D4D2C8">;</span>
+
+<span style="color: #D4D2C8">    </span><span style="color: #7E8AA1">// 1. Forward Pushing Force</span>
+<span style="color: #D4D2C8">    FVector ForwardPushingForce </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> CameraDirection </span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> </span><span style="color: #DFBFFF">130000.f</span><span style="color: #D4D2C8">;</span>
+
+<span style="color: #D4D2C8">    </span><span style="color: #7E8AA1">// 2. Tension Force</span>
+<span style="color: #D4D2C8">    FVector TensionForce </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> CalculateStringTension(</span><span style="color: #DFBFFF">100</span><span style="color: #D4D2C8">,</span><span style="color: #DFBFFF">3000</span><span style="color: #D4D2C8">);</span>
+
+<span style="color: #D4D2C8">    </span><span style="color: #7E8AA1">// 3. Increase Swing Speed it reached at the Bottom of the Arc</span>
+<span style="color: #D4D2C8">    FVector IncreasedSpeed </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> IncreaseSpeedAtBottomOfArc();</span>
+<span style="color: #D4D2C8">    </span>
+<span style="color: #D4D2C8">    </span><span style="color: #7E8AA1">// Result Force</span>
+<span style="color: #D4D2C8">    FVector ResultForce </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> ForwardPushingForce </span><span style="color: #FFAD66">+</span><span style="color: #D4D2C8"> TensionForce </span><span style="color: #FFAD66">+</span><span style="color: #D4D2C8"> IncreasedSpeed;</span>
+<span style="color: #D4D2C8">    MovementComp</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">AddForce(ResultForce);</span>
+<span style="color: #D4D2C8">    </span>
+<span style="color: #D4D2C8">    UpdateCharacterRotation(DeltaTime);</span>
+<span style="color: #D4D2C8">}</span>
+</pre></div>
+                <p>여기서 ResultForce에 캐릭터가 계속 앞으로 나아가기 위한 ForwardPushingForce 와 </p>
+
+                <br>
+                <p>캐릭터가 궤적을 그릴때 Velocity 의 방향이 중력의 방향과 비슷할 때(내적) 궤적(호)의 가장 아래에 있</p>
+                <p>어서그 때 속도를 올려주는 힘을 더해서 최종 힘을 더한다.</p>
+                
+                <br>
+<!-- HTML generated using hilite.me --><div style="background: #1d2331; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: #73D0FF">void</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">UAT_WebSwing::UpdateKeyboardInput</span><span style="color: #D4D2C8">(</span><span style="color: #FFAD66">const</span><span style="color: #D4D2C8"> FVector2D</span><span style="color: #FFAD66">&amp;</span><span style="color: #D4D2C8"> MovementValue)</span>
+<span style="color: #D4D2C8">{</span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">auto</span><span style="color: #D4D2C8"> AvatarActor </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> GetGameplayTaskAvatar(</span><span style="color: #FFAD66">this</span><span style="color: #D4D2C8">);</span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">auto</span><span style="color: #D4D2C8"> Character </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> Cast</span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8">ACharacter</span><span style="color: #FFAD66">&gt;</span><span style="color: #D4D2C8">(AvatarActor);</span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (</span><span style="color: #FFAD66">!</span><span style="color: #D4D2C8">Character) </span><span style="color: #FFAD66">return</span><span style="color: #D4D2C8">;</span>
+
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (MovementValue.X </span><span style="color: #FFAD66">!=</span><span style="color: #D4D2C8"> </span><span style="color: #DFBFFF">0.0f</span><span style="color: #D4D2C8">)</span>
+<span style="color: #D4D2C8">    {</span>
+<span style="color: #D4D2C8">       </span><span style="color: #FFAD66">auto</span><span style="color: #D4D2C8"> RightDir </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> Character</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">GetActorRightVector().GetSafeNormal();</span>
+<span style="color: #D4D2C8">    </span>
+<span style="color: #D4D2C8">       </span><span style="color: #73D0FF">float</span><span style="color: #D4D2C8"> Power </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> </span><span style="color: #DFBFFF">110000.f</span><span style="color: #D4D2C8">;</span>
+<span style="color: #D4D2C8">       FVector Force </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> RightDir </span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> MovementValue.X </span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> Power;</span>
+<span style="color: #D4D2C8">    </span>
+<span style="color: #D4D2C8">       Character</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">GetCharacterMovement()</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">AddForce(Force);</span>
+<span style="color: #D4D2C8">    }</span>
+<span style="color: #D4D2C8">}</span>
+</pre></div>
+                <p>그리고 캐릭터가 원하는 방향으로 갈 수 있도록 키보드 Input 을 받아서 그 쪽 방향으로 힘을 준다.</p>
+                
+
+                <br>
+
+                <h2>캐릭터의 회전</h2>
+                <hr>
+                <p>캐릭터는 단순히 이동 방향을 바라보는 것이 아니라, <b>줄에 매달려 기울어진 자세를 취한다.</b></p>
+                <p>현재 스윙 중에 줄에 매달린 각도를 계산해서 캐릭터를 회전 시킨다.</p>
+<!-- HTML generated using hilite.me --><div style="background: #1d2331; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: #73D0FF">void</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">UAT_WebSwing::UpdateCharacterRotation</span><span style="color: #D4D2C8">(</span><span style="color: #73D0FF">float</span><span style="color: #D4D2C8"> DeltaTime)</span>
+<span style="color: #D4D2C8">{</span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">auto</span><span style="color: #D4D2C8"> AvatarActor </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> GetGameplayTaskAvatar(</span><span style="color: #FFAD66">this</span><span style="color: #D4D2C8">);</span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">auto</span><span style="color: #D4D2C8"> Character </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> Cast</span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8">ACharacter</span><span style="color: #FFAD66">&gt;</span><span style="color: #D4D2C8">(AvatarActor);</span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (</span><span style="color: #FFAD66">!</span><span style="color: #D4D2C8">Character) </span><span style="color: #FFAD66">return</span><span style="color: #D4D2C8">;</span>
+
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">auto</span><span style="color: #D4D2C8"> MovementComp </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> Character</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">GetCharacterMovement();</span>
+<span style="color: #D4D2C8">    FVector CurrentVelocity </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> MovementComp</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">Velocity;</span>
+
+<span style="color: #D4D2C8">    FRotator SwingAngle </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> CalculateSwingSideAngle();</span>
+<span style="color: #D4D2C8">    FRotator SwingRotation </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> FRotator(SwingAngle.Pitch,CurrentVelocity.Rotation().Yaw, SwingAngle.Roll);</span>
+
+<span style="color: #D4D2C8">    FRotator ResultRotation </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> FMath</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">RInterpTo(Character</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">GetActorRotation(), SwingRotation, DeltaTime, </span><span style="color: #DFBFFF">20.f</span><span style="color: #D4D2C8">);</span>
+<span style="color: #D4D2C8">    Character</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">SetActorRotation(ResultRotation);</span>
+<span style="color: #D4D2C8">}</span>
+</pre></div>
+
+
+                <br>
+
+                <p>줄에 매달린 각도를 구하는 방법은 다음과 같다.</p>
+<!-- HTML generated using hilite.me --><div style="background: #1d2331; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: #D4D2C8">FRotator </span><span style="color: #FFD173">UAT_WebSwing::CalculateSwingSideAngle</span><span style="color: #D4D2C8">()</span>
+<span style="color: #D4D2C8">{</span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">auto</span><span style="color: #D4D2C8"> AvatarActor </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> GetGameplayTaskAvatar(</span><span style="color: #FFAD66">this</span><span style="color: #D4D2C8">);</span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">auto</span><span style="color: #D4D2C8"> MovementComp </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> Cast</span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8">ACharacter</span><span style="color: #FFAD66">&gt;</span><span style="color: #D4D2C8">(AvatarActor)</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">GetCharacterMovement();</span>
+
+<span style="color: #D4D2C8">    FVector ToAttachPointDir </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> (TargetAttachPoint </span><span style="color: #FFAD66">-</span><span style="color: #D4D2C8"> AvatarActor</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">GetActorLocation()).GetSafeNormal();</span>
+<span style="color: #D4D2C8">    FVector StandardAxis </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> FVector</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">CrossProduct(ToAttachPointDir, MovementComp</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">Velocity.GetSafeNormal());</span>
+
+<span style="color: #D4D2C8">    FRotationMatrix Result </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> FRotationMatrix</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">MakeFromZY(ToAttachPointDir,StandardAxis);</span>
+
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">return</span><span style="color: #D4D2C8"> FRotator(Result.Rotator());</span>
+<span style="color: #D4D2C8">}</span>
+</pre></div>
+
+                <br>
+                <p>현재 캐릭터에서 줄까지의 방향(검은색) 과 현재 캐릭터가 진행중인 방향(빨강) 을 외적해서</p>
+                <p>기준 축을 만들고, Z 축: 줄까지의 방향으로, Y축: 외적 결과 로 새로운 회전 평면을 구한다.</p>
+                <p>약간 옆으로 기울어진 상태의 회전 평면이 만들어진다.</p>
+
+                <br>
+                <p>이 기울어진 회전 평면을 Rotator 로 변환해서 Yaw,Pitch,Roll 을 사용할 수 있게 한다.</p>
+                <br>
+                <p>이 Rotator 의 Roll 값으로 캐릭터가 기울게 된다.</p>
+
+                <image src="./images/Rotation.png" width="750" height="400"></image>
+
+            </div>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 [TaehunKim0]. All rights reserved.</p>
+    </footer>
+</body>
+</html>
