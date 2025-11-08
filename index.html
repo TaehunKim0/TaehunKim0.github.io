@@ -417,6 +417,7 @@
                 subtitle: '총 12명 팀, 싱글플레이 액션 러닝 게임 개발 프로젝트',
                 icon: "./images/CatchHim.png",
                 count: "1개의 글",
+                Year: "2022년",
                 gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
             },
             {
@@ -425,27 +426,66 @@
                 subtitle: '총 20명 팀, 멀티 액션 로그라이크 게임 개발 프로젝트',
                 icon: "./images/Nirvana.png",
                 count: "1개의 글",
+                Year: "2023년",
                 gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
             },
-            {
-                id: 'unreal-modular-gameplay',
-                name: 'Unreal Modular Gameplay',
-                subtitle: 'Epic Games의 Lyra Starter Game을 분석하여 팀 협업 환경에 최적화된 프레임워크로 발전 ',
-                icon: "./images/Modular.png",
-                count: "14개의 글",
-                gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
-            },
+            
             {
                 id: 'unreal-editor-dev',
                 name: 'StaticMesh 편집 에디터 개발',
                 subtitle: 'Unreal 의 Slate UI 프레임워크를 사용하여 커스텀 StaticMesh 편집 에디터 개발',
                 icon: "./images/Mesh.png",
-                count: "0개의 글",
+                count: "1개의 글",
+                Year: "2023년",
                 gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
             },
+            {
+                id: 'versework',
+                name: 'Versework 재직',
+                subtitle: 'Unreal, Roblox 엔진을 활용한 스크립팅 언어로 게임 개발',
+                count: "",
+                Year: "2024년 7월 ~ 2025년 8월",
+                gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
+            },
+            {
+                id: 'unreal-tips',
+                name: 'Unreal Engine5 개발 팁',
+                subtitle: 'Unreal Engine 개발 시 유용한 팁과 기능 설명',
+                count: "5개의 글",
+                Year: "2025년",
+                gradient: 'linear-gradient(135deg, #65adfe 0%, #22f2fe 100%)'
+            },
+            {
+                id: 'unreal-modular-gameplay',
+                name: 'Unreal Modular Gameplay',
+                subtitle: 'Epic Games의 Lyra 예제를 팀 협업 환경에 최적화된 프레임워크로 발전 ',
+                icon: "./images/Modular.png",
+                count: "7개의 글",
+                Year: "2025년",
+                gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
+            },
+            {
+                id: 'unreal-webswing',
+                name: 'Unreal5 스파이더맨 웹스윙 구현',
+                subtitle: 'Unreal Engine을 사용하여 물리 기반의 웹스윙 메커니즘 구현',
+                count: "2개의 글",
+                Year: "2025년",
+                gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+            },
+            
+
         ];
 
         const projects = [
+            {
+                category: 'unreal-editor-dev',
+                date: '2025년 11월 08일',
+                title: 'StaticMesh 편집 에디터 개발 프로젝트',
+                excerpt: '총 22명의 팀원이 8개월동안 협업하였고,UE5를 사용하여 제작했습니다. 클라이언트 프로그래머(파트장)를 맡아 진행했습니다.',
+                tags: ['UnrealEngine', 'Editor'],
+                link: '/editor-portfolio/',
+                icon: '🎯'
+            },
             {
                 category: 'nirvana',
                 date: '2025년 11월 07일',
@@ -465,7 +505,7 @@
                 icon: '🎯'
             },
             { 
-                category: 'unreal-modular-gameplay',
+                category: 'unreal-webswing',
                 date: '2025년 11월 07일',
                 title: '장력을 이용한 웹스윙 구현',
                 excerpt: '게임은 시뮬레이션이 아니기 때문에, 정해진 원운동 궤적으로만 움직이는 것은 제한이 많았다. 다른 접근 방법을 찾아보던 중 줄의 장력을 이용한 방식으로 전환했다.',
@@ -474,7 +514,7 @@
                 icon: '🕸️'
             },
             {
-                category: 'unreal-modular-gameplay',
+                category: 'unreal-webswing',
                 date: '2025년 10월 31일',
                 title: '웹스윙을 위한 등속 원운동 기초 모델',
                 excerpt: '스파이더맨의 웹 스윙을 물리 기반으로 구현하려고 시도했는데, 알고 보니 비등속 원운동(속력과 방향 모두 변화)이라 복잡했다. 등속 원운동 구현부터 시작해보았다.',
@@ -501,7 +541,7 @@
                 icon: '⚙️'
             },
             {
-                category: 'unreal-modular-gameplay',
+                category: 'unreal-tips',
                 date: '2025년 10월 16일',
                 title: 'Unreal Pawn 제거 시 왜 IMC 는 제거되지 않을까?',
                 excerpt: '런타임에 Pawn을 제거 → 재스폰하면서 Actor가 소유한 InputComponent는 제거되지만 InputMappingContext는 남아있다. 왜 IMC는 제거하지 않을까?',
@@ -519,7 +559,7 @@
                 icon: '🧩'
             },
             {
-                category: 'unreal-modular-gameplay',
+                category: 'unreal-tips',
                 date: '2025년 10월 1일',
                 title: 'Unreal AssetManager 분석과 사용 이유',
                 excerpt: 'GameFeature를 사용하는 중에 AssetManager와 스캔할 프라이머리 에셋 타입이라는 게 있어서 공부해보았다. 에셋 매니저를 사용하지 않아도 게임은 만들 수 있다. 그럼 왜 필요한지 알아보자.',
@@ -537,7 +577,7 @@
                 icon: '🏗️'
             },
             {
-                category: 'unreal-modular-gameplay',
+                category: 'unreal-tips',
                 date: '2025년 9월 18일',
                 title: '하드 레퍼런스의 문제점과 소프트 레퍼런스로 해결하는 방법',
                 excerpt: '언리얼 엔진에서 에셋을 참조하는 두 가지 방법, 하드 레퍼런스와 소프트 레퍼런스의 차이점을 알아보자. 특히 하드 레퍼런스가 왜 메모리 낭비와 로딩 시간 증가를 유발하는지 알아보고...',
@@ -546,7 +586,7 @@
                 icon: '🔗'
             },
             {
-                category: 'unreal-modular-gameplay',
+                category: 'unreal-tips',
                 date: '2025년 6월 26일',
                 title: 'Unreal 크래쉬 없는 델리게이트 바인딩 방법',
                 excerpt: '삭제된 객체의 함수가 바인딩된 델리게이트를 실행했을 때, 크래쉬가 나는 경우가 있다. 이 문제를 해결하기 위해서는 어떻게 해야될까?',
@@ -555,7 +595,7 @@
                 icon: '🔔'
             },
             {
-                category: 'unreal-modular-gameplay',
+                category: 'unreal-tips',
                 date: '2025년 6월 25일',
                 title: 'Unreal IsValid vs IsValidLowLevel',
                 excerpt: '언리얼에서 특정 메모리에 접근할 때, 혹시 몰라서 IsValid와 IsValidLowLevel 둘 다 같이 작성했던 경험이 있다. 이번에 두 함수의 차이점에 대해 알아보려고 한다.',
@@ -612,6 +652,7 @@
                 <div class="category-body">
                     <div class="category-title">${cat.name}</div>
                     <div class="category-subtitle">${cat.subtitle}</div> 
+                    <div class="category-count">${cat.Year}</div>
                     <div class="category-count">${cat.count}</div>
                 </div>
             </div>
