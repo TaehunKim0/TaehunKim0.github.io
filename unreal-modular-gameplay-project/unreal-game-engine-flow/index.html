@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>언리얼 게임 플로우</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Unreal Modular Gameplay 스타일 기반 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #ffffff;
+            color: #333;
+            line-height: 1.6;
+            padding: 40px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        header {
+            margin-bottom: 60px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .header-title {
+            font-size: 32px;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .header-nav {
+            margin-top: 15px;
+        }
+
+        .header-nav a {
+            margin-right: 20px;
+            font-size: 14px;
+            color: #0066cc;
+        }
+
+        .back-link {
+            font-size: 16px;
+            margin-bottom: 30px;
+            display: inline-block;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 400;
+            margin: 30px 0 20px 0;
+            color: #333;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 400;
+            margin: 50px 0 30px 0;
+            color: #333;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        h3 {
+            font-size: 20px;
+            font-weight: 400;
+            margin: 40px 0 20px 0;
+            color: #333;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        h4 {
+            font-size: 18px;
+            font-weight: 400;
+            margin: 30px 0 15px 0;
+            color: #333;
+        }
+
+        .post-meta {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .post-tags span {
+            display: inline-block;
+            background-color: #e0e0e0;
+            color: #666;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            margin-right: 8px;
+            margin-top: 5px;
+        }
+
+        .post-content {
+            font-size: 17px;
+            color: #444;
+            margin-bottom: 60px;
+        }
+
+        .post-content p {
+            margin-bottom: 1.2em;
+        }
+
+        .post-content ul {
+            margin-bottom: 1.2em;
+            padding-left: 20px;
+        }
+
+        .post-content li {
+            margin-bottom: 0.8em;
+        }
+
+        /* 코드 블록 스타일 */
+        .post-content pre {
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 15px 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 25px 0;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+        
+        .post-content code {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1em;
+            background-color: #e0e0e0;
+            padding: 2px 5px;
+            border-radius: 4px;
+            color: #c7254e;
+        }
+        
+        .post-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        /* 표 스타일 */
+        .post-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+
+        .post-content th, .post-content td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .post-content th {
+            background-color: #f8f9fa;
+            font-weight: 700;
+        }
+
+        .post-content tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        footer {
+            margin-top: 80px;
+            padding-top: 30px;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+            font-size: 13px;
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 30px 15px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+     <header>
+        <div class="header-title">
+            <a href="/">TaehunKim0</a>
+        </div>
+        <nav class="header-nav">
+            <a href="/">Home</a>
+            <a href="https://github.com/TaehunKim0" target="_blank">GitHub</a>
+        </nav>
+    </header>
+
+    <main>
+        <article class="post-detail">
+            <h1 class="post-title">Unreal engine Game Engine Flow 분석</h1>
+            <div class="post-meta">
+                <span class="post-date">2025년 6월 15일</span>
+                <div class="post-tags">
+                    <span>#UnrealEngine</span>
+                </div>
+            </div>
+            <div class="post-content">
+                <p>Lyra Sample 을 분석하다보니, UGameFrameworkComponentManager 를 사용해서 컴포넌트의 초기화 순서를 결정하고 있었다.<br>
+                   ModularCharacter 등 클래스를 만들어서 초기화 순서를 관리할 액터들을 Register 하고 Handling 하는 부분이 나오길래 <br>
+                   왜 컴포넌트들의 순서를 확실하게 분리하고 결정하려고 하는지 알아야 했다.<br> 그래서 이전에 엔진의 시작부터 모든 액터들의 BeginPlay 까지의 흐름을 정리하려고 한다.
+                </p>
+
+                <h2>게임 엔진 플로우</h2>
+                </hr>
+                <ol>
+                    <li>UGameEngine::Init</li>
+                    <li>UGameInstance::Init
+                        <ul>
+                            <li>InitCreateUOnlineSession</li>
+                        </ul>
+                    </li>
+                    <li>UGameEngine::Start</li>
+                    <li>UGameInstance::StartGameInstance()</li>
+                    <li><strong>UEngine::LoadMap()</strong>
+                        <ul>
+                            <li>UWorld::InitializeActorsForPlay
+                                <ul>
+                                    <li>UActorComponent::RegisterComponent
+                                        <ul>
+                                            <li>모든 액터들의 컴포넌트를 World 에 등록</li>
+                                            <li>컴포넌트들은 OnRegister 함수 호출됨.</li>
+                                            <li>컴포넌트가 모두 등록되면 GameMode의 InitGame 호출</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li><strong>GameMode 생성</strong></li>
+                            <li><strong>GameMode::InitGame</strong>
+                                <ul>
+                                    <li>Game Session Actor 생성</li>
+                                    <li>World가 각 Level 별 루프를 돌면서 각 레벨의 Actor 초기화</li>
+                                </ul>
+                            </li>
+                            <li>ULevel::RouteActorInitialize() — 모든 액터 대상으로 초기화 진행
+                                <ul>
+                                    <li><strong>Actor::PreInitializeComponents()</strong> — 초기화 전
+                                        <ul>
+                                            <li>GameMode::PreInitializeComponents
+                                                <ul>
+                                                    <li><strong>GameState 생성</strong></li>
+                                                    <li>GameState::PreInitializeComponents</li>
+                                                    <li>GameState::InitGameState 호출</li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>Actor::InitializeComponent</strong> — 초기화
+                                        <ul>
+                                            <li>bAutoActive true 면 활성화</li>
+                                            <li>bWantInitializeComponent 면 해당 컴포넌트 초기화</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>Actor::PostInitializeComponents()</strong> — 초기화 후
+                                        <ul>
+                                            <li>컴포넌트들이 다 초기화 된 후 완전한 상태에 있을때에 호출되는 가장 초기 지점</li>
+                                            <li>GameState::PostInitializeComponents</li>
+                                            <li>GameMode::PostInitializeComponents</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>LoadMap 거의 처리 완료, 모든 액터 로드 및 초기화 완료</li>
+                            <li>World 가 초기화 됨.</li>
+                            <li>LoadMap은 GameInstance 의 LocalPlayer를 찾아서 SpawnPlayActor → PC 생성</li>
+                            <li>이제 플레이어가 게임에 참여하려면, 항상 로그인 프로세스를 거쳐야 함.</li>
+                        </ul>
+                    </li>
+                    <li><strong>PlayerController 생성</strong>
+                        <ul>
+                            <li>GameMode의 Login 함수 호출하면 PlayerController 만들어 반환</li>
+                            <li>PlayerController 의 PostinitializeComponents 호출</li>
+                        </ul>
+                    </li>
+                    <li><strong>PlayerState 생성</strong>
+                        <ul>
+                            <li>PlayerController가 생성</li>
+                            <li>PlayerState 는 모든 플레이어가 알아야 하는 데이터</li>
+                        </ul>
+                    </li>
+                    <li>GameMode::Login 함수가 끝나면, PC 와 Player 객체 연결</li>
+                    <li><strong>PlayerController::OnPossesss</strong></li>
+                    <li><strong>Character::PossessBy</strong></li>
+                    <li><strong>GameMode::PostLogin</strong>
+                        <ul>
+                            <li>새로운 플레이어가 참가했을 때 발생하는 모든 처리를 여기서 하게 됨.</li>
+                            <li>GameMode는 새로운 PlayerController에 대한 Pawn을 생성</li>
+                            <li>추가로 새로 들어온 플레이어는 HandleStartingNewPlayer 함수에서 처리</li>
+                            <li>부활한 플레이어를 처리하는 것은 RestartPlayer 함수에서 처리</li>
+                        </ul>
+                    </li>
+                    <li><strong>UWorld::BeginPlay</strong>
+                        <ul>
+                            <li>GameMode::StartPlay</li>
+                            <li>GameMode::StartMatch</li>
+                            <li>GameState::HandleBeginPlay
+                                <ul>
+                                    <li>Actor::BeginPlay()</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><strong>UEngine::LoadMap 함수 종료</strong></li>
+                    <li>FEngineLoop::Tick</li>
+                    <li>UGameEngine::Tick()</li>
+                    <li>UWorld::Tick()</li>
+                </ol>
+
+                <br>
+                <h2>주요 실행 로그</h2>
+                </hr>
+
+                <pre><code>
+LogBS: ABSGameMode::ABSGameMode
+LogBS: ABSGameMode::InitGame
+LogBS: ABSGameStateBase::ABSGameStateBase
+LogBS: ABSGameStateBase::PreInitializeComponents
+LogBS: ABSGameStateBase::PostInitializeComponents
+LogBS: ABSGameMode::PreInitializeComponents
+LogBS: ABSGameMode::PostInitializeComponents
+LogBS: ABSPlayerController::ABSPlayerController
+LogBS: ABSPlayerState::ABSPlayerState
+LogBS: UBSAbilitySystemComponent::OnRegister
+LogBS: ABSPlayerState::PostInitializeComponents
+LogBS: UBSDefaultCharacterComponent::OnRegister
+LogBS: ABSCharacter::PreInitializeComponents
+LogBS: ABSPlayerController::OnPossess
+LogBS: ABSCharacter::PossessedBy
+LogBS: ABSGameMode::PostLogin
+LogBS: UBSDefaultCharacterComponent::BeginPlay
+LogBS: ABSCharacter::BeginPlay
+LogBS: ABSGameMode::StartPlay
+                </code></pre>
+            </div>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 TaehunKim0. All rights reserved.</p>
+    </footer>
+</body>
+</html>

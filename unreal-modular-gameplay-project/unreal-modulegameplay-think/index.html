@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unreal 특정 게임에 적용할 모듈형 개발 구조 고민</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Unreal Modular Gameplay 스타일 기반 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #ffffff;
+            color: #333;
+            line-height: 1.6;
+            padding: 40px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        header {
+            margin-bottom: 60px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .header-title {
+            font-size: 32px;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .header-nav {
+            margin-top: 15px;
+        }
+
+        .header-nav a {
+            margin-right: 20px;
+            font-size: 14px;
+            color: #0066cc;
+        }
+
+        .back-link {
+            font-size: 16px;
+            margin-bottom: 30px;
+            display: inline-block;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 400;
+            margin: 30px 0 20px 0;
+            color: #333;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 400;
+            margin: 50px 0 30px 0;
+            color: #333;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        h3 {
+            font-size: 20px;
+            font-weight: 400;
+            margin: 40px 0 20px 0;
+            color: #333;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        h4 {
+            font-size: 18px;
+            font-weight: 400;
+            margin: 30px 0 15px 0;
+            color: #333;
+        }
+
+        .post-meta {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .post-tags span {
+            display: inline-block;
+            background-color: #e0e0e0;
+            color: #666;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            margin-right: 8px;
+            margin-top: 5px;
+        }
+
+        .post-content {
+            font-size: 17px;
+            color: #444;
+            margin-bottom: 60px;
+        }
+
+        .post-content p {
+            margin-bottom: 1.2em;
+        }
+
+        .post-content ul {
+            margin-bottom: 1.2em;
+            padding-left: 20px;
+        }
+
+        .post-content li {
+            margin-bottom: 0.8em;
+        }
+
+        /* 코드 블록 스타일 */
+        .post-content pre {
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 15px 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 25px 0;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+        
+        .post-content code {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1em;
+            background-color: #e0e0e0;
+            padding: 2px 5px;
+            border-radius: 4px;
+            color: #c7254e;
+        }
+        
+        .post-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        /* 표 스타일 */
+        .post-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+
+        .post-content th, .post-content td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .post-content th {
+            background-color: #f8f9fa;
+            font-weight: 700;
+        }
+
+        .post-content tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        footer {
+            margin-top: 80px;
+            padding-top: 30px;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+            font-size: 13px;
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 30px 15px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+     <header>
+        <div class="header-title">
+            <a href="/">TaehunKim0</a>
+        </div>
+        <nav class="header-nav">
+            <a href="/">Home</a>
+            <a href="https://github.com/TaehunKim0" target="_blank">GitHub</a>
+        </nav>
+    </header>
+
+    <main>
+        <article class="post-detail">
+            <h1 class="post-title">Unreal 특정 게임에 적용할 모듈형 개발 구조 고민</h1>
+            <div class="post-meta">
+                <span class="post-date">2025년 10월 9일</span>
+                <div class="post-tags">
+                    <span>#UnrealEngine</span>
+                    <span>#GameFeature</span>
+                </div>
+            </div>
+            <div class="post-content">
+
+                <h2>개요</h2>
+                
+                <p>Lyra 를 보며 GameFeature 의 활용 방법이 정말 다양한 것 같다는 생각이 들었다. 그 방법은 어떤 게임</p>
+                <p>을 만들 것인지에 따라 결정될 것으로 보였다. Lyra 는 슈팅 게임에 최적화된 GameFeature 들로 구성</p>
+                <p>되었다. 본인은 RPG , 액션 게임 장르를 좋아하기 때문에 이에 맞는 구조를 설계해보려고 한다.</p>
+
+                <br>
+                <h2>어떤 게임에 적용할 것인가?</h2>
+                
+                <ul>
+                    <li>게임 정의 : <u>똑같은 룰</u> 안에서 <u>캐릭터와 스킬들이 달라질 수 있는</u> 게임</li>
+                </ul>
+
+                <br>
+                <h2>게임에 맞는 구조를 설계해보면</h2>
+                
+
+                <ul>    
+                    <li><b><u>게임의 룰</u>은 GameMode 로 구현</b></li>
+                    <ul>
+                        <li>라이라의 Experience 를 사용하지 않고, 기존의 GameMode 를 사용</li>
+                    </ul>
+                </ul>
+
+                <ul>    
+                    <li><b><u>게임의 캐릭터 변경</u>은 Lyra 의 Experience → CharacterDefinition 으로 역할을 바꿔 구현</b></li>
+                    <ul>
+                        <li>기존 Experience 가 가진 PawnData, AbilitySet 등은 그대로 사용</li>
+                    </ul>
+                </ul>
+
+                <ul>    
+                    <li><b><u>게임 피처는 크게 3가지</u>로 나눠 개발</b></li>
+                    <ul>
+                        <li><u>캐릭터 콘텐츠</u> : 캐릭터들이 할 수 있는 코어 액션들을 하나하나 정의</li>
+                        <ul>
+                            <li>라이라의 GameFeature 는 현재 게임의 코어 액션을 정의</li>
+                            <ul>
+                                <li>ex) ShooterCore - 인벤토리 시스템 등</li>
+                                <li>ex) TopdownArena - 카메라 시스템 등</li>
+                            </ul>
+                            <li>캐릭터가 할 수 있는 액션들을 GameFeature 로 분리</li>
+                            <ul>
+                                <li>GameFeature_Skill_Stinger     // 돌진 공격</li>
+                                <li>GameFeature_Skill_Fireball    // 화염구</li>
+                                <li>GameFeature_Skill_Teleport    // 순간이동</li>
+                            </ul>
+                        </ul>
+                        <li><u>적 콘텐츠</u> : 새로운 적 추가</li>
+                        <li><u>맵 콘텐츠</u> : 코인, 새로운 영역, 새로운 던전, NPC 등</li>
+                    </ul>
+                </ul>
+
+
+                <br>
+                <h2>GameFeature 주의사항</h2>
+                
+                <ul>
+                    <li><b>게임 피처들은 코어 게임을 전혀 모르도록 해야 함.</b></li>
+                    <ul>
+                        <li>즉 의존성이 없도록 하여 활성화 비활성화가 자유롭게 구현</li>
+                    </ul>
+                    <li><b>커스텀 게임 피처들을 제작해 재사용할 것</b></li>
+                    <ul>
+                        <li>제공된 게임 피처들 말고도 다양하게 커스텀해서 생산성을 올릴 수 있음.</li>
+                    </ul>
+                    <li><b>게임 피처 관련 리소스는 해당 피처 플러그인 폴더에 넣을 것</b></li>
+                    <ul>
+                        <li>완전한 모듈형 개발을 위해 분리</li>
+                    </ul>
+                    <li><b>데이터 관련 피처 액션을 활용할 것</b></li>
+                    <ul>
+                        <li>에셋 매니저를 활용해서 상점과 같은 콘텐츠에서 자동으로 등록되도록 함.</li>
+                    </ul>
+                    <li><b>멀티 플레이 환경에서 게임 피처가 활성화되면, 모든 클라이언트에게 적용하기 때문에
+특정 클라이언트에게만 적용하도록 하는 게임 피처 필터가 필요.</b></li>
+                </ul>
+            </div>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 [TaehunKim0]. All rights reserved.</p>
+    </footer>
+</body>
+</html>

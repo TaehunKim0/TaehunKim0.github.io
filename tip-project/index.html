@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unreal5 Tip - TaehunKim0</title>
+    <style>
+        /* Unreal Modular Gameplay 스타일 기반 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #ffffff;
+            color: #333;
+            line-height: 1.6;
+            padding: 40px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        header {
+            margin-bottom: 60px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .header-title {
+            font-size: 32px;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .header-nav {
+            margin-top: 15px;
+        }
+
+        .header-nav a {
+            margin-right: 20px;
+            font-size: 14px;
+            color: #0066cc;
+        }
+
+        .back-link {
+            font-size: 16px;
+            margin-bottom: 30px;
+            display: inline-block;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 400;
+            margin: 30px 0 20px 0;
+            color: #333;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 400;
+            margin: 50px 0 30px 0;
+            color: #333;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        h3 {
+             font-size: 20px;
+             font-weight: 400;
+             margin: 40px 0 20px 0;
+             color: #333;
+        }
+
+        .post-meta {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .post-content {
+            font-size: 17px;
+            color: #444;
+            margin-bottom: 60px;
+        }
+
+        .post-content p {
+            margin-bottom: 1.2em;
+        }
+
+        /* 목록 스타일 */
+        .post-list-section {
+            margin-top: 40px;
+        }
+        
+        .post-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .post-item {
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .post-item:last-child {
+            border-bottom: none;
+        }
+
+        .post-item a {
+            font-size: 20px;
+            font-weight: 400;
+            color: #333;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .post-item a:hover {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        .post-date {
+            font-size: 14px;
+            color: #999;
+            margin-right: 15px;
+        }
+
+        .post-excerpt {
+            font-size: 16px;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .post-tags {
+            margin-top: 10px;
+        }
+
+        .post-tag {
+            display: inline-block;
+            margin-right: 10px;
+            font-size: 12px;
+            color: #888;
+            border: 1px solid #ddd;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        .post-icon {
+            font-size: 18px;
+            margin-right: 10px;
+        }
+
+
+        footer {
+            margin-top: 80px;
+            padding-top: 30px;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+            font-size: 13px;
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 30px 15px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-title">
+            <a href="/">TaehunKim0</a>
+        </div>
+        <nav class="header-nav">
+            <a href="/">Home</a>
+            <a href="https://github.com/TaehunKim0" target="_blank">GitHub</a>
+        </nav>
+    </header>
+
+    <main>
+        <a href="/" class="back-link">← Home</a>
+
+        <h1>Unreal5 Tip</h1>
+        
+        <div class="post-meta">언리얼 엔진 5 개발 팁 모음</div>
+
+        <div class="post-content">
+            <p>
+                언리얼 엔진 5를 사용하며 알게 된 중요한 개발 팁과 심층적인 주제들을 모아보았습니다.
+                성능 최적화, 메모리 관리, 엔진 내부 작동 방식에 대한 이해는 보다 견고하고 효율적인 게임 개발의 기반이 됩니다.
+            </p>
+            <p>
+                아래 목록에서 하드 레퍼런스와 소프트 레퍼런스의 차이부터 시작해, 크래쉬를 방지하는 델리게이트 사용법, 객체 유효성 검사, 에셋 관리의 핵심인 AssetManager 등 다양한 주제를 확인하실 수 있습니다.
+            </p>
+
+            <div class="post-list-section">
+                <h2>전체 Unreal Tips 목록</h2>
+                <ul class="post-list">
+                    <li class="post-item">
+                        <span class="post-icon">🔗</span>
+                        <a href="/unreal-hardreference/">하드 레퍼런스의 문제점과 소프트 레퍼런스로 해결하는 방법</a>
+                        <span class="post-date">2025년 9월 18일</span>
+                        <div class="post-excerpt">언리얼 엔진에서 에셋을 참조하는 두 가지 방법, 하드 레퍼런스와 소프트 레퍼런스의 차이점을 알아보자. 특히 하드 레퍼런스가 왜 메모리 낭비와 로딩 시간 증가를 유발하는지 알아보고...</div>
+                        <div class="post-tags">
+                            <span class="post-tag">UnrealEngine</span>
+                            <span class="post-tag">Memory</span>
+                        </div>
+                    </li>
+                    <li class="post-item">
+                        <span class="post-icon">📦</span>
+                        <a href="/unreal-assetmanager/">Unreal AssetManager 분석과 사용 이유</a>
+                        <span class="post-date">2025년 10월 1일</span>
+                        <div class="post-excerpt">GameFeature를 사용하는 중에 AssetManager와 스캔할 프라이머리 에셋 타입이라는 게 있어서 공부해보았다. 에셋 매니저를 사용하지 않아도 게임은 만들 수 있다. 그럼 왜 필요한지 알아보자.</div>
+                        <div class="post-tags">
+                            <span class="post-tag">UnrealEngine</span>
+                            <span class="post-tag">AssetManager</span>
+                        </div>
+                    </li>
+                    <li class="post-item">
+                        <span class="post-icon">🎯</span>
+                        <a href="/unreal-removeimc/">Unreal Pawn 제거 시 왜 IMC 는 제거되지 않을까?</a>
+                        <span class="post-date">2025년 10월 16일</span>
+                        <div class="post-excerpt">런타임에 Pawn을 제거 → 재스폰하면서 Actor가 소유한 InputComponent는 제거되지만 InputMappingContext는 남아있다. 왜 IMC는 제거하지 않을까?</div>
+                        <div class="post-tags">
+                            <span class="post-tag">UnrealEngine</span>
+                            <span class="post-tag">EnhancedInput</span>
+                        </div>
+                    </li>
+                    <li class="post-item">
+                        <span class="post-icon">🔔</span>
+                        <a href="/unreal-delegate/">Unreal 크래쉬 없는 델리게이트 바인딩 방법</a>
+                        <span class="post-date">2025년 6월 26일</span>
+                        <div class="post-excerpt">삭제된 객체의 함수가 바인딩된 델리게이트를 실행했을 때, 크래쉬가 나는 경우가 있다. 이 문제를 해결하기 위해서는 어떻게 해야될까?</div>
+                        <div class="post-tags">
+                            <span class="post-tag">UnrealEngine</span>
+                            <span class="post-tag">Delegate</span>
+                        </div>
+                    </li>
+                    <li class="post-item">
+                        <span class="post-icon">✅</span>
+                        <a href="/unreal-isvalid/">Unreal IsValid vs IsValidLowLevel</a>
+                        <span class="post-date">2025년 6월 25일</span>
+                        <div class="post-excerpt">언리얼에서 특정 메모리에 접근할 때, 혹시 몰라서 IsValid와 IsValidLowLevel 둘 다 같이 작성했던 경험이 있다. 이번에 두 함수의 차이점에 대해 알아보려고 한다.</div>
+                        <div class="post-tags">
+                            <span class="post-tag">UnrealEngine</span>
+                            <span class="post-tag">Memory</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+        </div>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2025 TaehunKim0. All rights reserved.</p>
+    </footer>
+</body>
+</html>

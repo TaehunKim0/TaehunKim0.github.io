@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unreal5 스파이더맨 웹스윙 구현 - TaehunKim0</title>
+    <style>
+        /* Unreal Modular Gameplay 스타일 기반 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #ffffff;
+            color: #333;
+            line-height: 1.6;
+            padding: 40px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        header {
+            margin-bottom: 60px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .header-title {
+            font-size: 32px;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .header-nav {
+            margin-top: 15px;
+        }
+
+        .header-nav a {
+            margin-right: 20px;
+            font-size: 14px;
+            color: #0066cc;
+        }
+
+        .back-link {
+            font-size: 16px;
+            margin-bottom: 30px;
+            display: inline-block;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 400;
+            margin: 30px 0 20px 0;
+            color: #333;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 400;
+            margin: 50px 0 30px 0;
+            color: #333;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .post-meta {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .post-content {
+            font-size: 17px;
+            color: #444;
+            margin-bottom: 60px;
+        }
+
+        .post-content p {
+            margin-bottom: 1.2em;
+        }
+
+        /* 목록 스타일 */
+        .post-list-section {
+            margin-top: 40px;
+        }
+        
+        .post-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .post-item {
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .post-item:last-child {
+            border-bottom: none;
+        }
+
+        .post-item a {
+            font-size: 20px;
+            font-weight: 400;
+            color: #333;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .post-item a:hover {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        .post-date {
+            font-size: 14px;
+            color: #999;
+            margin-right: 15px;
+        }
+
+        .post-excerpt {
+            font-size: 16px;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .post-tags {
+            margin-top: 10px;
+        }
+
+        .post-tag {
+            display: inline-block;
+            margin-right: 10px;
+            font-size: 12px;
+            color: #888;
+            border: 1px solid #ddd;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        .post-icon {
+            font-size: 18px;
+            margin-right: 10px;
+        }
+
+
+        footer {
+            margin-top: 80px;
+            padding-top: 30px;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+            font-size: 13px;
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 30px 15px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-title">
+            <a href="/">TaehunKim0</a>
+        </div>
+        <nav class="header-nav">
+            <a href="/">Home</a>
+            <a href="https://github.com/TaehunKim0" target="_blank">GitHub</a>
+        </nav>
+    </header>
+
+    <main>
+        <a href="/" class="back-link">← Home</a>
+
+        <h1>Unreal5 스파이더맨 웹스윙 구현</h1>
+        
+        <div class="post-meta">물리 시뮬레이션을 이용한 웹 스윙 메커니즘 개발기</div>
+
+        <div class="post-content">
+
+            <div class="post-list-section">
+                <h2>웹스윙 구현 과정</h2>
+                <ul class="post-list">
+                    <li class="post-item">
+                        <span class="post-icon">🕸️</span>
+                        <a href="/webswing-prototype/">장력을 이용한 웹스윙 구현</a>
+                        <span class="post-date">2025년 11월 07일</span>
+                        <div class="post-excerpt">게임은 시뮬레이션이 아니기 때문에, 정해진 원운동 궤적으로만 움직이는 것은 제한이 많았다. 다른 접근 방법을 찾아보던 중 줄의 장력을 이용한 방식으로 전환했다.</div>
+                        <div class="post-tags">
+                            <span class="post-tag">UnrealEngine</span>
+                            <span class="post-tag">Physics</span>
+                        </div>
+                    </li>
+                    <li class="post-item">
+                        <span class="post-icon">🕸️</span>
+                        <a href="/webswing-uniform-circular-motion/">웹스윙을 위한 등속 원운동 기초 모델</a>
+                        <span class="post-date">2025년 10월 31일</span>
+                        <div class="post-excerpt">스파이더맨의 웹 스윙을 물리 기반으로 구현하려고 시도했는데, 알고 보니 비등속 원운동(속력과 방향 모두 변화)이라 복잡했다. 등속 원운동 구현부터 시작해보았다.</div>
+                        <div class="post-tags">
+                            <span class="post-tag">UnrealEngine</span>
+                            <span class="post-tag">Physics</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+        </div>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2025 TaehunKim0. All rights reserved.</p>
+    </footer>
+</body>
+</html>

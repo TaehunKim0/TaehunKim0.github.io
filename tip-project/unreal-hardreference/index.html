@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>하드 레퍼런스의 문제점과 소프트 레퍼런스로 해결하는 방법</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Unreal Modular Gameplay 스타일 기반 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #ffffff;
+            color: #333;
+            line-height: 1.6;
+            padding: 40px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        header {
+            margin-bottom: 60px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .header-title {
+            font-size: 32px;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .header-nav {
+            margin-top: 15px;
+        }
+
+        .header-nav a {
+            margin-right: 20px;
+            font-size: 14px;
+            color: #0066cc;
+        }
+
+        .back-link {
+            font-size: 16px;
+            margin-bottom: 30px;
+            display: inline-block;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 400;
+            margin: 30px 0 20px 0;
+            color: #333;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 400;
+            margin: 50px 0 30px 0;
+            color: #333;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        h3 {
+            font-size: 20px;
+            font-weight: 400;
+            margin: 40px 0 20px 0;
+            color: #333;
+        }
+
+        h4 {
+            font-size: 18px;
+            font-weight: 400;
+            margin: 30px 0 15px 0;
+            color: #333;
+        }
+
+        .post-meta {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .post-tags span {
+            display: inline-block;
+            background-color: #e0e0e0;
+            color: #666;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            margin-right: 8px;
+            margin-top: 5px;
+        }
+
+        .post-content {
+            font-size: 17px;
+            color: #444;
+            margin-bottom: 60px;
+        }
+
+        .post-content p {
+            margin-bottom: 1.2em;
+        }
+
+        .post-content ul {
+            margin-bottom: 1.2em;
+            padding-left: 20px;
+        }
+
+        .post-content li {
+            margin-bottom: 0.8em;
+        }
+
+        .post-content img {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            border-radius: 8px;
+            margin: 30px auto;
+            display: block;
+        }
+
+        /* 코드 블록 스타일 */
+        .post-content pre {
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 15px 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 25px 0;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        .post-content .code-block {
+            background: #262220;
+            overflow: auto;
+            width: auto;
+            border: solid gray;
+            border-width: .1em .1em .1em .8em;
+            padding: .2em .6em;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+
+        .post-content .code-block pre {
+            background: none;
+            padding: 0;
+            margin: 0;
+            border: none;
+            color: #DDD0C0;
+        }
+        
+        .post-content code {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1em;
+            background-color: #e0e0e0;
+            padding: 2px 5px;
+            border-radius: 4px;
+            color: #c7254e;
+        }
+        
+        .post-content pre code,
+        .post-content .code-block code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        footer {
+            margin-top: 80px;
+            padding-top: 30px;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+            font-size: 13px;
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 30px 15px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-title">
+            <a href="/">TaehunKim0</a>
+        </div>
+        <nav class="header-nav">
+            <a href="/">Home</a>
+            <a href="https://github.com/TaehunKim0" target="_blank">GitHub</a>
+        </nav>
+    </header>
+
+    <main>
+        <a href="/" class="back-link">← Home</a>
+
+        <article class="post-detail">
+            <h1 class="post-title">하드 레퍼런스의 문제점과 소프트 레퍼런스로 해결하는 방법</h1>
+            <div class="post-meta">
+                <span class="post-date">2025년 9월 18일</span>
+                <div class="post-tags">
+                    <span>#UnrealEngine</span>
+                    <span>#C++</span>
+                </div>
+            </div>
+            <div class="post-content">
+            <h2>개요</h2>
+            언리얼 엔진에서 에셋을 참조하는 두 가지 방법, 하드 레퍼런스와 소프트 레퍼런스의 차이점을 알아보자
+            특히 하드 레퍼런스가 왜 메모리 낭비와 로딩 시간 증가를 유발하는지 알아보고,
+            이를 소프트 레퍼런스와 비동기 로딩으로 어떻게 해결했는지 살펴보자
+
+                <h2>하드 레퍼런스의 문제점</h2>
+                <!-- HTML generated using hilite.me --><div class="code-block"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: #919191">class</span><span style="color: #DDD0C0"> </span><span style="color: #875F5F">BISHOUJO_DOOM_API</span><span style="color: #DDD0C0"> ATestCharacter </span><span style="color: #878787">:</span><span style="color: #DDD0C0"> </span><span style="color: #919191">public</span><span style="color: #DDD0C0"> AActor</span>
+<span style="color: #DDD0C0">{</span>
+<span style="color: #DDD0C0">    GENERATED_BODY()</span>
+<span style="color: #DDD0C0">    </span>
+<span style="color: #919191">public</span><span style="color: #878787">:</span><span style="color: #DDD0C0"> </span>
+<span style="color: #DDD0C0">    ATestCharacter();</span>
+
+<span style="color: #919191">protected</span><span style="color: #878787">:</span>
+<span style="color: #DDD0C0">    </span><span style="color: #919191">virtual</span><span style="color: #DDD0C0"> </span><span style="color: #AF875F">void</span><span style="color: #DDD0C0"> BeginPlay() </span><span style="color: #919191">override</span><span style="color: #DDD0C0">;</span>
+
+<span style="color: #919191">public</span><span style="color: #878787">:</span><span style="color: #DDD0C0"> </span>
+<span style="color: #DDD0C0">    </span><span style="color: #919191">virtual</span><span style="color: #DDD0C0"> </span><span style="color: #AF875F">void</span><span style="color: #DDD0C0"> Tick(</span><span style="color: #AF875F">float</span><span style="color: #DDD0C0"> DeltaTime) </span><span style="color: #919191">override</span><span style="color: #DDD0C0">;</span>
+
+<span style="color: #919191">public</span><span style="color: #878787">:</span>
+<span style="color: #DDD0C0">    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category </span><span style="color: #878787">=</span><span style="color: #DDD0C0"> </span><span style="color: #C9B98F">&quot;Weapon&quot;</span><span style="color: #DDD0C0">)</span>
+<span style="color: #DDD0C0">    USkeletalMesh</span><span style="color: #878787">*</span><span style="color: #DDD0C0"> WeaponMesh;</span>
+
+<span style="color: #919191">public</span><span style="color: #878787">:</span>
+<span style="color: #DDD0C0">    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category </span><span style="color: #878787">=</span><span style="color: #DDD0C0"> </span><span style="color: #C9B98F">&quot;Components&quot;</span><span style="color: #DDD0C0">)</span>
+<span style="color: #DDD0C0">    USkeletalMeshComponent</span><span style="color: #878787">*</span><span style="color: #DDD0C0"> MeshComponent;</span>
+<span style="color: #DDD0C0">};</span>
+</pre></div>
+
+                <p><code>ATestCharacter</code>는 <code>WeaponMesh</code>를 하드 레퍼런스로 가지고 있다.</p>
+                <!-- HTML generated using hilite.me --><div class="code-block"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: #DDD0C0">UCLASS()</span>
+<span style="color: #919191">class</span><span style="color: #DDD0C0"> </span><span style="color: #875F5F">BISHOUJO_DOOM_API</span><span style="color: #DDD0C0"> ATestCharacterManager </span><span style="color: #878787">:</span><span style="color: #DDD0C0"> </span><span style="color: #919191">public</span><span style="color: #DDD0C0"> AActor</span>
+<span style="color: #DDD0C0">{</span>
+<span style="color: #DDD0C0">    GENERATED_BODY()</span>
+<span style="color: #DDD0C0">    </span>
+<span style="color: #919191">public</span><span style="color: #878787">:</span><span style="color: #DDD0C0"> </span>
+<span style="color: #DDD0C0">    ATestCharacterManager();</span>
+
+<span style="color: #919191">protected</span><span style="color: #878787">:</span>
+<span style="color: #DDD0C0">    </span><span style="color: #919191">virtual</span><span style="color: #DDD0C0"> </span><span style="color: #AF875F">void</span><span style="color: #DDD0C0"> BeginPlay() </span><span style="color: #919191">override</span><span style="color: #DDD0C0">;</span>
+
+<span style="color: #919191">public</span><span style="color: #878787">:</span><span style="color: #DDD0C0"> </span>
+<span style="color: #DDD0C0">    </span><span style="color: #919191">virtual</span><span style="color: #DDD0C0"> </span><span style="color: #AF875F">void</span><span style="color: #DDD0C0"> Tick(</span><span style="color: #AF875F">float</span><span style="color: #DDD0C0"> DeltaTime) </span><span style="color: #919191">override</span><span style="color: #DDD0C0">;</span>
+
+<span style="color: #919191">private</span><span style="color: #878787">:</span>
+<span style="color: #DDD0C0">    UPROPERTY(EditAnywhere)</span>
+<span style="color: #DDD0C0">    TSubclassOf TestClass;</span>
+<span style="color: #DDD0C0">};</span>
+</pre></div>
+
+                <p><code>ATestCharacterManager</code>는 <code>ATestCharacter</code>의 클래스를 참조한다.</p>
+                    <p><code>TSubClassOf</code>: 클래스의 메타데이터와 타입 정보만 참조.</p>
+                    <ul>
+                        <li>클래스 타입을 변수로 저장하고 인스턴스 생성 시 사용.</li>
+                        <li>CDO(기본 오브젝트) 포함.</li>
+                        <li>CDO의 모든 하드 레퍼런스 에셋들이 함께 로드됨.</li>
+                    </ul>
+                <p><code>TestMap</code>의 사이즈맵에 <code>TestCharacterManager</code> 밑의 <code>TestCharacter</code>의 <code>SkeletalMesh</code>가 포함된다. 맵이 로딩될 때, 같이 로드 된다는 얘기이다.</p>
+                <img src="./images/hard_sizemap.png" width="600" height="400">
+
+                <h2>소프트 레퍼런스로 해결</h2>
+                <!-- HTML generated using hilite.me --><div class="code-block"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: #919191">class</span><span style="color: #DDD0C0"> </span><span style="color: #875F5F">BISHOUJO_DOOM_API</span><span style="color: #DDD0C0"> ATestCharacter </span><span style="color: #878787">:</span><span style="color: #DDD0C0"> </span><span style="color: #919191">public</span><span style="color: #DDD0C0"> AActor</span>
+<span style="color: #DDD0C0">{</span>
+<span style="color: #DDD0C0">    GENERATED_BODY()</span>
+<span style="color: #DDD0C0">    </span>
+<span style="color: #919191">public</span><span style="color: #878787">:</span><span style="color: #DDD0C0"> </span>
+<span style="color: #DDD0C0">    ATestCharacter();</span>
+
+<span style="color: #919191">protected</span><span style="color: #878787">:</span>
+<span style="color: #DDD0C0">    </span><span style="color: #919191">virtual</span><span style="color: #DDD0C0"> </span><span style="color: #AF875F">void</span><span style="color: #DDD0C0"> BeginPlay() </span><span style="color: #919191">override</span><span style="color: #DDD0C0">;</span>
+
+<span style="color: #919191">public</span><span style="color: #878787">:</span><span style="color: #DDD0C0"> </span>
+<span style="color: #DDD0C0">    </span><span style="color: #919191">virtual</span><span style="color: #DDD0C0"> </span><span style="color: #AF875F">void</span><span style="color: #DDD0C0"> Tick(</span><span style="color: #AF875F">float</span><span style="color: #DDD0C0"> DeltaTime) </span><span style="color: #919191">override</span><span style="color: #DDD0C0">;</span>
+
+<span style="color: #DDD0C0">    </span><span style="color: #AF875F">void</span><span style="color: #DDD0C0"> </span><span style="color: #FDD0C0">OnCharacterAssetsLoaded</span><span style="color: #DDD0C0">();</span>
+
+<span style="color: #919191">public</span><span style="color: #878787">:</span>
+<span style="color: #DDD0C0">    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category </span><span style="color: #878787">=</span><span style="color: #DDD0C0"> </span><span style="color: #C9B98F">&quot;Weapon&quot;</span><span style="color: #DDD0C0">)</span>
+<span style="color: #DDD0C0">    TSoftObjectPtr WeaponMesh;</span>
+<span style="color: #DDD0C0">    </span>
+<span style="color: #DDD0C0">    </span><span style="color: #70757A">// UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = &quot;Weapon&quot;)</span>
+<span style="color: #DDD0C0">    </span><span style="color: #70757A">// USkeletalMesh* WeaponMesh;</span>
+<span style="color: #DDD0C0">};</span>
+</pre></div>
+
+                <p><code>WeaponMesh</code>를 소프트 레퍼런스로 변경하였다.</p>
+                <p><code>TestMap</code>의 사이즈맵에 <code>TestCharacter</code>의 메시가 포함되지 않는 것을 볼 수 있다.</p>
+                <img src="./images/soft_sizemap.png" width="600" height="400">
+
+                <h3>소프트 레퍼런스 에셋을 비동기로 로딩하는 방법</h3>
+              <!-- HTML generated using hilite.me --><div class="code-block"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: #AF875F">void</span><span style="color: #DDD0C0"> </span><span style="color: #FDD0C0">ATestCharacter::BeginPlay</span><span style="color: #DDD0C0">()</span>
+<span style="color: #DDD0C0">{</span>
+<span style="color: #DDD0C0">    Super</span><span style="color: #878787">::</span><span style="color: #DDD0C0">BeginPlay();</span>
+
+<span style="color: #DDD0C0">    </span><span style="color: #70757A">// 로드할 에셋들의 경로를 수집</span>
+<span style="color: #DDD0C0">    TArray AssetsToLoad;</span>
+<span style="color: #DDD0C0">    </span>
+<span style="color: #DDD0C0">    </span><span style="color: #919191">if</span><span style="color: #DDD0C0"> (</span><span style="color: #878787">!</span><span style="color: #DDD0C0">WeaponMesh.IsNull())</span>
+<span style="color: #DDD0C0">    {</span>
+<span style="color: #DDD0C0">       AssetsToLoad.Add(WeaponMesh.ToSoftObjectPath());</span>
+<span style="color: #DDD0C0">    }</span>
+
+<span style="color: #DDD0C0">    </span><span style="color: #919191">if</span><span style="color: #DDD0C0"> (AssetsToLoad.Num() </span><span style="color: #878787">&gt;</span><span style="color: #DDD0C0"> </span><span style="color: #87AFAF">0</span><span style="color: #DDD0C0">)</span>
+<span style="color: #DDD0C0">    {</span>
+<span style="color: #DDD0C0">       </span><span style="color: #70757A">// 비동기 로딩 시작</span>
+<span style="color: #DDD0C0">       UE_LOG(LogTemp, Warning, TEXT(</span><span style="color: #C9B98F">&quot;[SOFT_REF] 스켈레탈 메시 %d개 로딩중.....&quot;</span><span style="color: #DDD0C0">), AssetsToLoad.Num());</span>
+<span style="color: #DDD0C0">       UE_LOG(LogTemp, Warning, TEXT(</span><span style="color: #C9B98F">&quot;[SOFT_REF] 로딩 시작 시간 : %f&quot;</span><span style="color: #DDD0C0">),GetWorld()</span><span style="color: #878787">-&gt;</span><span style="color: #DDD0C0">GetTimeSeconds());</span>
+<span style="color: #DDD0C0">       </span>
+<span style="color: #DDD0C0">       UAssetManager</span><span style="color: #878787">&amp;</span><span style="color: #DDD0C0"> AssetManager </span><span style="color: #878787">=</span><span style="color: #DDD0C0"> UAssetManager</span><span style="color: #878787">::</span><span style="color: #DDD0C0">Get();</span>
+<span style="color: #DDD0C0">       FStreamableManager</span><span style="color: #878787">&amp;</span><span style="color: #DDD0C0"> StreamableManager </span><span style="color: #878787">=</span><span style="color: #DDD0C0"> AssetManager.GetStreamableManager();</span>
+<span style="color: #DDD0C0">        </span>
+<span style="color: #DDD0C0">       </span><span style="color: #919191">auto</span><span style="color: #DDD0C0"> AllAssetsLoadHandle </span><span style="color: #878787">=</span><span style="color: #DDD0C0"> StreamableManager.RequestAsyncLoad(</span>
+<span style="color: #DDD0C0">          AssetsToLoad,</span>
+<span style="color: #DDD0C0">          FStreamableDelegate</span><span style="color: #878787">::</span><span style="color: #DDD0C0">CreateUFunction(</span><span style="color: #919191">this</span><span style="color: #DDD0C0">, FName(</span><span style="color: #C9B98F">&quot;OnCharacterAssetsLoaded&quot;</span><span style="color: #DDD0C0">))</span>
+<span style="color: #DDD0C0">       );</span>
+
+<span style="color: #DDD0C0">       UE_LOG(LogTemp, Warning, TEXT(</span><span style="color: #C9B98F">&quot;[SOFT_REF] 로딩중에도 게임 계속 실행중.....&quot;</span><span style="color: #DDD0C0">));</span>
+<span style="color: #DDD0C0">    }</span>
+<span style="color: #DDD0C0">}</span>
+
+<span style="color: #AF875F">void</span><span style="color: #DDD0C0"> </span><span style="color: #FDD0C0">ATestCharacter::OnCharacterAssetsLoaded</span><span style="color: #DDD0C0">()</span>
+<span style="color: #DDD0C0">{</span>
+<span style="color: #DDD0C0">    UE_LOG(LogTemp, Warning, TEXT(</span><span style="color: #C9B98F">&quot;[SOFT_REF] 캐릭터의 스켈레탈 메시 로딩 완료&quot;</span><span style="color: #DDD0C0">));</span>
+<span style="color: #DDD0C0">    UE_LOG(LogTemp, Warning, TEXT(</span><span style="color: #C9B98F">&quot;[SOFT_REF] 로딩 완료 시간 : %f&quot;</span><span style="color: #DDD0C0">),GetWorld()</span><span style="color: #878787">-&gt;</span><span style="color: #DDD0C0">GetTimeSeconds());</span>
+
+<span style="color: #DDD0C0">    </span><span style="color: #919191">if</span><span style="color: #DDD0C0"> (WeaponMesh.IsValid())</span>
+<span style="color: #DDD0C0">    {</span>
+<span style="color: #DDD0C0">       MeshComponent</span><span style="color: #878787">-&gt;</span><span style="color: #DDD0C0">SetSkeletalMesh(WeaponMesh.Get());</span>
+<span style="color: #DDD0C0">    }</span>
+<span style="color: #DDD0C0">    </span><span style="color: #919191">else</span>
+<span style="color: #DDD0C0">    {</span>
+<span style="color: #DDD0C0">       UE_LOG(LogTemp, Warning, TEXT(</span><span style="color: #C9B98F">&quot;[SOFT_REF] Weapon Mesh is unvalid.&quot;</span><span style="color: #DDD0C0">));</span>
+<span style="color: #DDD0C0">    }</span>
+<span style="color: #DDD0C0">}</span>
+</pre></div>
+
+                <p><code>AssetManager</code>를 사용해서 비동기로 로딩할 수 있다.</p>
+                <img src="./images/log.png" width="600" height="400">
+                <p>동기로 로딩하지 않는 이유는 로딩할 에셋이 큰 경우 게임이 느껴지는 현상이 발생할 수 있기 때문이다.</p>
+            </div>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 TaehunKim0. All rights reserved.</p>
+    </footer>
+</body>
+</html>

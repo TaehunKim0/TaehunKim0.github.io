@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameFrameworkComponentManager 시스템</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Unreal Modular Gameplay 스타일 기반 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #ffffff;
+            color: #333;
+            line-height: 1.6;
+            padding: 40px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        header {
+            margin-bottom: 60px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .header-title {
+            font-size: 32px;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .header-nav {
+            margin-top: 15px;
+        }
+
+        .header-nav a {
+            margin-right: 20px;
+            font-size: 14px;
+            color: #0066cc;
+        }
+
+        .back-link {
+            font-size: 16px;
+            margin-bottom: 30px;
+            display: inline-block;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 400;
+            margin: 30px 0 20px 0;
+            color: #333;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 400;
+            margin: 50px 0 30px 0;
+            color: #333;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        h3 {
+            font-size: 20px;
+            font-weight: 400;
+            margin: 40px 0 20px 0;
+            color: #333;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        h4 {
+            font-size: 18px;
+            font-weight: 400;
+            margin: 30px 0 15px 0;
+            color: #333;
+        }
+
+        .post-meta {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .post-tags span {
+            display: inline-block;
+            background-color: #e0e0e0;
+            color: #666;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            margin-right: 8px;
+            margin-top: 5px;
+        }
+
+        .post-content {
+            font-size: 17px;
+            color: #444;
+            margin-bottom: 60px;
+        }
+
+        .post-content p {
+            margin-bottom: 1.2em;
+        }
+
+        .post-content ul {
+            margin-bottom: 1.2em;
+            padding-left: 20px;
+        }
+
+        .post-content li {
+            margin-bottom: 0.8em;
+        }
+
+        /* 코드 블록 스타일 */
+        .post-content pre {
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 15px 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 25px 0;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+        
+        .post-content code {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1em;
+            background-color: #e0e0e0;
+            padding: 2px 5px;
+            border-radius: 4px;
+            color: #c7254e;
+        }
+        
+        .post-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        /* 표 스타일 */
+        .post-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+
+        .post-content th, .post-content td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .post-content th {
+            background-color: #f8f9fa;
+            font-weight: 700;
+        }
+
+        .post-content tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        footer {
+            margin-top: 80px;
+            padding-top: 30px;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+            font-size: 13px;
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 30px 15px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+     <header>
+        <div class="header-title">
+            <a href="/">TaehunKim0</a>
+        </div>
+        <nav class="header-nav">
+            <a href="/">Home</a>
+            <a href="https://github.com/TaehunKim0" target="_blank">GitHub</a>
+        </nav>
+    </header>
+
+    <main>
+        <article class="post-detail">
+            <h1 class="post-title">GameFrameworkComponentManager 시스템을 이용한 복잡한 다중 컴포넌트 초기화 순서 보장</h1>
+            <div class="post-meta">
+                <span class="post-date">2025년 6월 22일</span>
+                <div class="post-tags">
+                    <span>#UnrealEngine</span>
+                    <span>#GameFramework</span>
+                </div>
+            </div>
+            <div class="post-content">
+
+                <h3>개요</h3>
+                </hr>
+                <p>Lyra 분석 중 ModularActor 클래스들을 상속받고, IGameFrameworkInitStateInterface 를 구현하는 클래스들이 존재했다.</p>
+                <p>언리얼에서 특정 컴포넌트가 초기화될 때, 다른 컴포넌트들이 먼저 초기화 되는 경우에 순서를 보장하기 위한 시스템을 제공한다. UGameFrameworkComponentManager 이다. 
+                    처음 볼때는 되게 복잡했는데 로그 찍어가며 정리해봤더니 이해가 됐다. 그런데 역시나 소규모 프로젝트에 적용하기에는 비용이... 라는 생각이 먼저 든다.
+                </p>
+                <p>이를 활용해 다중 컴포넌트 간의 초기화 순서를 보장하는 방법을 알아보자.</p>
+                <br></br>
+
+                <h2>컴포넌트 초기화 순서 보장 플로우</h2>
+                </hr>
+
+                <h3>1️⃣ 컴포넌트 등록 (OnRegister)</h3>
+
+                <p>1. <code>UGameFrameworkComponentManager</code>에 자신 등록</p>
+
+                <pre><code>void UTestComponentA::OnRegister()
+{
+    Super::OnRegister();
+    UE_LOG(LogBSInitState, Warning, TEXT("[TestComponentA] OnRegister - 컴포넌트 등록"));
+    
+    RegisterInitStateFeature();
+}</code></pre>
+
+                <h3>2️⃣ 초기화 시작 (BeginPlay) 및 상태 전환 시도</h3>
+
+                <p>1. 각 컴포넌트는 <code>IGameFrameworkInitStateInterface</code> 를 상속 받으며 각자 자기만의 CurrentInitState 가 존재함.</p>
+                <p>2. 자신의 CurrentInitState 를 Spawned 로 변경 시도</p>
+                
+                <pre><code>void UTestComponentA::BeginPlay()
+{
+    Super::BeginPlay();
+    UE_LOG(LogBSInitState, Warning, TEXT("[TestComponentA] BeginPlay - 게임 시작"));
+    
+    // 다른 컴포넌트들의 상태 변화 감시
+    BindOnActorInitStateChanged(NAME_None, FGameplayTag(), false);
+    
+    // Spawned 상태로 전환 시도
+    ensure(TryToChangeInitState(BSGamePlayTags::InitState_Spawned));
+    CheckDefaultInitialization();
+}</code></pre>
+
+                <h3>3️⃣ 상태 전환 검증 및 처리</h3>
+
+                <p>3. 그럼 CurrentInitState 를 바꿀 수 있는 CanChangeInitState 로 체크</p>
+                <ol>
+                    <li>기본적으로 Spawned 상태로 넘어갈 때는 true</li>
+                </ol>
+
+                <pre><code>bool UTestComponentA::CanChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState) const
+{
+    UE_LOG(LogBSInitState, Warning, TEXT("[TestComponentA] CanChangeInitState: %s → %s"), 
+           *CurrentState.ToString(), *DesiredState.ToString());
+
+    // Spawned 단계: 기본적으로 허용
+    if (!CurrentState.IsValid() && DesiredState == BSGamePlayTags::InitState_Spawned)
+    {
+        return true;
+    }
+    
+...
+}</code></pre>
+
+                <p>4. 만약 상태 변경에 성공했다면, <code>HandleChangeInitState</code> 호출</p>
+                <ol>
+                    <li>Spawned 때는 LoadMyData 를 호출하도록 함.</li>
+                </ol>
+
+                <pre><code>void UTestComponentA::HandleChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState)
+{
+    UE_LOG(LogBSInitState, Error, TEXT("[TestComponentA] 상태 변경 처리: %s → %s"), 
+           *CurrentState.ToString(), *DesiredState.ToString());
+
+    if (DesiredState == BSGamePlayTags::InitState_Spawned)
+    {
+        UE_LOG(LogBSInitState, Error, TEXT("[TestComponentA] ✅ Spawned - 데이터 로딩 시작"));
+        LoadMyData();
+    }
+...
+}</code></pre>
+
+                <h3>4️⃣ 자동으로 다음 상태로 변경 진행</h3>
+
+                <p>5. 상태가 변경 시도 후, 자동으로 다음 상태로 넘어가기 위해 <code>CheckDefaultInitialization();</code> 함수 호출</p>
+                <p>6. 이 함수는 자신의 CurrentInitState 를 확인해 자동으로 다음으로 넘어가도록 함.</p>
+                <ol>
+                    <li>TryToChangeInitState(InitState_DataAvailable)</li>
+                    <li>TryToChangeInitState(InitState_DataInitialized)
+                        <ol>
+                            <li>현재 상태 확인해서 일일이 넘어가도록 하는 코드를 작성 안해도 됨.</li>
+                        </ol>
+                    </li>
+                </ol>
+
+                <pre><code>void UTestComponentA::CheckDefaultInitialization()
+{
+    static const TArray&lt;FGameplayTag&gt; StateChain = {
+        BSGamePlayTags::InitState_Spawned,
+        BSGamePlayTags::InitState_DataAvailable,
+        BSGamePlayTags::InitState_DataInitialized,
+        BSGamePlayTags::InitState_GameplayReady
+    };
+
+    ContinueInitStateChain(StateChain);
+}</code></pre>
+
+                <p>7. UTestComponentA 에서는 <code>InitState_DataAvailable</code> 까지 실패하지 않고 진행.</p>
+
+                <p>8. 하지만 <code>InitState_DataInitialized</code> 로 넘어가기 위해서는, 자신의 소유하는 액터가 가진 다른 컴포넌트들이 모두 <code>InitState_DataAvailable</code> 이면 넘어갈 수 있음.</p>
+
+                <pre><code>bool UTestComponentA::CanChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState) const
+{
+    UE_LOG(LogBSInitState, Warning, TEXT("[TestComponentA] CanChangeInitState: %s → %s"), 
+           *CurrentState.ToString(), *DesiredState.ToString());
+...
+    
+    // DataInitialized 단계: 모든 컴포넌트가 DataAvailable이어야 함
+    if (CurrentState == BSGamePlayTags::InitState_DataAvailable && DesiredState == BSGamePlayTags::InitState_DataInitialized)
+    {
+        return Manager->HaveAllFeaturesReachedInitState(GetPawn&lt;ACharacter&gt;(), BSGamePlayTags::InitState_DataAvailable);
+    }</code></pre>
+
+                <h3>5️⃣ 컴포넌트 간 동기화 및 순서 보장</h3>
+
+                <p>9. 다른 <code>RegisterInitStateFeature</code> 한 컴포넌트들도 <code>BeginPlay</code> 에서 "3. 자신의 CurrentInitState 를 Spawned 로 변경 시도" 부터 똑같이 진행함.</p>
+                <p>10. 다른 컴포넌트들의 IniState가 바뀔 때마다 <code>OnActorInitStateChanged</code> 함수 호출</p>
+
+                <pre><code>void UTestComponentA::OnActorInitStateChanged(const FActorInitStateChangedParams& Params)
+{
+    if (Params.FeatureName != NAME_TestComponentA)
+    {
+        UE_LOG(LogBSInitState, Log, TEXT("[TestComponentA] 다른 컴포넌트 상태 변화 감지: %s → %s"), 
+               *Params.FeatureName.ToString(), *Params.FeatureState.ToString());
+        
+        // 다른 컴포넌트가 변화하면 자신도 다음 단계 진행 시도
+        CheckDefaultInitialization();
+    }
+}</code></pre>
+                
+                <p>11. <code>ContinueInitStateChain -> CanChangeInitState</code> 다시 호출되어 자신이 다음 단계로 넘어갈 수 있는지 다시 확인</p>
+                <p>12. <code>CanChangeInitState</code> 함수 안에서 다른 컴포넌트들이 먼저 초기화 되고, 자신의 초기화가 진행될 수 있도록 순서를 보장할 수 있음.</p>
+
+                <br></br>
+                <h3>실제 시나리오 예시</h3>
+                </hr>
+
+                <p>상황: ComponentA, ComponentB 두 개가 같은 액터에 존재</p>
+
+                <p><strong>1. ComponentA 진행:</strong></p>
+
+                <ol>
+                    <li><code>Spawned</code> → ✅ 성공</li>
+                    <li><code>DataAvailable</code> → ✅ 성공 (데이터 로딩 완료)</li>
+                    <li><code>DataInitialized</code> → ❌ 실패 (ComponentB가 아직 DataAvailable 미달성)</li>
+                    <li><strong>대기 상태</strong></li>
+                </ol>
+
+                <p><strong>2. ComponentB 진행:</strong></p>
+
+                <ol>
+                    <li><code>Spawned</code> → ✅ 성공</li>
+                    <li><code>DataAvailable</code> → ✅ 성공</li>
+                </ol>
+
+                <p><strong>ComponentB가 DataAvailable 달성 순간:</strong></p>
+
+                <ol>
+                    <li>ComponentA의 <code>OnActorInitStateChanged()</code> 호출</li>
+                    <li><code>CheckDefaultInitialization()</code> 재실행</li>
+                    <li>이제 <code>DataInitialized</code> → ✅ 성공 (모든 컴포넌트가 DataAvailable)</li>
+                    <li><code>GameplayReady</code> → ✅ 성공</li>
+                </ol>
+
+                <br></br>
+                <h3><strong>Lyra 에서의 사용 예제</strong></h3>
+                </hr>
+                <p>LyraHeroComponent 에서도 비슷한 방식으로 초기화 순서를 관리하고 있다.</p>
+                <p>HeroComponent가 PawnExtensionComponent 가 가지고 있는 캐릭터 데이터(PawnData) 가 먼저 보장된 다음에야
+PawnExtensionComponent에서 ASC (AbilitySystemComponent) 를 초기화하게 하기 위해서이다.</p>
+    <pre><code>void ULyraHeroComponent::HandleChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState)
+if (CurrentState == LyraGameplayTags::InitState_DataAvailable && DesiredState == LyraGameplayTags::InitState_DataInitialized)
+{
+    APawn* Pawn = GetPawn<APawn>();
+    ...
+    const ULyraPawnData* PawnData = nullptr;
+
+    if (ULyraPawnExtensionComponent* PawnExtComp = ULyraPawnExtensionComponent::FindPawnExtensionComponent(Pawn))
+    {
+        PawnData = PawnExtComp->GetPawnData<ULyraPawnData>();
+
+        // The player state holds the persistent data for this player (state that persists across deaths and multiple pawns).
+        // The ability system component and attribute sets live on the player state.
+        PawnExtComp->InitializeAbilitySystem(LyraPS->GetLyraAbilitySystemComponent(), LyraPS);
+    }
+
+    ...
+}
+}</code></pre>
+
+    HeroComponent 에서 자신이 InitState_DataAvailable 상태가 되면, PawnExtensionComponent에서 어빌리티 시스템을 초기화한다.
+        그럼 왜 DataAvailable 상태가 될 때 초기화를 진행하는 걸까?
+    <pre><code>
+bool ULyraPawnExtensionComponent::CanChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState) const
+{
+    if (CurrentState == LyraGameplayTags::InitState_Spawned && DesiredState == LyraGameplayTags::InitState_DataAvailable)
+	{
+		// Pawn data is required.
+		if (!PawnData)
+		{
+			return false;
+		}
+
+		const bool bHasAuthority = Pawn->HasAuthority();
+		const bool bIsLocallyControlled = Pawn->IsLocallyControlled();
+
+		if (bHasAuthority || bIsLocallyControlled)
+		{
+			// Check for being possessed by a controller.
+			if (!GetController<AController>())
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+}
+    </pre></code>
+                <p>이유는 PawnExtensionComponent에서 InitState_DataAvailable 상태가 되면 PawnData가 반드시 존재하는 것을 보장할 수 있다.
+                    HeroComponent 에서 PawnData를 사용하기 위해서는 반드시 DataAvailable 상태가 되어야 한다.</p>
+                </p>
+                <br></br>
+
+               
+                <p><strong>정리하면 HeroComponent 는 PawnExtensionComponent 가 DataAvailable 상태가 될 때까지 기다리다가,
+                    만족하면 그 때 어빌리티 시스템을 초기화한다.</strong></p>
+                <ul>
+                    <li>HeroComponent 에서 PawnExtensionComponent 안에 PawnData 가 있어야, 어빌리티 시스템을 초기화 할 수 있고
+                        에서 어빌리티 시스템을 초기화 할 수 있는 시점은 PawnExtensionComponent 가 DataAvailable 상태가 될 때로 설정한 것이다.</li>
+                    <li>PawnData 는 GameMode에서 폰을 생성하기 위해 SpawnDefaultPawnFor 함수를 호출할 때, PawnExtensionComponent의 SetPawnData 함수를 이용해 초기화한다.</li>
+                </ul>
+
+                <br></br>
+                <h3>장단점</h3>
+                </hr>
+
+                <p>다중 컴포넌트를 가진 액터를 초기화할 때, 각 컴포넌트 간의 의존성을 명확하게 관리하고, 순서를 보장할 수 있는 강력한 시스템이다.
+                그렇지 않은 경우 오버 엔지니어링이 될 가능성이 높고, 초기 구조 설계에 비용이 많이 든다.
+                
+                <p>중요한 것은 State 의 이름이 좀 더 명확해야 할 것 같다. Lyra 는 State 이름이 명확하지는 않았다.
+                차라리 PawnDataInitialized, AbilitySystemReady, GameplayReady 등으로 명확하게 짓는 게 좋아보인다.
+                특정 상태에서 무엇을 하는지 코드를 봐야 상태의 목적을 알 수 있어서 코드의 흐름을 알기가 쉽지 않았다.
+                </p>
+
+                <p><strong>순서 보장이 가능</strong></p>
+
+                <ul>
+                    <li>컴포넌트 간 의존성을 <code>CanChangeInitState()</code>에서 명시적으로 관리</li>
+                    <li><code>HaveAllFeaturesReachedInitState()</code>로 상태들의 동기화 지점 생성</li>
+                </ul>
+
+                <p><strong>ContinueInitStateChain 함수를 사용한 자동화</strong></p>
+
+                <ul>
+                    <li><code>CheckDefaultInitialization()</code>로 조건 만족시 자동 진행</li>
+                    <li>수동으로 각 단계를 호출할 필요 없음</li>
+                </ul>
+
+                <p><strong>다른 컴포넌트들의 상태 변화를 감지할 수 있음</strong></p>
+
+                <ul>
+                    <li>다른 컴포넌트 상태 변화에 즉시 반응</li>
+                    <li>대기 중이던 컴포넌트들이 자동으로 다음 단계 진행</li>
+                </ul>
+
+                <p><strong>자기 상태의 변화는 무시에 무한 루프 방지</strong></p>
+            </div>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 TaehunKim0. All rights reserved.</p>
+    </footer>
+</body>
+</html>

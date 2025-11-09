@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unreal 크래시 없는 안전한 델리게이트 바인딩 방법</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Unreal Modular Gameplay 스타일 기반 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #ffffff;
+            color: #333;
+            line-height: 1.6;
+            padding: 40px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        header {
+            margin-bottom: 60px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .header-title {
+            font-size: 32px;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .header-nav {
+            margin-top: 15px;
+        }
+
+        .header-nav a {
+            margin-right: 20px;
+            font-size: 14px;
+            color: #0066cc;
+        }
+
+        .back-link {
+            font-size: 16px;
+            margin-bottom: 30px;
+            display: inline-block;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 400;
+            margin: 30px 0 20px 0;
+            color: #333;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 400;
+            margin: 50px 0 30px 0;
+            color: #333;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        h3 {
+            font-size: 20px;
+            font-weight: 400;
+            margin: 40px 0 20px 0;
+            color: #333;
+        }
+
+        h4 {
+            font-size: 18px;
+            font-weight: 400;
+            margin: 30px 0 15px 0;
+            color: #333;
+        }
+
+        .post-meta {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .post-tags span {
+            display: inline-block;
+            background-color: #e0e0e0;
+            color: #666;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            margin-right: 8px;
+            margin-top: 5px;
+        }
+
+        .post-content {
+            font-size: 17px;
+            color: #444;
+            margin-bottom: 60px;
+        }
+
+        .post-content p {
+            margin-bottom: 1.2em;
+        }
+
+        .post-content ul {
+            margin-bottom: 1.2em;
+            padding-left: 20px;
+        }
+
+        .post-content li {
+            margin-bottom: 0.8em;
+        }
+
+        /* 코드 블록 스타일 */
+        .post-content pre {
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 15px 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 25px 0;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+        
+        .post-content code {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1em;
+            background-color: #e0e0e0;
+            padding: 2px 5px;
+            border-radius: 4px;
+            color: #c7254e;
+        }
+        
+        .post-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        /* 표 스타일 */
+        .post-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+
+        .post-content th, .post-content td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .post-content th {
+            background-color: #f8f9fa;
+            font-weight: 700;
+        }
+
+        .post-content tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        footer {
+            margin-top: 80px;
+            padding-top: 30px;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+            font-size: 13px;
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 30px 15px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-title">
+            <a href="/">TaehunKim0</a>
+        </div>
+        <nav class="header-nav">
+            <a href="/">Home</a>
+            <a href="https://github.com/TaehunKim0" target="_blank">GitHub</a>
+        </nav>
+    </header>
+
+    <main>
+        <a href="/" class="back-link">← Home</a>
+
+        <article class="post-detail">
+            <h1 class="post-title">언리얼 크래시 없는 안전한 델리게이트 바인딩 방법</h1>
+            <div class="post-meta">
+                <span class="post-date">2025년 6월 26일</span>
+                <div class="post-tags">
+                    <span>#UnrealEngine</span>
+                </div>
+            </div>
+            <div class="post-content">
+
+                <h2>개요</h2>
+                삭제된 객체의 함수가 바인딩된 델리게이트를 실행했을 때, 크래시가 나는 경우가 있다.
+                이 문제를 해결하기 위해서는 어떻게 해야될까? 그리고 두 델리게이트 바인딩 방법의 차이점을 알아보자...
+
+
+                <h2>결론</h2>
+
+                <table>
+                <thead>
+                <tr>
+                <th></th>
+                <th>동적 바인딩</th>
+                <th>Blueprint와 연동</th>
+                <th>크래시 위험 (IsBound 함수를 사용하지 않을 때)</th>
+                <th>리플렉션</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                <td>BindUFunction</td>
+                <td>런타임에 함수 이름을 결정해야 할 경우</td>
+                <td>가능</td>
+                <td>있음</td>
+                <td>UFunction 이기 때문에 가능</td>
+                </tr>
+                <tr>
+                <td>CreateUObject</td>
+                <td>컴파일 타임에 함수가 결정되어야 함</td>
+                <td>불가능</td>
+                <td>없음</td>
+                <td>네이티브 C++ 함수이기 때문에 불가능</td>
+                </tr>
+                </tbody>
+                </table>
+
+                <ul>
+                <li>Blueprint/동적 바인딩: BindUFunction</li>
+                <li>단순 네이티브 바인딩: CreateUObject</li>
+                </ul>
+
+                <ul>
+                <li>IsBound 는 꼭! 사용하자</li>
+                </ul>
+
+                <h2>BindUFunction 바인딩</h2>
+
+                <pre><code>void ADelegateTestActor::StartDangerousTest()
+{
+    UE_LOG(LogTemp, Warning, TEXT("=== 위험한 테스트 시작 (직접 바인딩) ==="));
+    TargetObj = GetWorld()->SpawnActor&lt;ATargetObject&gt;();
+    
+    UE_LOG(LogTemp, Warning, TEXT("BindUFunction 으로 직접 바인딩 완료"));
+    DirectBindDelegate.BindUFunction(TargetObj, FName("OnDelegateCallback"));
+    
+    UE_LOG(LogTemp, Warning, TEXT("타겟 객체 삭제 ..."));
+    TargetObj->Destroy();
+
+    UE_LOG(LogTemp, Warning, TEXT("DirectBindDelegate 델리게이트 호출 시도..."));
+    if (!DirectBindDelegate.IsBound()) // IsBound 함수는 델리게이트 내부의 UserObjectPtr (Object 의 WeakPtr) 가 IsValid 한지 체크 한다.
+    {
+        UE_LOG(LogTemp, Warning, TEXT("DirectBindDelegate 의 UserObjectPtr is Not Valid"));
+    }
+
+    DirectBindDelegate.Execute(123);
+    
+    UE_LOG(LogTemp, Warning, TEXT("Execute 하면 Crash 발생"));
+}</code></pre>
+
+                <ul>
+                <li>객체 삭제 후, 델리게이트의 UserObjectPtr은 여전히 0x10ABC123 값을 가지고 있음 
+                (포인터 값 자체는 변경되지 않음)</li>
+                <li>0x10ABC123 주소의 상태: 이미 해제된 메모리</li>
+                <li>WeakPtr의 내부 상태: Invalid (참조 카운트로 객체 삭제 감지)</li>
+                </ul>
+
+                <pre><code>    RetValType Execute(ParamTypes... Params) const final
+    {
+        using FParmsWithPayload = TPayload&lt;RetValType(typename TDecay&lt;ParamTypes&gt;::Type..., typename TDecay&lt;VarTypes&gt; ::Type...)&gt;;
+
+        checkSlow(IsSafeToExecute());
+
+        TPlacementNewer&lt;FParmsWithPayload&gt; PayloadAndParams;
+        this->Payload.ApplyAfter(PayloadAndParams, Forward&lt;ParamTypes&gt;(Params)...);
+        UserObjectPtr->ProcessEvent(CachedFunction, &PayloadAndParams);
+        return PayloadAndParams->GetResult();
+    }</code></pre>
+
+                <ul>
+                <li>DirectBindDelegate 델리게이트는 위의 Execute 를 실행
+                    <ul>
+                        <li>하지만 UserObjectPtr 은 이미 해제된 메모리에 접근하여 크래시 발생</li>
+                    </ul>
+                </li>
+                </ul>
+
+                <h3>❓ 왜 언리얼에서는 Crash가 날 수 있는 코드를 작성했을까?</h3>
+
+                <ul>
+                <li>언리얼은 <code>UFUNCTION</code> 시스템을 통해 Blueprint나 C++ 모두에서 함수 호출을 가능하게 함.</li>
+                <li>이를 실제로 호출하는 방식이 바로 <code>UObject::ProcessEvent()</code></li>
+                <li>이때 <code>CreateUObject</code>의 <code>Execute</code>와 다르게 <code>ProcessEvent</code> 함수를 호출함.
+                    <ul>
+                    <li><code>TDelegate::CreateUObject</code>는 일반적인 C++ 객체 함수 포인터를 안전하게 바인딩</li>
+                    <li>하지만 <strong>UFUNCTION 기반 Delegate는</strong> <code>ProcessEvent</code>를 사용하여 호출</li>
+                    </ul>
+                </li>
+                <li><strong>ProcessEvent 는 기본적으로 유효한 UObject 에서 호출 가능하기 때문에</strong> 당연히 유효성 검증은 프로그래머가 실시하도록 만들어진 함수
+                    <ul>
+                    <li>왜 유효한 UObject 인지 직접 검사하지 않는 이유는 <strong>성능 상 문제일 가능성이 높음</strong></li>
+                    <li><strong>UFUNCTION 은</strong> (애니메이션, 타이머, 블프 이벤트 등등) 많이 호출되기 때문에 
+                        <code>ProcessEvent</code>가 있는 모든 곳에 유효성을 검사하는 로직을 추가하면 <strong>비용이 클 것으로 보임</strong></li>
+                    <li>실제로 <code>AnimNotify</code> 도 캐릭터가 사라지면 Crash 가 가능함.</li>
+                    </ul>
+                </li>
+                </ul>
+
+                <h2>CreateUObject 바인딩</h2>
+
+                <pre><code>void ADelegateTestActor::StartSafeTest()
+{
+    UE_LOG(LogTemp, Warning, TEXT("=== 안전한 테스트 시작 (CreateUObject) ==="));
+    TargetObj = GetWorld()->SpawnActor&lt;ATargetObject&gt;();
+
+    UE_LOG(LogTemp, Warning, TEXT("CreateUObject 바인딩 완료"));
+    CreateUObjectDelegate = FTestDelegateCreateUObject::CreateUObject(
+        TargetObj, &ATargetObject::OnDelegateCallback);
+    
+    UE_LOG(LogTemp, Warning, TEXT("타겟 객체 삭제 ..."));
+    TargetObj->Destroy();
+
+    UE_LOG(LogTemp, Warning, TEXT("CreateUObject 델리게이트 호출 시도..."));
+    if (!CreateUObjectDelegate.IsBound()) // IsBound 함수는 델리게이트 내부의 UserObjectPtr (Object 의 WeakPtr) 가 IsValid 한지 체크 한다.
+    {
+        UE_LOG(LogTemp, Warning, TEXT("CreateUObjectDelegate 의 UserObjectPtr is Not Valid"));
+    }
+    
+    CreateUObjectDelegate.Execute(456);
+    UE_LOG(LogTemp, Warning, TEXT("하지만 Execute 해도 Crash 나지 않는다."));
+}</code></pre>
+
+                <ul>
+                <li>객체 삭제 후, 델리게이트의 UserObjectPtr은 여전히 0x10ABC123 값을 가지고 있음 
+                (포인터 값 자체는 변경되지 않음)</li>
+                <li>0x10ABC123 주소의 상태: 이미 해제된 메모리</li>
+                <li>WeakPtr의 내부 상태: Invalid (참조 카운트로 객체 삭제 감지)</li>
+                </ul>
+
+                <pre><code>RetValType Execute(ParamTypes... Params) const final
+{
+    using MutableUserClass = std::remove_const_t&lt;UserClass&gt;;
+
+    // Verify that the user object is still valid.  We only have a weak reference to it.
+    checkSlow(UserObject.IsValid());
+
+    // Safely remove const to work around a compiler issue with instantiating template permutations for 
+    // overloaded functions that take a function pointer typedef as a member of a templated class.  In
+    // all cases where this code is actually invoked, the UserClass will already be a const pointer.
+    MutableUserClass* MutableUserObject = const_cast&lt;MutableUserClass*&gt;(UserObject.Get());
+
+    checkSlow(MethodPtr != nullptr);
+
+    return this->Payload.ApplyAfter(MethodPtr, MutableUserObject, Forward&lt;ParamTypes&gt;(Params)...);
+}</code></pre>
+
+                <ul>
+                <li>CreateUObjectDelegate 은 위의 Execute 를 실행
+                    <ul>
+                        <li>여기서 UserObject가 유효한지 체크</li>
+                        <li>만약 객체가 삭제되면 UserObject.Get() 에서 Null 반환
+                            <ul>
+                                <li>내부적으로 WeakPtr 의 Get 을 호출</li>
+                                <li>계속 들어가보면... 유효한 오브젝트 아니면 nullptr 반환</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                </ul>
+                        
+                <pre><code>[[nodiscard]] FORCEINLINE T* Get(bool bEvenIfPendingKill) const
+{
+    return (T*)WeakPtr.Get(bEvenIfPendingKill);
+}
+
+// 계속 들어가보면... 유효한 오브젝트 아니면 nullptr 반환
+FORCEINLINE_DEBUGGABLE UObject* Internal_Get(bool bEvenIfGarbage) const
+{
+    FUObjectItem* const ObjectItem = Internal_GetObjectItem();
+    return ((ObjectItem != nullptr) && GUObjectArray.IsValid(ObjectItem, bEvenIfGarbage)) ? (UObject*)ObjectItem->GetObject() : nullptr;
+}</code></pre>
+                        
+                <ul>
+                <li>따라서 직접적인 댕글링 포인터를 사용할 일이 없음.</li>
+                </ul>
+            </div>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 TaehunKim0. All rights reserved.</p>
+    </footer>
+</body>
+</html>

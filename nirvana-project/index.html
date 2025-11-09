@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nirvana 프로젝트 - TaehunKim0</title>
+    <style>
+        /* Unreal Modular Gameplay 스타일 기반 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #ffffff;
+            color: #333;
+            line-height: 1.6;
+            padding: 40px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        header {
+            margin-bottom: 60px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .header-title {
+            font-size: 32px;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .header-nav {
+            margin-top: 15px;
+        }
+
+        .header-nav a {
+            margin-right: 20px;
+            font-size: 14px;
+            color: #0066cc;
+        }
+
+        .back-link {
+            font-size: 16px;
+            margin-bottom: 30px;
+            display: inline-block;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 400;
+            margin: 30px 0 20px 0;
+            color: #333;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 400;
+            margin: 50px 0 30px 0;
+            color: #333;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        h3 {
+            font-size: 20px;
+            font-weight: 400;
+            margin: 40px 0 20px 0;
+            color: #333;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        h4 {
+            font-size: 18px;
+            font-weight: 400;
+            margin: 30px 0 15px 0;
+            color: #333;
+        }
+
+         .project-image {
+            width: 100%;
+            max-width: 700px; /* 원본의 너비를 고려 */
+            height: auto;
+            border-radius: 8px;
+            margin: 30px auto;
+            display: block; /* 중앙 정렬을 위해 */
+        }
+
+        .post-meta {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .post-tags span {
+            display: inline-block;
+            background-color: #e0e0e0;
+            color: #666;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            margin-right: 8px;
+            margin-top: 5px;
+        }
+
+        .post-content {
+            font-size: 17px;
+            color: #444;
+            margin-bottom: 60px;
+        }
+
+        .post-content p {
+            margin-bottom: 1.2em;
+        }
+
+        .post-content ul {
+            margin-bottom: 1.2em;
+            padding-left: 20px;
+        }
+
+        .post-content li {
+            margin-bottom: 0.8em;
+        }
+
+        /* 코드 블록 스타일 */
+        .post-content pre {
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 15px 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 25px 0;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+        
+        .post-content code {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1em;
+            background-color: #e0e0e0;
+            padding: 2px 5px;
+            border-radius: 4px;
+            color: #c7254e;
+        }
+        
+        .post-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        /* 표 스타일 */
+        .post-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+
+        .post-content th, .post-content td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .post-content th {
+            background-color: #f8f9fa;
+            font-weight: 700;
+        }
+
+        .post-content tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        footer {
+            margin-top: 80px;
+            padding-top: 30px;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+            font-size: 13px;
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 30px 15px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+   
+    <header>
+        <div class="header-title">
+            <a href="/">TaehunKim0</a>
+        </div>
+        <nav class="header-nav">
+            <a href="/">Home</a>
+            <a href="https://github.com/TaehunKim0" target="_blank">GitHub</a>
+        </nav>
+    </header>
+
+    <main>
+        <a href="/" class="back-link">← 돌아가기</a>
+
+        <h1>Nirvana 프로젝트</h1>
+        
+        <div class="project-content">
+            <h2>개요</h2>
+            <p>
+                2023년 1월부터 11월까지 청강문화산업대학교에서 개발된 **멀티 액션 로그라이크** 게임입니다.
+            </p>
+            <p>
+                로그라이크 장르의 특성을 **티베트 불교의 윤회**라는 교리에 비유하여 기획되었습니다.
+            </p>
+
+            <img src="./resource/neowiz.jpg" alt="청강 CGC 전시 모습" class="project-image">
+            <p style="text-align: center; font-size: 14px; color: #888; margin-top: -15px; margin-bottom: 30px;">
+                개발 종료 후 청강 CGC (네오위즈 판교 타워)에서 전시와 함께 마무리되었습니다.
+            </p>
+
+            <p>
+                **총 22명의 팀원이 8개월 동안 협업하였고, Unreal Engine 5를 사용하여 제작했습니다.**
+            </p>
+            <p>
+                저는 **클라이언트 프로그래머 (파트장)**를 맡아 프로젝트를 이끌었습니다.
+            </p>
+
+            <h3>주요 역할</h3>
+            <ul style="margin-left: 25px; margin-bottom: 1em;">
+                <li style="margin-bottom: 0.5em;">타 파트와의 소통을 통한 프로그래밍 파트 (본인 포함 4명)의 일정 조율, 업무 분배 및 지시</li>
+                <li style="margin-bottom: 0.5em;">협업을 위한 개발 규칙 및 환경 구축</li>
+                <li style="margin-bottom: 0.5em;">큰 봉을 든 파드마 캐릭터의 메인 개발 및 기타 시스템 제작</li>
+            </ul>
+
+            <h2>영상</h2>
+            <p>
+                
+            </p>
+            <iframe
+                width="750"
+                height="400"
+                src="https://www.youtube.com/embed/IK2acnw1DHY?controls=0"
+                title="YouTube video player"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen>
+            </iframe> 
+            
+            <h2>포트폴리오</h2>
+            <p>
+                
+            </p>
+            <p>
+                PDF 포트폴리오: <a href="./resource/Nirvana.pdf">Nirvana.pdf 다운로드</a>
+            </p>
+
+            <h2>다운로드 링크</h2>
+            <p>
+                <a href="https://store.onstove.com/ko/games/2643" target="_blank">
+                    스토브 스토어에서 게임 다운로드
+                </a>
+            </p>
+            <img src="./resource/Download.png" class="project-image">
+        </div>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2025 TaehunKim0. All rights reserved.</p>
+    </footer>
+</body>
+</html>

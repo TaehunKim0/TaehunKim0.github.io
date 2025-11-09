@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unreal AssetManager 분석과 사용 이유</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #ffffff;
+            color: #333;
+            line-height: 1.6;
+            padding: 40px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        header {
+            margin-bottom: 60px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .header-title {
+            font-size: 32px;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .header-nav {
+            margin-top: 15px;
+        }
+
+        .header-nav a {
+            margin-right: 20px;
+            font-size: 14px;
+            color: #0066cc;
+        }
+
+        .back-link {
+            font-size: 16px;
+            margin-bottom: 30px;
+            display: inline-block;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 400;
+            margin: 30px 0 20px 0;
+            color: #333;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 400;
+            margin: 50px 0 30px 0;
+            color: #333;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        h3 {
+            font-size: 20px;
+            font-weight: 400;
+            margin: 40px 0 20px 0;
+            color: #333;
+        }
+
+        .post-meta {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .post-tags span {
+            display: inline-block;
+            background-color: #e0e0e0;
+            color: #666;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            margin-right: 8px;
+            margin-top: 5px;
+        }
+
+        .post-content {
+            font-size: 17px;
+            color: #444;
+            margin-bottom: 60px;
+        }
+
+        .post-content p {
+            margin-bottom: 1.2em;
+        }
+
+        .post-content ul {
+            margin-bottom: 1.2em;
+            padding-left: 20px;
+        }
+
+        .post-content li {
+            margin-bottom: 0.8em;
+        }
+
+        /* 코드 블록 스타일 */
+        .post-content pre {
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 15px 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 25px 0;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 15px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+        }
+        
+        .post-content .code-block {
+            background: #1d2331;
+            overflow: auto;
+            width: auto;
+            border: solid gray;
+            border-width: .1em .1em .1em .8em;
+            padding: .2em .6em;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+
+        .post-content .code-block pre {
+            background: none;
+            padding: 0;
+            margin: 0;
+            border: none;
+            color: #D4D2C8;
+        }
+        
+        .post-content code {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1em;
+            background-color: #e0e0e0;
+            padding: 2px 5px;
+            border-radius: 4px;
+            color: #c7254e;
+        }
+        
+        .post-content .code-block code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        footer {
+            margin-top: 80px;
+            padding-top: 30px;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+            font-size: 13px;
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 30px 15px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-title">
+            <a href="/">TaehunKim0</a>
+        </div>
+        <nav class="header-nav">
+            <a href="/">Home</a>
+            <a href="https://github.com/TaehunKim0" target="_blank">GitHub</a>
+        </nav>
+    </header>
+
+    <main>
+        <a href="/" class="back-link">← Home</a>
+
+        <article class="post-detail">
+            <h1 class="post-title">Unreal AssetManager 분석과 사용 이유</h1>
+            <div class="post-meta">
+                <span class="post-date">2025년 10월 1일</span>
+                <div class="post-tags">
+                    <span>#UnrealEngine</span>
+                </div>
+            </div>
+            <div class="post-content">
+
+                <h2><b>개요</b></h2>
+                
+                <p>GameFeature 를 사용하는 중에 AssetManager 와 스캔할 프라이머리 에셋 타입이라는 게 있어서, 공부해보았다. 에셋 매니저를 사용하지 않아도, 게임은 만들 수 있다. 그럼 왜 필요한지 알아보자.</p>
+
+                <br>
+                <h2><b>에셋 매니저를 사용하는 이유</b></h2>
+                
+                <b>1. 에셋 로드를 위해 경로를 직접 작성, 에디터에서 클래스 레퍼런스 연결하는 걸 막을 수 있다.</b>
+                <br><br>
+                <ul>
+                    <li>에셋 경로를 직접 작성하고 있는 경우</li>
+                    <div class="code-block"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: #DDD0C0">LoadObject(</span><span style="color: #C9B98F">&quot;/Game/Characters/Hero/BP_Hero.BP_Hero&quot;</span><span style="color: #DDD0C0">);</span>
+</pre></div>
+
+                    <li>에디터에서 레퍼런스를 연결하는 경우</li>
+                    <div class="code-block"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: #DDD0C0">UPROPERTY(EditAnywhere, BlueprintReadWrite, Category </span><span style="color: #878787">=</span><span style="color: #DDD0C0"> </span><span style="color: #C9B98F">&quot;ABSGameState&quot;</span><span style="color: #DDD0C0">)</span>
+<span style="color: #DDD0C0">TMap</span><span style="color: #878787">&lt;</span><span style="color: #DDD0C0">FGameplayTag, TSoftObjectPtr</span><span style="color: #878787">&lt;</span><span style="color: #919191">const</span><span style="color: #DDD0C0"> UBSCharacterDefinition</span><span style="color: #878787">&gt;&gt;</span><span style="color: #DDD0C0"> AvailableCharacterDefinitionMap;</span>
+</pre></div>
+
+                </ul>
+
+                <br>
+
+                <b>2. 원하는 에셋을 원하는 때에 로드, 언로드할 수 있다.</b>
+
+                <br>
+                <br>
+
+                <p>위로 얻는 효과는 프로그래머의 실수를 방지하고, 메모리를 효율적으로 사용할 수 있다.</p>
+                생각보다 사용 방법은 쉬웠다. 왜 진작 사용하지 않았을까?
+                
+                <br>
+                <br>
+                <h2><b>에셋 매니저 사용 방법</b></h2>
+                
+
+                <ul>
+                    <li><b>에셋 매니저가 로드할 수 있는 에셋은 Primary Asset 뿐이다.</b></li>
+                    <ul>
+                        <li>기본적으로 UWorld(레벨) 에셋이 유일한 PrimaryAsset 이며, 상속 후에 GetPrimaryAssetId 함수를 오버라이드 하면 PrimaryAsset 이 된다.</li>
+                        <li>PrimaryDataAsset 을 상속받은 BP 또는 DA 가 해당 된다.</li>
+                    </ul>
+                </ul>
+                <br>
+                <ul>
+                    <li><b>PrimaryAsset 은 이름 그대로 주요한 에셋으로, 직접 관리하고 싶은 최상위 에셋이다.</b></li>
+                    <ul>
+                        <li>PrimaryAsset 안에는 Secondary Asset 으로 구분된다.</li>
+                        <li>Primary 이 SecondaryAsset 참조하거나 사용하려는 경우 언리얼 엔진이 자동으로 세컨더리 에셋을 로드한다.</li>
+                    </ul>
+                </ul>
+                <br>
+                <ul>
+                    <li><b>예제를 보면 UBSCharacterDefinition 은 PrimaryAsset, 멤버 변수는 SecondaryAsset 이다.</b></li>
+                    <li><b>이제 PrimaryAssetID 로 경로나, 레퍼런스 필요 없이 검색하여 에셋을 가져올 수 있다.</b></li>
+                
+                    <div class="code-block"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: rgb(129, 161, 193); font-weight: 400;">class</span> <span style="color: rgb(143, 188, 187); font-weight: 400;">BISHOUJO_DOOM_API</span> UBSCharacterDefinition <span style="color: rgb(143, 188, 187); font-weight: 400;">:</span> <span style="color: rgb(129, 161, 193); font-weight: 400;">public</span> UPrimaryDataAsset
+{
+    GENERATED_BODY()
+
+<span style="color: rgb(143, 188, 187); font-weight: 400;">public:</span>
+    UBSCharacterDefinition();
+    
+<span style="color: rgb(143, 188, 187); font-weight: 400;">public:</span>
+    <span style="color: rgb(129, 161, 193); font-weight: 400;">virtual</span> FPrimaryAssetId GetPrimaryAssetId() <span style="color: rgb(129, 161, 193); font-weight: 400;">const</span> <span style="color: rgb(129, 161, 193); font-weight: 400;">override</span>
+    {
+       <span style="color: rgb(129, 161, 193); font-weight: 400;">return</span> FPrimaryAssetId(<span style="color: rgb(163, 190, 140); font-weight: 400;">&quot;Character&quot;</span>, CharacterTag.<span style="color: rgb(143, 188, 187); font-weight: 400;">GetTagLeafName</span>());
+    }
+    
+    <span style="color: rgb(143, 188, 187); font-weight: 400;">UPROPERTY</span>(EditDefaultsOnly, Category <span style="color: rgb(143, 188, 187); font-weight: 400;">=</span> <span style="color: rgb(163, 190, 140); font-weight: 400;">&quot;UBSCharacterDefinition&quot;</span>)
+    FGameplayTag CharacterTag;
+    
+    <span style="color: rgb(76, 86, 102); font-weight: 400;">// ... (이하 Secondary Asset들)</span>
+    <span style="color: rgb(143, 188, 187); font-weight: 400;">UPROPERTY</span>(EditDefaultsOnly, Instanced, Category<span style="color: rgb(143, 188, 187); font-weight: 400;">=</span><span style="color: rgb(163, 190, 140); font-weight: 400;">&quot;UBSCharacterDefinition&quot;</span>)
+    TArray<TObjectPtr<UGameFeatureAction>> DefaultGameFeatureActions;
+    
+    <span style="color: rgb(143, 188, 187); font-weight: 400;">UPROPERTY</span>(EditDefaultsOnly, Category<span style="color: rgb(143, 188, 187); font-weight: 400;">=</span><span style="color: rgb(163, 190, 140); font-weight: 400;">&quot;UBSCharacterDefinition&quot;</span>)
+    TObjectPtr<span style="color: rgb(129, 161, 193); font-weight: 400;">const</span> UBSPawnData> DefaultPawnData;
+
+    <span style="color: rgb(143, 188, 187); font-weight: 400;">UPROPERTY</span>(EditdefaultsOnly, BlueprintReadOnly, Category <span style="color: rgb(143, 188, 187); font-weight: 400;">=</span> <span style="color: rgb(163, 190, 140); font-weight: 400;">&quot;UBSCharacterDefinition&quot;</span>)
+    TSoftClassPtr<USkeletalMesh> TestSkeletalMeshClass;
+};</pre></div>
+                </ul>
+
+                <br>
+                <h2><b>프로젝트 세팅 (스캔 규칙 설정)</b></h2>
+
+                <p>프로젝트 세팅의 AssetManager 탭에서 스캔할 프라이머리 에셋 타입 추가</p>
+
+                <ul>
+                    <li><b>스캔</b>은 프로그래머가 로드할 에셋을 찾기 위해, 프라이머리 에셋의 타입과 위치를 가지고 목록을 만드는 과정이다.</li>
+                    <li><b>주의할 점:</b> 규칙의 쿠킹(Cooking) 관련된 옵션을 선택해주어야, 프로덕션(Production)과 개발 단계 둘 다 로드가 가능하다.</li>
+                </ul>
+
+                <br>
+                <h2><b>AssetManager를 사용한 로드 (비동기)</b></h2>
+                
+                <h3><b>PrimaryAssetID를 이용한 로드 호출</b></h3>
+                <div class="code-block"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: rgb(129, 161, 193); font-weight: 400;">const</span> FPrimaryAssetId CharacterDefID(<span style="color: rgb(163, 190, 140); font-weight: 400;">&quot;Character&quot;</span>, InTag.<span style="color: rgb(143, 188, 187); font-weight: 400;">GetTagLeafName</span>());
+
+<span style="color: rgb(76, 86, 102); font-weight: 400;">// 1. CharacterDefinition 비동기 로드</span>
+UBSAssetManager::Get().LoadCharacterDefinition(CharacterDefID, FStreamableDelegate<span style="color: rgb(143, 188, 187); font-weight: 400;">::</span><span style="color: rgb(143, 188, 187); font-weight: 400;">CreateLambda</span>([<span style="color: rgb(129, 161, 193); font-weight: 400;">this</span>, CharacterDefID, InPlayerState, InTag]()
+{
+    <span style="color: rgb(76, 86, 102); font-weight: 400;">// 2. CharacterDefinition 비동기 로드 완료</span>
+    <span style="color: rgb(129, 161, 193); font-weight: 400;">const</span> <span style="color: rgb(129, 161, 193); font-weight: 400;">auto</span> LoadedCharacterDef <span style="color: rgb(143, 188, 187); font-weight: 400;">=</span> UBSAssetManager<span style="color: rgb(143, 188, 187); font-weight: 400;">::</span><span style="color: rgb(143, 188, 187); font-weight: 400;">Get</span>().<span style="color: rgb(143, 188, 187); font-weight: 400;">GetPrimaryAssetObject</span>(CharacterDefID);
+    <span style="color: rgb(129, 161, 193); font-weight: 400;">if</span> (<span style="color: rgb(143, 188, 187); font-weight: 400;">!</span>LoadedCharacterDef)
+    {
+       <span style="color: rgb(143, 188, 187); font-weight: 400;">UE_LOG</span>(LogBS, Warning, <span style="color: rgb(143, 188, 187); font-weight: 400;">TEXT</span>(<span style="color: rgb(163, 190, 140); font-weight: 400;">&quot;Invalid LoadedCharacterDef&quot;</span>));
+       <span style="color: rgb(129, 161, 193); font-weight: 400;">return</span>;
+    }
+}
+</pre></div>
+
+                <h3><b>실제 Asset 로드 함수 구현 (커스텀 AssetManager 내)</b></h3>
+
+                <div class="code-block"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: rgb(129, 161, 193); font-weight: 400;">void</span> UBSAssetManager<span style="color: rgb(143, 188, 187); font-weight: 400;">::</span><span style="color: rgb(143, 188, 187); font-weight: 400;">LoadCharacterDefinition</span>(<span style="color: rgb(129, 161, 193); font-weight: 400;">const</span> FPrimaryAssetId<span style="color: rgb(143, 188, 187); font-weight: 400;">&amp;</span> InCharacterDefinitionId,
+                                              <span style="color: rgb(129, 161, 193); font-weight: 400;">const</span> FStreamableDelegate<span style="color: rgb(143, 188, 187); font-weight: 400;">&amp;</span> InLoadCompleteDelegate)
+{
+    <span style="color: rgb(76, 86, 102); font-weight: 400;">// 기본 에셋 경로 가져오기</span>
+    <span style="color: rgb(129, 161, 193); font-weight: 400;">const</span> FSoftObjectPath AssetPath <span style="color: rgb(143, 188, 187); font-weight: 400;">=</span> <span style="color: rgb(143, 188, 187); font-weight: 400;">GetPrimaryAssetPath</span>(InCharacterDefinitionId);
+    <span style="color: rgb(129, 161, 193); font-weight: 400;">if</span> (<span style="color: rgb(143, 188, 187); font-weight: 400;">!</span>AssetPath.<span style="color: rgb(143, 188, 187); font-weight: 400;">IsValid</span>())
+    {
+       <span style="color: rgb(143, 188, 187); font-weight: 400;">UE_LOG</span>(LogTemp, Error, <span style="color: rgb(143, 188, 187); font-weight: 400;">TEXT</span>(<span style="color: rgb(163, 190, 140); font-weight: 400;">&quot;Invalid asset path for: %s&quot;</span>), <span style="color: rgb(143, 188, 187); font-weight: 400;">*</span>InCharacterDefinitionId.<span style="color: rgb(143, 188, 187); font-weight: 400;">ToString</span>());
+       InLoadCompleteDelegate.<span style="color: rgb(143, 188, 187); font-weight: 400;">ExecuteIfBound</span>();
+       <span style="color: rgb(129, 161, 193); font-weight: 400;">return</span>;
+    }
+    
+    <span style="color: rgb(76, 86, 102); font-weight: 400;">// 로드할 에셋 목록 구성</span>
+    TArray<FSoftObjectPath> AssetsToLoad;
+    AssetsToLoad.<span style="color: rgb(143, 188, 187); font-weight: 400;">Add</span>(AssetPath);
+    
+    <span style="color: rgb(76, 86, 102); font-weight: 400;">// 비동기 로딩 시작</span>
+    <span style="color: rgb(143, 188, 187); font-weight: 400;">LoadAssetList</span>(AssetsToLoad, InLoadCompleteDelegate, FStreamableManager<span style="color: rgb(143, 188, 187); font-weight: 400;">::</span><span style="color: rgb(143, 188, 187); font-weight: 400;">AsyncLoadHighPriority</span>);
+}
+</pre></div>
+
+                <br>
+                <h2><b>프라이머리 에셋 로드 시 (Secondary Asset 동작)</b></h2>
+
+                <ul>
+                    <li><b>결론 : 프라이머리 에셋을 로드하면, 세컨더리 에셋들은 모두 자동으로 로드된다.</b></li>
+                </ul>
+
+                <ul>
+                    <li><b>TSoftClassPtr 자동 로드</b>
+                        <br>Secondary Asset인 <code>TSoftClassPtr</code> 타입의 <code>TestSkeletalMeshClass</code> 는 자동으로 로드가 된다. <br>(독립형 게임 모드에서도 확인 완료)
+                        <ul>
+                            <li>자동으로 로드되지 않게 하려면, <code>StreamableMananger</code>로 직접 로드해야 한다.</li>
+                            <li>확인 코드 예시:
+                                <div class="code-block"><pre style="margin: 0; line-height: 125%;"><span></span>FStreamableManager<span style="color: rgb(143, 188, 187); font-weight: 400;">&amp;</span> StreamableManager <span style="color: rgb(143, 188, 187); font-weight: 400;">=</span> UAssetManager<span style="color: rgb(143, 188, 187); font-weight: 400;">::</span><span style="color: rgb(143, 188, 187); font-weight: 400;">GetStreamableManager</span>();
+<span style="color: rgb(129, 161, 193); font-weight: 400;">auto</span> bLoadComplete <span style="color: rgb(143, 188, 187); font-weight: 400;">=</span> StreamableManager.<span style="color: rgb(143, 188, 187); font-weight: 400;">IsAsyncLoadComplete</span>(NewCharacterDef<span style="color: rgb(143, 188, 187); font-weight: 400;">-&gt;</span>TestSkeletalMeshClass.<span style="color: rgb(143, 188, 187); font-weight: 400;">ToSoftObjectPath</span>());
+<span style="color: rgb(143, 188, 187); font-weight: 400;">UE_LOG</span>(LogBS, Log, <span style="color: rgb(143, 188, 187); font-weight: 400;">TEXT</span>(<span style="color: rgb(163, 190, 140); font-weight: 400;">&quot;UBSCharacterDefManagerComponent::TestSkeletalMeshClass bLoadComplete = %d&quot;</span>),  bLoadComplete);</pre></div>
+                            </li>
+                        </ul>
+                    </li>
+                    <br>
+                    <li><b>세컨더리 에셋 안의 자식들도 자동 로드</b>
+                        <br>세컨더리 에셋이 참조하는 자식 에셋들(<code>DefaultPawnData->TestPawnMeshClass</code>)도 자동으로 로드가 된다.
+                        <ul>
+                            <li>확인 코드 예시:
+                                <div class="code-block"><pre style="margin: 0; line-height: 125%;"><span></span>bLoadComplete <span style="color: rgb(143, 188, 187); font-weight: 400;">=</span> StreamableManager.<span style="color: rgb(143, 188, 187); font-weight: 400;">IsAsyncLoadComplete</span>(NewCharacterDef<span style="color: rgb(143, 188, 187); font-weight: 400;">-&gt;</span>DefaultPawnData<span style="color: rgb(143, 188, 187); font-weight: 400;">-&gt;</span>TestPawnMeshClass.<span style="color: rgb(143, 188, 187); font-weight: 400;">ToSoftObjectPath</span>());
+<span style="color: rgb(143, 188, 187); font-weight: 400;">UE_LOG</span>(LogBS, Log, <span style="color: rgb(143, 188, 187); font-weight: 400;">TEXT</span>(<span style="color: rgb(163, 190, 140); font-weight: 400;">&quot;UBSCharacterDefManagerComponent::TestPawnMeshClass bLoadComplete = %d&quot;</span>),  bLoadComplete);</pre></div>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 TaehunKim0. All rights reserved.</p>
+    </footer>
+</body>
+</html>

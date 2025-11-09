@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unreal IsValid vs IsValidLowLevel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+   <style>
+        /* Unreal Modular Gameplay 스타일 기반 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #ffffff;
+            color: #333;
+            line-height: 1.6;
+            padding: 40px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        header {
+            margin-bottom: 60px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .header-title {
+            font-size: 32px;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .header-nav {
+            margin-top: 15px;
+        }
+
+        .header-nav a {
+            margin-right: 20px;
+            font-size: 14px;
+            color: #0066cc;
+        }
+
+        .back-link {
+            font-size: 16px;
+            margin-bottom: 30px;
+            display: inline-block;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 400;
+            margin: 30px 0 20px 0;
+            color: #333;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 400;
+            margin: 50px 0 30px 0;
+            color: #333;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        h3 {
+            font-size: 20px;
+            font-weight: 400;
+            margin: 40px 0 20px 0;
+            color: #333;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        h4 {
+            font-size: 18px;
+            font-weight: 400;
+            margin: 30px 0 15px 0;
+            color: #333;
+        }
+
+        .post-meta {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .post-tags span {
+            display: inline-block;
+            background-color: #e0e0e0;
+            color: #666;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            margin-right: 8px;
+            margin-top: 5px;
+        }
+
+        .post-content {
+            font-size: 17px;
+            color: #444;
+            margin-bottom: 60px;
+        }
+
+        .post-content p {
+            margin-bottom: 1.2em;
+        }
+
+        .post-content ul {
+            margin-bottom: 1.2em;
+            padding-left: 20px;
+        }
+
+        .post-content li {
+            margin-bottom: 0.8em;
+        }
+
+        /* 코드 블록 스타일 */
+        .post-content pre {
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 15px 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 25px 0;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+        
+        .post-content code {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1em;
+            background-color: #e0e0e0;
+            padding: 2px 5px;
+            border-radius: 4px;
+            color: #c7254e;
+        }
+        
+        .post-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        /* 표 스타일 */
+        .post-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+
+        .post-content th, .post-content td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .post-content th {
+            background-color: #f8f9fa;
+            font-weight: 700;
+        }
+
+        .post-content tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        footer {
+            margin-top: 80px;
+            padding-top: 30px;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+            font-size: 13px;
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 30px 15px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-title">
+            <a href="/">TaehunKim0</a>
+        </div>
+        <nav class="header-nav">
+            <a href="/">Home</a>
+            <a href="https://github.com/TaehunKim0" target="_blank">GitHub</a>
+        </nav>
+    </header>
+
+    <main>
+        <article class="post-detail">
+            <h1 class="post-title">Unreal IsValid vs IsValidLowLevel</h1>
+            <div class="post-meta">
+                <span class="post-date">2025년 6월 25일</span>
+                <div class="post-tags">
+                    <span>#UnrealEngine</span>
+                </div>
+            </div>
+            <div class="post-content">
+                <h2>개요</h2>
+                </hr>
+                <p>언리얼에서 특정 메모리에 접근할 때, 혹시 몰라서 IsValid 와 IsValidLowLevel 둘 다 같이 작성했던 경험이 있다. 이번에 두 함수의 차이점에 대해 알아보려고 한다.</p>
+                <h2>IsValid()</h2>
+                </hr>
+                <p><strong>체크하는 것들:</strong></p>
+                <ul>
+                    <li>✅ PendingKill 상태</li>
+                    <li>✅ BeginDestroy 호출 여부</li>
+                    <li>✅ GC 마킹 상태</li>
+                    <li>✅ 실제 사용 가능한 상태인지</li>
+                </ul>
+
+                <p><strong>따라서</strong></p>
+                <ul>
+                    <li>접근하려는 메모리가 안전한지 확인하기 위해서는 IsValid 를 사용하자.</li>
+                </ul>
+                <br></br>
+                
+                <p>IsValid 의 내부를 보면 다음과 같다.</p>
+                <ul>
+                    <li>해당 UObject 가 Null Ptr 인지 검사한다.</li>
+                    <li>IsValid 는 Object.h 에 선언된 전역함수이다.</li>
+                    <li>해당 UObject가 현재 Garbage 플래그, 즉 GC 대상 오브젝트인지 검사한다.
+                        <ul>
+                            <li><code>IsPendingKillPending</code> 함수도 <code>CheckObjectValidBasedOnItsFlags</code> 함수를 호출한다.</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <pre><code>FORCEINLINE bool IsValid(const UObject *Test)
+{
+    return Test && FInternalUObjectBaseUtilityIsValidFlagsChecker::CheckObjectValidBasedOnItsFlags(Test);
+}</code></pre>
+
+                <pre><code>FORCEINLINE static bool CheckObjectValidBasedOnItsFlags(const UObject* Test)
+{
+    // Here we don't really check if the flags match but if the end result is the same
+    checkSlow(GUObjectArray.IndexToObject(Test->InternalIndex)->HasAnyFlags(EInternalObjectFlags::Garbage) == Test->HasAnyFlags(RF_MirroredGarbage));
+    return !Test->HasAnyFlags(RF_MirroredGarbage);
+}</code></pre>
+
+                <h2>IsValidLowLevel()</h2>
+                </hr>
+
+                <p><strong>체크하는 것들:</strong></p>
+                <ul>
+                    <li>✅ nullptr인지</li>
+                    <li>✅ 메모리상 존재하는지</li>
+                    <li>✅ 전역 오브젝트 시스템에 등록되어 있는지</li>
+                </ul>
+
+                <p><strong>체크하지 않는 것들:</strong></p>
+                <ul>
+                    <li>❌ PendingKill 상태</li>
+                    <li>❌ BeginDestroy 호출 여부</li>
+                    <li>❌ GC 마킹 상태</li>
+                    <li>❌ 실제 사용 가능한 상태인지</li>
+                </ul>
+
+                <p><strong>따라서</strong></p>
+                <ul>
+                    <li>성능이 중요한 저수준 코드에서만 사용 하는 것이 좋다.</li>
+                </ul>
+
+                <br></br>
+
+                IsValidLowLevel 의 내부를 보면 다음과 같다.
+                <pre><code>bool UObjectBase::IsValidLowLevel() const
+{
+    return IsValidLowLevelForDestruction() && GUObjectArray.IsValid(this);
+}</code></pre>
+
+                <ul>
+                    <li>전역 오브젝트 배열에서 이 오브젝트가 유효한 상태인지 확인
+                        <ul>
+                            <li>이 때의 IsValid 는 FObjectArray의 멤버함수로 GC 대상인지 확인하지 않는다.</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <pre><code>bool UObjectBase::IsValidLowLevelForDestruction() const
+{
+    PRAGMA_DISABLE_DEPRECATION_WARNINGS
+    if (!IsThisNotNull(this, "UObjectBase::IsValidLowLevelForDestruction"))
+    PRAGMA_ENABLE_DEPRECATION_WARNINGS
+    {
+       UE_LOG(LogUObjectBase, Warning, TEXT("NULL object"));
+       return false;
+    }
+    if (!ClassPrivate.GetNoResolve())
+    {
+       UE_LOG(LogUObjectBase, Warning, TEXT("Object is not registered"));
+       return false;
+    }
+    return true;
+}</code></pre>
+
+                <ul>
+                    <li>해당 오브젝트가 Null 인지 확인</li>
+                    <li>GetNoResolve 함수 안에서는 계속 파고파고 들어가다보면
+                        <ul>
+                            <li>단순히 오브젝트 핸들이 문제가 없으면, 포인터를 반환한다.</li>
+                            <li>메모리 관련된 확인은 진행하지 않는다.</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <pre><code>GetNoResolve() 
+    ↓
+NoAccessTrackingGetNoResolve()
+    ↓  
+NoResolveObjectHandleNoRead()
+    ↓
+ReadObjectHandlePointerNoCheck()</code></pre>
+
+                <br></br>
+                <h2>IsValid 와 IsValidLowLevel 비교</h2>
+                </hr>
+
+                <ul>
+                    <li><strong>결론 : IsValid 를 사용하는 것이 안전하다.</strong></li>
+                </ul>
+
+                <pre><code>void ADelegateTestActor::Test()
+{
+    TargetObj = GetWorld()->SpawnActor&lt;ATargetObject&gt;();
+
+    TargetObj->Destroy();
+    UE_LOG(LogTemp, Warning, TEXT("TargetObj -> Destroy()"));
+    UE_LOG(LogTemp, Warning, TEXT("TargetObj -> IsPendingKill : %d"), TargetObj->IsPendingKillPending());
+    UE_LOG(LogTemp, Warning, TEXT("TargetObj -> IsValidLowLevel : %d"), TargetObj->IsValidLowLevel());
+    UE_LOG(LogTemp, Warning, TEXT("TargetObj -> IsValid : %d"), IsValid(TargetObj));</code></pre>
+
+                <ul>
+                    <li>IsValid 와 IsPendingKill 은 TargetObj 가 GC 대상이기 떄문에 0과 1을 출력한다.</li>
+                    <li>하지만 IsValidLowLevel 은 GC가 되기 전이기 때문에 1 을 출력한다.</li>
+                </ul>
+
+                <pre><code>결과: 
+LogTemp: Warning: TargetObj -> Destroy()
+LogTemp: Warning: TargetObj -> IsPendingKill : 1
+LogTemp: Warning: TargetObj -> IsValidLowLevel : 1
+LogTemp: Warning: TargetObj -> IsValid : 0</code></pre>
+
+                <ul>
+                    <li>언제 GC 될 지 모르기 때문에, IsValidLowLevel 은 1 을 출력할 가능성이 있다.</li>
+                </ul>
+            </div>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 TaehunKim0. All rights reserved.</p>
+    </footer>
+</body>
+</html>

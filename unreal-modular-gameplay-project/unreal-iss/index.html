@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unreal 초기화 스테이트 시스템을 이용한 컴포넌트 초기화 개선</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+   <style>
+        /* Unreal Modular Gameplay 스타일 기반 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #ffffff;
+            color: #333;
+            line-height: 1.6;
+            padding: 40px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        header {
+            margin-bottom: 60px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .header-title {
+            font-size: 32px;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .header-nav {
+            margin-top: 15px;
+        }
+
+        .header-nav a {
+            margin-right: 20px;
+            font-size: 14px;
+            color: #0066cc;
+        }
+
+        .back-link {
+            font-size: 16px;
+            margin-bottom: 30px;
+            display: inline-block;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 400;
+            margin: 30px 0 20px 0;
+            color: #333;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 400;
+            margin: 50px 0 30px 0;
+            color: #333;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        h3 {
+            font-size: 20px;
+            font-weight: 400;
+            margin: 40px 0 20px 0;
+            color: #333;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        h4 {
+            font-size: 18px;
+            font-weight: 400;
+            margin: 30px 0 15px 0;
+            color: #333;
+        }
+
+        .post-meta {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .post-tags span {
+            display: inline-block;
+            background-color: #e0e0e0;
+            color: #666;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            margin-right: 8px;
+            margin-top: 5px;
+        }
+
+        .post-content {
+            font-size: 17px;
+            color: #444;
+            margin-bottom: 60px;
+        }
+
+        .post-content p {
+            margin-bottom: 1.2em;
+        }
+
+        .post-content ul {
+            margin-bottom: 1.2em;
+            padding-left: 20px;
+        }
+
+        .post-content li {
+            margin-bottom: 0.8em;
+        }
+
+        /* 코드 블록 스타일 */
+        .post-content pre {
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 15px 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 25px 0;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+        
+        .post-content code {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1em;
+            background-color: #e0e0e0;
+            padding: 2px 5px;
+            border-radius: 4px;
+            color: #c7254e;
+        }
+        
+        .post-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        /* 표 스타일 */
+        .post-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+
+        .post-content th, .post-content td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .post-content th {
+            background-color: #f8f9fa;
+            font-weight: 700;
+        }
+
+        .post-content tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        footer {
+            margin-top: 80px;
+            padding-top: 30px;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+            font-size: 13px;
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 30px 15px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-title">
+            <a href="/">TaehunKim0</a>
+        </div>
+        <nav class="header-nav">
+            <a href="/">Home</a>
+            <a href="https://github.com/TaehunKim0" target="_blank">GitHub</a>
+        </nav>
+    </header>
+
+    <main>
+        <article class="post-detail">
+            <h1 class="post-title">Unreal 초기화 스테이트 시스템을 이용한 컴포넌트 초기화 개선</h1>
+            <div class="post-meta">
+                <span class="post-date">2025년 10월 21일</span>
+                <div class="post-tags">
+                    <span>#UnrealEngine</span>
+                    <span>InitStateSystem</span>
+                </div>
+            </div>
+            <div class="post-content">
+
+                <h2>개요</h2>
+                
+                <p>Unreal 을 사용하고, 협업하면서 자주 겪었던 문제는 초기화 시점 문제이다. 단순하게 특정 컴포넌</p>
+                <p>트가 초기화 되기 위해서, 다른 컴포넌트나 액터 가 먼저 초기화 되어야 하는 그런 상황이 많다. </p>
+                <p>이런 직접적인 의존성을 줄이고,  Character의 BeginPlay 안에서 AComponent→Init(),  </p>
+                <p>BComponent→Init() …. 이런 수동적인 초기화 코드들을 더  좋은 방향으로 바꿀 수 있을지 고민했다.</p>
+
+                <br>
+                <h2>1. 전통적인 초기화 방식의 한계</h2>
+                
+                <!-- HTML generated using hilite.me --><div style="background: #1d2331; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: #7E8AA1">//  수동 순서 관리</span>
+<span style="color: #73D0FF">void</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">AMyCharacter::BeginPlay</span><span style="color: #D4D2C8">()</span>
+<span style="color: #D4D2C8">{</span>
+<span style="color: #D4D2C8">    Super</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">BeginPlay();</span>
+<span style="color: #D4D2C8">    </span>
+<span style="color: #D4D2C8">    HealthComponent</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">Initialize();</span>
+<span style="color: #D4D2C8">    InputComponent</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">Initialize();</span>
+<span style="color: #D4D2C8">}</span>
+
+<span style="color: #7E8AA1">// Tick에서 반복 체크</span>
+<span style="color: #73D0FF">void</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">UHealthComponent::TickComponent</span><span style="color: #D4D2C8">(</span><span style="color: #73D0FF">float</span><span style="color: #D4D2C8"> DeltaTime, ...)</span>
+<span style="color: #D4D2C8">{</span>
+<span style="color: #D4D2C8">		</span><span style="color: #7E8AA1">// 성능 문제는...</span>
+<span style="color: #D4D2C8">		</span><span style="color: #7E8AA1">// 언제 초기화 되는지 알수 있나??</span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (</span><span style="color: #FFAD66">!</span><span style="color: #D4D2C8">bInitialized)</span>
+<span style="color: #D4D2C8">    {</span>
+<span style="color: #D4D2C8">        </span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (AbilitySystem </span><span style="color: #FFAD66">!=</span><span style="color: #D4D2C8"> </span><span style="color: #FFAD66">nullptr</span><span style="color: #D4D2C8">)</span>
+<span style="color: #D4D2C8">        {</span>
+<span style="color: #D4D2C8">            Initialize();</span>
+<span style="color: #D4D2C8">            bInitialized </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">true</span><span style="color: #D4D2C8">;</span>
+<span style="color: #D4D2C8">        }</span>
+<span style="color: #D4D2C8">    }</span>
+<span style="color: #D4D2C8">}</span>
+
+<span style="color: #7E8AA1">// Timer로 실행</span>
+<span style="color: #73D0FF">void</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">UHealthComponent::BeginPlay</span><span style="color: #D4D2C8">()</span>
+<span style="color: #D4D2C8">{</span>
+<span style="color: #D4D2C8">		</span><span style="color: #7E8AA1">// 이것도 마찬가지...</span>
+<span style="color: #D4D2C8">		</span><span style="color: #7E8AA1">// 타이머도 관리해줘야 하네??</span>
+<span style="color: #D4D2C8">    GetWorld()</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">GetTimerManager().SetTimer(</span>
+<span style="color: #D4D2C8">        TimerHandle, </span>
+<span style="color: #D4D2C8">        </span><span style="color: #FFAD66">this</span><span style="color: #D4D2C8">, </span>
+<span style="color: #D4D2C8">        </span><span style="color: #FFAD66">&amp;</span><span style="color: #D4D2C8">UHealthComponent</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">TryInitialize, </span>
+<span style="color: #D4D2C8">        </span><span style="color: #DFBFFF">0.1f</span>
+<span style="color: #D4D2C8">    );</span>
+<span style="color: #D4D2C8">}</span>
+</pre></div>
+                <p>위 코드와 유사한 초기화 방식을 안 짜본 사람은 없을 것이다. 간단한 소규모 게임에서는 정말</p>
+                <p>효과적인 코드가 될 수도 있다.</p>
+
+                <br>
+
+                <p><b>하지만 규모가 커질 수록 다음과 같은 문제가 발생할 수 있다.</b></p>
+                <p><b>개인적으로는 협업에서의 문제점이 가장 크다고 생각한다.</b></p>
+
+                <ul>
+                    <li><b>타이밍 이슈 : </b></li>
+                    <ul>
+                        <li>컴포넌트에서 ASC 가 필요하다면? 지금 초기화 된건지? 어디서 볼 수 있지?</li>
+                        <li>Health 와 InputComponent 의 순서가 중요하다면? 한 줄만 실수로 바꾸면 큰일…</li>
+                        <li>비동기 데이터 로딩 -  CharacterDefinition 같은 Primary 에셋이 로딩 중일 수 있음</li>
+                    </ul>
+                    <li><b>멀티 플레이 이슈 : </b></li>
+                    <ul>
+                        <li>만약 멀티 플레이 상황에서는 PlayerState 가 지연 복사될 경우에는? 아예 컴포넌트들이 초기화되지 않을 수도 있는데?</li>
+                    </ul>
+                    <li><b>유지 보수 : </b></li>
+                    <ul>
+                        <li>컴포넌트가 추가되면 계속 수동 관리해줘야 한다.</li>
+                        <li>컴포넌트들의 Initialize 함수를 호출하는 것을 까먹으면? (이 경우도 생각보다 많다)</li>
+                        <li>초기화 순서가 바뀌면?</li>
+                    </ul>
+                    <li><b>협업 위험 : </b></li>
+                    <ul>
+                        <li>컴다른 개발자가 컴포넌트를 추가하려는데 순서를 모른다..</li>
+                        <li>이 컴포넌트는 초기화 시 뭐가 필요한지 알기 어렵다</li>
+                    </ul>
+                </ul>
+
+                <br>
+                <h2>2. 초기화 스테이트 시스템 설명</h2>
+                
+
+                <p>이전에 이에 대해 다룬 적이 있어서 링크를 첨부한다.</p>
+                <p>https://taehunkim0.github.io/unreal-gameframeworkcomponentmanager/</p>
+
+                <br>
+                <p><b>설명보다는 Lyra 에서 사용한 방식과 현재 내 프로젝트에 적용한 방식을 설명한다.</b></p>
+             
+                <br>
+                <h2>3. Lyra 에서 사용한 초기화 스테이트 시스템에 대한 분석</h2>
+                
+                
+                <p>(Initialize State System = ISS 로 줄여서 적겠음.)</p>
+                <ul>
+                    <li><b>Lyra 는 많은 컴포넌트가 있지만, ISS 는 두 컴포넌트에만 적용했다.</b></li>
+                    <ul>
+                        <li>LyraHeroComponent, LyraPawnExtensionComponent</li>
+                    </ul>
+                </ul>
+
+                <br>
+                <ul>
+                    <li><b>LyraHealthComponent의 Initialize는 Character의 함수에서 수동으로 호출하고 있다.</b></li>
+                    <ul>
+                        <li>왜 이거만 이렇게 수동으로 호출한건지 의문이 들었다.</li>
+                        <ul>
+                            <li>HealthComponent는 상대적으로 단순해서 ISS가 과하다고 판단?</li>
+                            <li>레거시 코드?</li>
+                            <li>ISS를 모든 곳에 적용하는 건 비용이 크다고 판단?</li>
+                        </ul>
+                        <li>또한, 초기화 로직을 어디서 호출하는 지 찾아야 하는 번거로움과 수동 초기화 로직의 문제점이 발생할 가능성이 있다고 생각했다.</li>
+                        <li>일관성이 떨어져서 분석하는 데도 상당히 귀찮았다.</li>
+                    </ul>
+                </ul>
+                <!-- HTML generated using hilite.me --><div style="background: #1d2331; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: #73D0FF">void</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">ALyraCharacter::OnAbilitySystemInitialized</span><span style="color: #D4D2C8">()</span>
+<span style="color: #D4D2C8">{</span>
+<span style="color: #D4D2C8">    ULyraAbilitySystemComponent</span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> LyraASC </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> GetLyraAbilitySystemComponent();</span>
+<span style="color: #D4D2C8">    check(LyraASC);</span>
+
+<span style="color: #D4D2C8">    HealthComponent</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">InitializeWithAbilitySystem(LyraASC);</span>
+
+<span style="color: #D4D2C8">    InitializeGameplayTags();</span>
+<span style="color: #D4D2C8">}</span>
+</pre></div>
+
+                <br>
+                <ul>
+                    <li><b>Lyra는 각 스테이트의 이름은 범용적이다 (추상적이다).</b></li>
+                    <ul>
+                        <li>상태들이 추상적이어서 프로그래머마다 다른 의미가 될 수 있다고 생각했다.</li>
+                        <li>다른 컴포넌트의 DataAvailable 상태를 기다린다는 뜻이 어떤 의미인지 알 수 없다.</li>
+                        <ul>
+                            <li>ASC 가 준비된건지? PS가 준비된건지? 커스텀한 데이터 준비가 필요하다면?</li>
+                        </ul>
+                    </ul>
+                </ul>
+                <!-- HTML generated using hilite.me --><div style="background: #1d2331; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: #D4D2C8">{ LyraGameplayTags</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">InitState_Spawned, </span>
+<span style="color: #D4D2C8">LyraGameplayTags</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">InitState_DataAvailable, </span>
+<span style="color: #D4D2C8">LyraGameplayTags</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">InitState_DataInitialized,</span>
+<span style="color: #D4D2C8"> LyraGameplayTags</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">InitState_GameplayReady };</span>
+</pre></div>
+
+               
+
+                <br>
+                <h2>4. 좀 더 개선된 ISS 사용하기 위한 고민</h2>
+                
+                
+                <p><b>Lyra 의 ISS 는 좋은 시도였지만, 몇 가지 아쉬운 부분을 내 프로젝트에 적용해보려고 한다.</b></p>
+                <br>
+                <p><b>1. ISS 를 사용한다면, 모든 컴포넌트에 적용하기 (수동 초기화 로직 피하기)</b></p>
+                <ul>
+                    <li>어딘 쓰고 어딘 안쓰고 같은 일 벌어지지 않기</li>
+                    <li>그 컴포넌트의 CanChangeState 와 HandleStageChange 함수만 보면 초기화 시 어떤 의존성이 필요한지, 어떤 초기화를 하는지 알 수 있게</li>
+                </ul>
+                <br>
+                <p><b>2. 상태 이름을 직관적으로 변경하기</b></p>
+                <ul>
+                    <li>언리얼에서는 초반 초기화 로직에 필요한 것들은 ASC, PlayerState, PlayerController 와 같은 것과 커스텀 데이터에 해당한다고 생각했기 때문.</li>
+                    <li>따라서, 상태 이름을 InitState_ASCInitialized 이런식으로 변경하기</li>
+                </ul>
+
+                <br>
+                <p><b>3. 모든 컴포넌트들의 상태를 한 곳에서 조율하는 중앙 관리자 클래스 추가하기</b></p>
+                <ul>
+                    <li>PawnStateManager 의 상태가 현재 이 Pawn 의 상태라고 정의</li>
+                    <li>PawnStateManager 만 보면 전체 초기화 순서와 진행 상황을 알 수 있도록 하기</li>
+                    <li>PawnStateManager의 상태에 따라, 나머지 컴포넌트들이 대기하고 초기화하도록 한다.</li>
+                </ul>
+                <!-- HTML generated using hilite.me --><div style="background: #1d2331; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: #73D0FF">bool</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">UBSHealthComponent::CanChangeInitState</span><span style="color: #D4D2C8">(...) </span><span style="color: #FFAD66">const</span>
+<span style="color: #D4D2C8">{</span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (CurrentState </span><span style="color: #FFAD66">==</span><span style="color: #D4D2C8"> InitState_Spawned </span><span style="color: #FFAD66">&amp;&amp;</span>
+<span style="color: #D4D2C8">        DesiredState </span><span style="color: #FFAD66">==</span><span style="color: #D4D2C8"> InitState_ASCInitialized)</span>
+<span style="color: #D4D2C8">    {</span>
+<span style="color: #D4D2C8">        </span><span style="color: #7E8AA1">// PawnStateManager 야 나 ASC 필요해</span>
+<span style="color: #D4D2C8">        </span><span style="color: #FFAD66">return</span><span style="color: #D4D2C8"> Manager</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">HasFeatureReachedInitState(</span>
+<span style="color: #D4D2C8">            GetOwningActor(), </span>
+<span style="color: #D4D2C8">            UBSPawnStateManagerComponent</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">NAME_PAWNSTATEMANAGERCOMPONENT,</span>
+<span style="color: #D4D2C8">            InitState_ASCInitialized</span>
+<span style="color: #D4D2C8">        );</span>
+<span style="color: #D4D2C8">    }</span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">return</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">true</span><span style="color: #D4D2C8">;</span>
+<span style="color: #D4D2C8">}</span>
+
+<span style="color: #73D0FF">void</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">UBSHealthComponent::HandleChangeInitState</span><span style="color: #D4D2C8">(...) </span>
+<span style="color: #D4D2C8">{</span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (CurrentState </span><span style="color: #FFAD66">==</span><span style="color: #D4D2C8"> InitState_ASCInitialized)</span>
+<span style="color: #D4D2C8">    {</span>
+<span style="color: #D4D2C8">        </span><span style="color: #7E8AA1">// ASC 준비됐구나! 나 초기화할게~~</span>
+<span style="color: #D4D2C8">        </span><span style="color: #FFAD66">const</span><span style="color: #D4D2C8"> ABSCharacter</span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> Character </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> Cast</span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8">ABSCharacter</span><span style="color: #FFAD66">&gt;</span><span style="color: #D4D2C8">(GetOwningActor());</span>
+<span style="color: #D4D2C8">        InitializeWithAbilitySystem(Character</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">GetBSAbilitySystemComponent());</span>
+<span style="color: #D4D2C8">    }</span>
+<span style="color: #D4D2C8">}</span>
+</pre></div>
+
+                    <br>
+                    <image src="./images/Flow.png" width="700" height="200"></image>
+
+                    <br>
+                    <br>
+                    <h2>5. 실제로 적용한 결과</h2>
+                    
+
+                    <p><b>일단 Character의 BeginPlay 에 초기화 관련 코드가 없다!</b></p>
+                    <!-- HTML generated using hilite.me --><div style="background: #1d2331; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: #7E8AA1">// ===== BSCharacter.cpp =====</span>
+<span style="color: #73D0FF">void</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">ABSCharacter::BeginPlay</span><span style="color: #D4D2C8">()</span>
+<span style="color: #D4D2C8">{</span>
+<span style="color: #D4D2C8">    Super</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">BeginPlay();</span>
+<span style="color: #D4D2C8">    </span>
+<span style="color: #D4D2C8">    </span><span style="color: #7E8AA1">// ✅ 아무것도 안해도 됨!</span>
+<span style="color: #D4D2C8">    </span><span style="color: #7E8AA1">// ISS가 모든 컴포넌트를 자동으로 초기화</span>
+<span style="color: #D4D2C8">}</span>
+</pre></div>
+                    <p>컴포넌트 추가해도 Character 코드 수정 불필요</p>
+                    <p>Git 충돌 위험 감소</p>
+
+                    <br>
+                    <h3>1. 모든 컴포넌트에 ISS 적용 (현재 3개의 컴포넌트)</h3>
+                    
+
+                    <p><b>PawnStateManager - 중앙 관리자</b></p>
+                    <p><b>HealthComponent - ASC 필요</b></p>
+                    <!-- HTML generated using hilite.me --><div style="background: #1d2331; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: #7E8AA1">// ===== BSHealthComponent.cpp =====</span>
+
+<span style="color: #7E8AA1">// 1️⃣ 의존성 선언</span>
+<span style="color: #73D0FF">bool</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">UBSHealthComponent::CanChangeInitState</span><span style="color: #D4D2C8">(...) </span><span style="color: #FFAD66">const</span>
+<span style="color: #D4D2C8">{</span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (CurrentState </span><span style="color: #FFAD66">==</span><span style="color: #D4D2C8"> InitState_Spawned </span><span style="color: #FFAD66">&amp;&amp;</span>
+<span style="color: #D4D2C8">        DesiredState </span><span style="color: #FFAD66">==</span><span style="color: #D4D2C8"> InitState_ASCInitialized)</span>
+<span style="color: #D4D2C8">    {</span>
+<span style="color: #D4D2C8">        </span><span style="color: #7E8AA1">// &quot;ASC가 필요해&quot; - 코드만 봐도 즉시 이해</span>
+<span style="color: #D4D2C8">        </span><span style="color: #FFAD66">return</span><span style="color: #D4D2C8"> Manager</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">HasFeatureReachedInitState(</span>
+<span style="color: #D4D2C8">            GetOwningActor(), </span>
+<span style="color: #D4D2C8">            UBSPawnStateManagerComponent</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">NAME_PAWNSTATEMANAGERCOMPONENT,</span>
+<span style="color: #D4D2C8">            InitState_ASCInitialized</span>
+<span style="color: #D4D2C8">        );</span>
+<span style="color: #D4D2C8">    }</span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">return</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">true</span><span style="color: #D4D2C8">;</span>
+<span style="color: #D4D2C8">}</span>
+
+
+<span style="color: #7E8AA1">// 2️⃣ 초기화 로직</span>
+<span style="color: #73D0FF">void</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">UBSHealthComponent::HandleChangeInitState</span><span style="color: #D4D2C8">(...)</span>
+<span style="color: #D4D2C8">{</span>
+<span style="color: #D4D2C8">    </span><span style="color: #7E8AA1">// ✅ ASCInitialized 상태가 되면 자동으로 호출됨</span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (CurrentState </span><span style="color: #FFAD66">==</span><span style="color: #D4D2C8"> InitState_ASCInitialized)</span>
+<span style="color: #D4D2C8">    {</span>
+<span style="color: #D4D2C8">        </span><span style="color: #FFAD66">const</span><span style="color: #D4D2C8"> ABSCharacter</span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> Character </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> Cast</span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8">ABSCharacter</span><span style="color: #FFAD66">&gt;</span><span style="color: #D4D2C8">(GetOwningActor());</span>
+<span style="color: #D4D2C8">        InitializeWithAbilitySystem(Character</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">GetBSAbilitySystemComponent());</span>
+<span style="color: #D4D2C8">    }</span>
+<span style="color: #D4D2C8">}</span>
+</pre></div>
+
+                    <br>
+                    <p><b>PawnInputComponet - CharacterDefinition (커스텀 데이터) 필요</b></p>
+                    <!-- HTML generated using hilite.me --><div style="background: #1d2331; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: #7E8AA1">// ===== BSPawnInputComponent.cpp =====</span>
+
+<span style="color: #7E8AA1">// 1️⃣ 의존성 선언</span>
+<span style="color: #73D0FF">bool</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">UBSPawnInputComponent::CanChangeInitState</span><span style="color: #D4D2C8">(UGameFrameworkComponentManager</span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> Manager,</span>
+<span style="color: #D4D2C8">    FGameplayTag CurrentState, FGameplayTag DesiredState) </span><span style="color: #FFAD66">const</span>
+<span style="color: #D4D2C8">{</span>
+<span style="color: #D4D2C8">		</span><span style="color: #7E8AA1">// ✅ 의존성이 명시적으로 선언됨</span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (CurrentState </span><span style="color: #FFAD66">==</span><span style="color: #D4D2C8"> BSGamePlayTags</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">InitState_ASCInitialized</span>
+<span style="color: #D4D2C8">       </span><span style="color: #FFAD66">&amp;&amp;</span><span style="color: #D4D2C8"> DesiredState </span><span style="color: #FFAD66">==</span><span style="color: #D4D2C8"> BSGamePlayTags</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">InitState_CharacterDefinitionInitialized)</span>
+<span style="color: #D4D2C8">    {</span>
+<span style="color: #D4D2C8">	     </span><span style="color: #7E8AA1">// &quot;CharacterDefinition이 필요해&quot; - 코드만 봐도 즉시 이해</span>
+<span style="color: #D4D2C8">       </span><span style="color: #FFAD66">return</span><span style="color: #D4D2C8"> Manager</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">HasFeatureReachedInitState(GetOwningActor(),</span>
+<span style="color: #D4D2C8">        UBSPawnStateManagerComponent</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">NAME_PAWNSTATEMANAGERCOMPONENT,</span>
+<span style="color: #D4D2C8">        BSGamePlayTags</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">InitState_CharacterDefinitionInitialized</span>
+<span style="color: #D4D2C8">        );</span>
+<span style="color: #D4D2C8">    }</span>
+
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">return</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">true</span><span style="color: #D4D2C8">;</span>
+<span style="color: #D4D2C8">}</span>
+
+
+<span style="color: #7E8AA1">// 2️⃣ 초기화 로직</span>
+<span style="color: #73D0FF">void</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">UBSPawnInputComponent::HandleChangeInitState</span><span style="color: #D4D2C8">(UGameFrameworkComponentManager</span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> Manager,</span>
+<span style="color: #D4D2C8">    FGameplayTag CurrentState, FGameplayTag DesiredState)</span>
+<span style="color: #D4D2C8">{</span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (CurrentState </span><span style="color: #FFAD66">==</span><span style="color: #D4D2C8"> BSGamePlayTags</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">InitState_CharacterDefinitionInitialized)</span>
+<span style="color: #D4D2C8">    {</span>
+<span style="color: #D4D2C8">       </span><span style="color: #FFAD66">const</span><span style="color: #D4D2C8"> APawn</span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> Pawn </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> GetPawn</span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8">APawn</span><span style="color: #FFAD66">&gt;</span><span style="color: #D4D2C8">();</span>
+<span style="color: #D4D2C8">       </span><span style="color: #FFAD66">const</span><span style="color: #D4D2C8"> ABSPlayerState</span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> BSPS </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> GetPlayerState</span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8">ABSPlayerState</span><span style="color: #FFAD66">&gt;</span><span style="color: #D4D2C8">();</span>
+<span style="color: #D4D2C8">       </span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (</span><span style="color: #FFAD66">!</span><span style="color: #D4D2C8">ensure(Pawn </span><span style="color: #FFAD66">&amp;&amp;</span><span style="color: #D4D2C8"> BSPS))</span>
+<span style="color: #D4D2C8">       {</span>
+<span style="color: #D4D2C8">          </span><span style="color: #FFAD66">return</span><span style="color: #D4D2C8">;</span>
+<span style="color: #D4D2C8">       }</span>
+
+<span style="color: #D4D2C8">       </span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (ABSPlayerController</span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> BSPC </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> GetController</span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8">ABSPlayerController</span><span style="color: #FFAD66">&gt;</span><span style="color: #D4D2C8">())</span>
+<span style="color: #D4D2C8">       {</span>
+<span style="color: #D4D2C8">          </span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (Pawn</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">InputComponent </span><span style="color: #FFAD66">!=</span><span style="color: #D4D2C8"> </span><span style="color: #FFAD66">nullptr</span><span style="color: #D4D2C8">)</span>
+<span style="color: #D4D2C8">          {</span>
+<span style="color: #D4D2C8">		         </span><span style="color: #7E8AA1">// ✅ CharacterDefinition 상태가 되면 자동으로 호출됨</span>
+<span style="color: #D4D2C8">             InitializePlayerInput(Pawn</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">InputComponent);</span>
+<span style="color: #D4D2C8">          }</span>
+<span style="color: #D4D2C8">       }</span>
+<span style="color: #D4D2C8">    }</span>
+<span style="color: #D4D2C8">}</span>
+</pre></div>              
+
+                    <br>
+                    <h3>2. 상태 이름을 직관적으로 변경하기</h3>
+                    
+<!-- HTML generated using hilite.me --><div style="background: #1d2331; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: #7E8AA1">// ===== BSGamePlayTags.h =====</span>
+<span style="color: #FFAD66">namespace</span><span style="color: #D4D2C8"> BSGamePlayTags</span>
+<span style="color: #D4D2C8">{</span>
+<span style="color: #D4D2C8">    </span><span style="color: #7E8AA1">// ✅ 구체적이고 명확한 이름</span>
+<span style="color: #D4D2C8">    UE_DEFINE_GAMEPLAY_TAG(InitState_Spawned, </span>
+<span style="color: #D4D2C8">        </span><span style="color: #D5FF80">&quot;InitState.Spawned&quot;</span><span style="color: #D4D2C8">);</span>
+<span style="color: #D4D2C8">    </span>
+<span style="color: #D4D2C8">    UE_DEFINE_GAMEPLAY_TAG(InitState_ASCInitialized, </span>
+<span style="color: #D4D2C8">        </span><span style="color: #D5FF80">&quot;InitState.ASCInitialized&quot;</span><span style="color: #D4D2C8">);</span>
+<span style="color: #D4D2C8">    </span>
+<span style="color: #D4D2C8">    UE_DEFINE_GAMEPLAY_TAG(InitState_CharacterDefinitionInitialized, </span>
+<span style="color: #D4D2C8">        </span><span style="color: #D5FF80">&quot;InitState.CharacterDefinitionInitialized&quot;</span><span style="color: #D4D2C8">);</span>
+<span style="color: #D4D2C8">    </span>
+<span style="color: #D4D2C8">    UE_DEFINE_GAMEPLAY_TAG(InitState_CharacterComponentInitialized, </span>
+<span style="color: #D4D2C8">        </span><span style="color: #D5FF80">&quot;InitState.CharacterComponentInitialized&quot;</span><span style="color: #D4D2C8">);</span>
+<span style="color: #D4D2C8">    </span>
+<span style="color: #D4D2C8">    UE_DEFINE_GAMEPLAY_TAG(InitState_GameplayReady, </span>
+<span style="color: #D4D2C8">        </span><span style="color: #D5FF80">&quot;InitState.GameplayReady&quot;</span><span style="color: #D4D2C8">);</span>
+<span style="color: #D4D2C8">}</span>
+</pre></div>
+
+                    <p>이름만 봐도 무엇이 준비됐는지 즉시 파악되도록 했다.</p>
+                    <p>CharactionDefinition 은 게임에서 필요한 코어 커스텀 데이터이다.</p>
+                    <p>추 후 PSInitialized, InitState_InventoryLoaded  등의 상태들을 추가할 수 있다.</p>
+
+                    <br>
+                    <h3>3. 중앙 관리자 클래스 추가하기</h3>
+                    
+
+                    <p><b>중앙 관리자는 실제 리소스가 로드되었는지 체크한다.</b></p>
+                    <p><b>그리고 다른 모든 컴포넌트가 각 상태에 도달했는지 확인하고, 다음 상태로 진입한다.</b></p>
+                    <p>현재 Pawn 의 모든 컴포넌트가 어떤 상태에 있는지 디버깅하기도 쉽고, 한 곳에서 흐름을 볼 수 있다는 것이 장점이다. </p>
+<!-- HTML generated using hilite.me --><div style="background: #1d2331; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: #7E8AA1">// ===== BSPawnStateManagerComponent.cpp =====</span>
+<span style="color: #7E8AA1">// ✅ 중앙 관리자가 모든 것을 조율</span>
+<span style="color: #73D0FF">bool</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">UBSPawnStateManagerComponent::CanChangeInitState</span><span style="color: #D4D2C8">(...) </span><span style="color: #FFAD66">const</span>
+<span style="color: #D4D2C8">{</span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">const</span><span style="color: #D4D2C8"> ABSPlayerState</span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> PS </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> GetPlayerState</span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8">ABSPlayerState</span><span style="color: #FFAD66">&gt;</span><span style="color: #D4D2C8">();</span>
+
+<span style="color: #D4D2C8">    </span><span style="color: #7E8AA1">// === 1단계 진입: ASCInitialized ===</span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (CurrentState </span><span style="color: #FFAD66">==</span><span style="color: #D4D2C8"> InitState_Spawned </span><span style="color: #FFAD66">&amp;&amp;</span>
+<span style="color: #D4D2C8">        DesiredState </span><span style="color: #FFAD66">==</span><span style="color: #D4D2C8"> InitState_ASCInitialized)</span>
+<span style="color: #D4D2C8">    {</span>
+<span style="color: #D4D2C8">        </span><span style="color: #7E8AA1">// 실제 리소스 체크: PlayerState와 ASC 확인</span>
+<span style="color: #D4D2C8">        </span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (PS </span><span style="color: #FFAD66">&amp;&amp;</span><span style="color: #D4D2C8"> PS</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">GetBSAbilitySystemComponent()</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">HasBeenInitialized())</span>
+<span style="color: #D4D2C8">        {</span>
+<span style="color: #D4D2C8">            UE_LOG(LogBS, Log, TEXT(</span><span style="color: #D5FF80">&quot;ASC 준비 완료!&quot;</span><span style="color: #D4D2C8">));</span>
+<span style="color: #D4D2C8">            </span><span style="color: #FFAD66">return</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">true</span><span style="color: #D4D2C8">;</span>
+<span style="color: #D4D2C8">        }</span>
+<span style="color: #D4D2C8">        </span>
+<span style="color: #D4D2C8">        UE_LOG(LogBS, Log, TEXT(</span><span style="color: #D5FF80">&quot;⏳ ASC 대기 중...&quot;</span><span style="color: #D4D2C8">));</span>
+<span style="color: #D4D2C8">        </span><span style="color: #FFAD66">return</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">false</span><span style="color: #D4D2C8">;</span>
+<span style="color: #D4D2C8">    }</span>
+
+<span style="color: #D4D2C8">    </span><span style="color: #7E8AA1">// === 2단계 진입: CharacterDefinitionInitialized ===</span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">else</span><span style="color: #D4D2C8"> </span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (CurrentState </span><span style="color: #FFAD66">==</span><span style="color: #D4D2C8"> InitState_ASCInitialized </span><span style="color: #FFAD66">&amp;&amp;</span>
+<span style="color: #D4D2C8">             DesiredState </span><span style="color: #FFAD66">==</span><span style="color: #D4D2C8"> InitState_CharacterDefinitionInitialized)</span>
+<span style="color: #D4D2C8">    {</span>
+<span style="color: #D4D2C8">        </span><span style="color: #7E8AA1">// 조건 1: 모든 컴포넌트가 1단계 완료했나?</span>
+<span style="color: #D4D2C8">        </span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (</span><span style="color: #FFAD66">!</span><span style="color: #D4D2C8">Manager</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">HaveAllFeaturesReachedInitState(</span>
+<span style="color: #D4D2C8">            GetOwningActor(), </span>
+<span style="color: #D4D2C8">            InitState_ASCInitialized, </span>
+<span style="color: #D4D2C8">            NAME_PAWNSTATEMANAGERCOMPONENT))</span>
+<span style="color: #D4D2C8">        {</span>
+<span style="color: #D4D2C8">            UE_LOG(LogBS, Warning, </span>
+<span style="color: #D4D2C8">                TEXT(</span><span style="color: #D5FF80">&quot;⏳ 일부 컴포넌트가 아직 ASCInitialized 도달 안함&quot;</span><span style="color: #D4D2C8">));</span>
+<span style="color: #D4D2C8">            </span><span style="color: #FFAD66">return</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">false</span><span style="color: #D4D2C8">;</span>
+<span style="color: #D4D2C8">        }</span>
+<span style="color: #D4D2C8">        </span>
+<span style="color: #D4D2C8">        </span><span style="color: #7E8AA1">// 실제 리소스 체크: CharacterDefinition 로드 확인</span>
+<span style="color: #D4D2C8">        </span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (PS </span><span style="color: #FFAD66">&amp;&amp;</span><span style="color: #D4D2C8"> PS</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">GetCharacterDefData())</span>
+<span style="color: #D4D2C8">        {</span>
+<span style="color: #D4D2C8">            UE_LOG(LogBS, Log, TEXT(</span><span style="color: #D5FF80">&quot;CharacterDef 로드 완료!&quot;</span><span style="color: #D4D2C8">));</span>
+<span style="color: #D4D2C8">            </span><span style="color: #FFAD66">return</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">true</span><span style="color: #D4D2C8">;</span>
+<span style="color: #D4D2C8">        }</span>
+
+<span style="color: #D4D2C8">        UE_LOG(LogBS, Warning, TEXT(</span><span style="color: #D5FF80">&quot;⏳ CharacterDef 로딩 중...&quot;</span><span style="color: #D4D2C8">));</span>
+<span style="color: #D4D2C8">        </span><span style="color: #FFAD66">return</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">false</span><span style="color: #D4D2C8">;</span>
+<span style="color: #D4D2C8">    }</span>
+
+<span style="color: #D4D2C8">    </span><span style="color: #7E8AA1">// ... 나머지 단계들</span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">return</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">false</span><span style="color: #D4D2C8">;</span>
+<span style="color: #D4D2C8">}</span>
+</pre></div>
+
+                    <p>실제로 위 코드를 실행했을 때의 로그이다.</p>
+                    <p>Pawn의 모든 컴포넌트가 어떤 상태에 있는지 알 수 있다.</p>
+                    <image src="./images/Log.png" width="700" height="200"></image>
+
+                    <br>
+
+                    <br>
+                    <p><b>중앙 관리자도 HandleStateChange 함수로 각 상태에, 필요한 이벤트를 Broadcast 할 수 있다.</b></p>
+<!-- HTML generated using hilite.me --><div style="background: #1d2331; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: #73D0FF">void</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">UBSPawnStateManagerComponent::HandleChangeInitState</span><span style="color: #D4D2C8">(...)</span>
+<span style="color: #D4D2C8">{</span>
+<span style="color: #D4D2C8">    UE_LOG(LogBSInitState, Log, </span>
+<span style="color: #D4D2C8">        TEXT(</span><span style="color: #D5FF80">&quot;[Manager] State %s -&gt; %s&quot;</span><span style="color: #D4D2C8">), </span>
+<span style="color: #D4D2C8">        </span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8">CurrentState.ToString(), </span>
+<span style="color: #D4D2C8">        </span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8">DesiredState.ToString());</span>
+<span style="color: #D4D2C8">    </span>
+<span style="color: #D4D2C8">    </span><span style="color: #7E8AA1">// ASCInitialized 도달시 이벤트 발생</span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (CurrentState </span><span style="color: #FFAD66">==</span><span style="color: #D4D2C8"> InitState_ASCInitialized)</span>
+<span style="color: #D4D2C8">    {</span>
+<span style="color: #D4D2C8">        </span><span style="color: #FFAD66">const</span><span style="color: #D4D2C8"> ABSPlayerState</span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> PS </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> GetPlayerState</span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8">ABSPlayerState</span><span style="color: #FFAD66">&gt;</span><span style="color: #D4D2C8">();</span>
+<span style="color: #D4D2C8">        </span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (PS </span><span style="color: #FFAD66">&amp;&amp;</span><span style="color: #D4D2C8"> PS</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">GetBSAbilitySystemComponent())</span>
+<span style="color: #D4D2C8">        {</span>
+<span style="color: #D4D2C8">            </span><span style="color: #7E8AA1">// 📢 다른 컴포넌트들에게 알림</span>
+<span style="color: #D4D2C8">            OnAbilitySystemInitialized.Broadcast();</span>
+<span style="color: #D4D2C8">        }</span>
+<span style="color: #D4D2C8">    }</span>
+<span style="color: #D4D2C8">}</span>
+</pre></div>
+
+                <br>
+                <p><b>정리한 구조는 다음과 같다</b></p>
+                <p>(AI가 그림으로 정리를 잘해줬다..)</p>
+                <image src="./images/Structure.png" width="750" height="350"></image>
+
+                <br>
+                <br>
+                <h2>후기</h2>
+                
+
+                <p>장점만 나열되어 있지만, 단점은 생각보다 처음 이 시스템을 이해하는데 비용이 많이 들었다.</p>
+                <p>또한 정말 간단한 컴포넌트도 이걸 사용한다면 과하다고 느낄 수 있다.</p>
+                <p>소규모에서도 적용한다면 할 수 있겠지만, 팀 내 상태 리스트와 순서에 대한 고민이 필요하다.</p>
+                <br>
+                <p>하지만 초기화 로직이 다른 클래스 코드에 들어갈 일도 없고, 협업 시에 해당 클래스만 보면 되어</p>
+                <p>리뷰도 용이하다고 생각된다. 갑자기 LyraCharacter 클래스에 가서 Initialize 한 줄을 적다가 Git 에서</p>
+                <p>충돌나는 그런 일들도 줄일 수 있다.</p>
+
+                <br>
+                <p>객체지향에서 정말 많은 오브젝트 또는 컴포넌트가 생성되는데, 생성 즉시 초기화가 완료되어 </p>
+                <p>바로 사용할 수 있도록 하는 것이 베스트 라고 생각하지만, </p>
+                <p>언리얼에서는 생성자를 커스텀하고 만들 수도 없고, 시점 문제도 있기 때문에 이 ISS 로 불편한 부분</p>
+                <p>들을 많이 해소할 수 있을 것 같다.</p>
+                <br>
+                <p>좀 더 규모를 키우면서 ISS 에 대한 생각과 활용도 달라질 것 같다. 추 후 한 번더 정리해야겠다.</p>
+
+            </div>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 [TaehunKim0]. All rights reserved.</p>
+    </footer>
+</body>
+</html>

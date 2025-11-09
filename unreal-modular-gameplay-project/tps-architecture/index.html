@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lyra 시스템을 참고한 TPS 게임 구조 설계</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Unreal Modular Gameplay 스타일 기반 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #ffffff;
+            color: #333;
+            line-height: 1.6;
+            padding: 40px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        header {
+            margin-bottom: 60px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .header-title {
+            font-size: 32px;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .header-nav {
+            margin-top: 15px;
+        }
+
+        .header-nav a {
+            margin-right: 20px;
+            font-size: 14px;
+            color: #0066cc;
+        }
+
+        .back-link {
+            font-size: 16px;
+            margin-bottom: 30px;
+            display: inline-block;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 400;
+            margin: 30px 0 20px 0;
+            color: #333;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 400;
+            margin: 50px 0 30px 0;
+            color: #333;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        h3 {
+            font-size: 20px;
+            font-weight: 400;
+            margin: 40px 0 20px 0;
+            color: #333;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        h4 {
+            font-size: 18px;
+            font-weight: 400;
+            margin: 30px 0 15px 0;
+            color: #333;
+        }
+
+        .post-meta {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .post-tags span {
+            display: inline-block;
+            background-color: #e0e0e0;
+            color: #666;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            margin-right: 8px;
+            margin-top: 5px;
+        }
+
+        .post-content {
+            font-size: 17px;
+            color: #444;
+            margin-bottom: 60px;
+        }
+
+        .post-content p {
+            margin-bottom: 1.2em;
+        }
+
+        .post-content ul {
+            margin-bottom: 1.2em;
+            padding-left: 20px;
+        }
+
+        .post-content li {
+            margin-bottom: 0.8em;
+        }
+
+        /* 코드 블록 스타일 */
+        .post-content pre {
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 15px 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 25px 0;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+        
+        .post-content code {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1em;
+            background-color: #e0e0e0;
+            padding: 2px 5px;
+            border-radius: 4px;
+            color: #c7254e;
+        }
+        
+        .post-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        /* 표 스타일 */
+        .post-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+
+        .post-content th, .post-content td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .post-content th {
+            background-color: #f8f9fa;
+            font-weight: 700;
+        }
+
+        .post-content tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        footer {
+            margin-top: 80px;
+            padding-top: 30px;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+            font-size: 13px;
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 30px 15px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+     <header>
+        <div class="header-title">
+            <a href="/">TaehunKim0</a>
+        </div>
+        <nav class="header-nav">
+            <a href="/">Home</a>
+            <a href="https://github.com/TaehunKim0" target="_blank">GitHub</a>
+        </nav>
+    </header>
+
+    <main>
+        <article class="post-detail">
+            <h1 class="post-title">Lyra 시스템을 참고한 TPS 게임 구조 설계</h1>
+            <div class="post-meta">
+                <span class="post-date">2025년 6월 15일</span>
+                <div class="post-tags">
+                    <span>#UnrealEngine</span>
+                </div>
+            </div>
+            <div class="post-content">
+                <p>
+                    World War Z와 같은 캐릭터 클래스 중심의 좀비 게임을 개발할 때 Lyra를 참고해 설계해 보려고 한다. <br>
+                    Lyra의 게임 장르 변경을 위한 Experience 시스템을 캐릭터 클래스 변경 중심의 시스템으로 재설계 했다.
+                    <br>
+                    좀비 게임이라는 장르로 고정했을 때 Lyra의 Experience 는 필요하지 않다. <br>그래서 CharacterDefinition 으로 바꾸고 런타임에 캐릭터 클래스를 변경할 수 있게 하는게 좋아보인다.
+                </p>
+
+                
+
+                <h3>기존 Lyra 시스템과의 차이점</h3>
+                <p>
+                    Lyra는 하나의 프로젝트에서 여러 게임 장르를 구현할 수 있도록 설계되었다. 예를 들어, 일반적인 FPS 슈터와 탑다운 뷰 게임을 Experience라는 단위로 전환할 수 있다. 하지만 장르가 고정되어 있으며, 대신 플레이어가 선택할 수 있는 다양한 캐릭터 클래스가 존재하도록 했다.
+                </p>
+                <p>
+                    따라서 <strong>Experience → CharacterDefinition</strong>으로, <strong>게임 장르 변경 → 캐릭터 클래스 변경</strong><br>으로 개념을 전환했다.
+                </p>
+
+                
+
+                <h2>폴더 구조</h2>
+                <h3>Source 폴더 (핵심 시스템)</h3>
+                <p>
+                    Source 폴더에는 게임의 뼈대가 되는 핵심 시스템들을 배치한다. 이곳에는 모든 시스템이 의존하는 기본 클래스들과 게임 없이는 작동할 수 없는 필수 요소들을 포함하면 된다. 플레이어어가 캐릭터 클래스를 선택하기 전에 기본으로 적용되는 DefaultCharacterDefinition 도 포함된다.
+                </p>
+
+                <h3>Plugins 폴더 (독립 기능 모듈)</h3>
+                <p>
+                    Plugins 폴더에는 독립적으로 개발하고 테스트할 수 있는 기능들을 배치한다. 각각 켜고 끌 수 있는 모듈형 기능들로, 예를 들어 워킹 데드의 Carl이나 Rick 같은 특정 캐릭터의 CharacterDefinition들이 여기에 들어간다 (워킹 데드를 좋아해서 등장인물로 이름을 선정해봤다). 이렇게 분리함으로써 팀 단위 개발 시 충돌을 최소화하고, 필요에 따라 특정 캐릭터 기능을 쉽게 추가하거나 제거할 수 있다.
+                </p>
+                <p>
+                    결국 테스트에서 가장 많은 시간을 보내게 될 텐데, 이 때 모듈 단위로 로딩, 언로딩할 수 있도록 해서 직관적이며 협업에서도 모듈 단위로 분담할 수 있고, Slack 에서도 모듈 이름으로 소통해 직관적이다.
+                    당연히 버젼 관리도 좋을 것 같다.
+                </p>
+
+                <h3>단점</h3>
+                <p>계속 장점만 이야기 했지만 단점도 존재한다.</p>
+                <ul>
+                    <li>초기 설정 비용이 정말 많이 든다. 간단한 프로토타입을 만들고 싶어도 모든 모듈 구조와 의존성을 먼저 설계해야 하므로, 개발 초기 단계에서 오버헤드가 크다고 느낀다. Lyra의 Experience 관련 매니저, 컴포넌트만 봐도 복잡하고 클래스들이 많다는 걸 알 수 있다.</li>
+                    <li>Lyra 는 테크 데모지, 실제 프로젝트에 적용하기에는 오버 엔지니어링이라고 생각한다.</li>
+                    <li>다음은 의존성 문제이다. 모듈끼리 최대한 커플링을 피하는 것이 옳지만, 개발하다보면 시간에 쫓기고 마감이 닥치면 실수하게 된다. 그 이후는… 유지 보수가 점점 어려워 진다.</li>
+                </ul>
+
+                
+
+                <h2>CharacterDefinition</h2>
+                <p>이는 크게 2가지로 구성된다.</p>
+                <ul>
+                    <li>플레이어의 캐릭터 정보</li>
+                    <li>플레이어에게 적용될 게임 시스템
+                        <ul>
+                            <li>플레이어 or 캐릭터에게 적용되는 기본 시스템</li>
+                            <li>해당 플레이어 or 캐릭터 만 적용되는 시스템</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <pre><code>DefaultCharacterDefinition
+
+* Default Pawn Data
+   * Pawn Class
+   * InputConfig
+      * InputAction 과 GamePlayTag 바인딩
+   * AbilitySet
+      * GamePlayAbility 와 GamePlayTag(InputTag) 바인딩
+      * GrantedGamePlayEffect
+      * GrantedGamePlayAttributes
+* Default Game Feature (이 캐릭터가 로드할 기능들)
+   * *전체 게임 시스템 ex)*
+      * WeaponSystem (무기 관리 전체)
+      * InventorySystem (인벤토리 UI + 로직)
+      * QuestSystem (퀘스트 UI + 데이터)
+      * ShopSystem (상점 기능 전체)
+</code></pre>
+<pre><code>
+예시
+CarlCharacterDefinition
+
+* PawnData ├── Pawn Class: BP_Carl
+├── Ability Set: AbilitySet_Carl (기본 능력들)
+│ ├── GA_Move (이동) → InputTag.Move 
+│ ├── GA_Jump (점프) → InputTag.Jump
+│ ├── GA_Death (죽음 처리) 
+│ ├── GA_WeaponFire (무기 발사) → InputTag.WeaponFire
+│ ├── GE_IsPlayer
+│ ├── CarlAttributesSet
+
+└── Input Config: InputData_Carl
+├── WASD → InputTag.Move
+├── Mouse → InputTag.Weapon.Fire
+├── Space → InputTag.Ability.Jump
+├── 1~9 → InputTag.Weapon.Select
+└── R → InputTag.Weapon.Reload
+
+* Game Feature Actions
+├── Add Component: SaveGameComponent (세이브/로드)
+├── Add Component: ZombieModeComponent(기본좀비모드)
+├── Add Component: DialogueComponent (컷신/대화)
+├── Add Ability: GA_EagleEye (Carl 전용 Ability)
+├── Add Ability: GA_SuperJump (Carl 전용 Ability)
+├── Add UI: Widget_SinglePlayerHUD</code></pre>
+
+                <p>Ability Set 와 Game Feature 차이는</p>
+                <ul>
+                    <li>AbilitySet은 "개인 능력"</li>
+                    <li>Game Feature 는 “시스템/기능 모듈"</li>
+                </ul>
+
+                <strong>Character Definition 의 데이터 중심 구조의 장점은 다음과 같다.</strong>
+                <ol>
+                    <li>런타임에 캐릭터 변경이 쉬워진다.</li>
+                    <li>모듈화의 장점을 포함한다.</li>
+                    <li>코드를 수정하지 않고도 데이터 에셋만으로 캐릭터의 특성을 조정할 수 있다</li>
+                </ol>
+                <p>결국 유지 보수와 업데이트가 쉬워질 수 있다는 것이다.</p>
+
+                <strong>언리얼에서 모듈화 기능의 핵심인 Game Feature 를 사용하는 이유는 다음과 같다.</strong>
+                <ol>
+                    <li><strong>메모리 효율성</strong>. Carl을 플레이할 때는 Rick 관련 기능들이 메모리에 로드되지 않는다. 불필요한 시스템들을 메모리에서 제외할 수 있다.</li>
+                    <li>똑같은 얘기지만 각 기능별로 독립적으로 개발하고 테스트할 수 있어서, 팀의 여러 개발자가 동시에 작업할 때 충돌이 줄어든다. Carl 전담 개발자는 Carl 관련 시스템만, Rick 전담 개발자는 Rick 관련 시스템만 개발하는 식이 가능하다.</li>
+                </ol>
+            </div>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 TaehunKim0. All rights reserved.</p>
+    </footer>
+</body>
+</html>
