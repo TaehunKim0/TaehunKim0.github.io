@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nirvana 프로젝트 - TaehunKim0</title>
     <style>
-        /* Unreal Modular Gameplay 스타일 기반 */
         * {
             margin: 0;
             padding: 0;
@@ -13,13 +12,10 @@
         }
 
         body {
-            font-family: 'Noto Sans KR', sans-serif;
+            font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
             background: #ffffff;
             color: #333;
-            line-height: 1.6;
-            padding: 40px 20px;
-            max-width: 900px;
-            margin: 0 auto;
+            line-height: 1.7;
         }
 
         a {
@@ -31,265 +27,798 @@
             text-decoration: underline;
         }
 
-        header {
-            margin-bottom: 60px;
-            padding-bottom: 20px;
+        h2 {
             border-bottom: 1px solid #e0e0e0;
+        }
+
+        h3 {
+            border-bottom: 1px solid #e0e0e0;
+        }
+        h4 {
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.98);
+            border-bottom: 1px solid #e0e0e0;
+            padding: 20px 40px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .header-title {
-            font-size: 32px;
-            font-weight: 400;
-            margin-bottom: 10px;
-        }
-
-        .header-nav {
-            margin-top: 15px;
+            font-size: 20px;
+            font-weight: 600;
         }
 
         .header-nav a {
-            margin-right: 20px;
+            margin-left: 30px;
             font-size: 14px;
+            color: #666;
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 80px;
+            padding: 80px 40px 60px;
+            background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 300;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+        }
+
+        .hero .subtitle {
+            font-size: 20px;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        .project-info {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #999;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .info-value {
+            font-size: 16px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        /* Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 40px;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 80px;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 300;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .section-subtitle {
+            font-size: 24px;
+            font-weight: 400;
+            margin: 50px 0 20px 0;
+            color: #444;
+        }
+
+        .section-subheading {
+            font-size: 20px;
+            font-weight: 500;
+            margin: 35px 0 15px 0;
+            color: #555;
+        }
+
+        /* Content */
+        .content-block {
+            margin-bottom: 30px;
+        }
+
+        .content-block p {
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: #444;
+        }
+
+        .content-block ul {
+            margin: 20px 0;
+            padding-left: 25px;
+        }
+
+        .content-block li {
+            margin-bottom: 12px;
+            font-size: 16px;
+            color: #444;
+            line-height: 1.8;
+        }
+
+        /* Role Container with Image */
+        .role-container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 40px;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        .role-image {
+            position: static;
+            top: 100px;
+        }
+
+        .role-image-s {
+            position: static;
+            top: 100px;
+        }
+
+        .role-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin: 0;
+        }
+
+        .role-image-s img {
+            width: 70%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin: 0;
+        }
+
+        .role-content {
+            flex: 1;
+        }
+
+        /* Image */
+        .content-image {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 40px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .image-caption {
+            text-align: center;
+            font-size: 14px;
+            color: #888;
+            margin-top: -25px;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+
+        /* Code Block */
+        .code-block {
+            background-color: #f8f9fa;
+            border-left: 3px solid #0066cc;
+            padding: 20px 25px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .code-block p {
+            font-size: 15px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        /* Highlight Box */
+        .highlight-box {
+            background-color: #f0f7ff;
+            border: 1px solid #d0e7ff;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+
+        .highlight-box h4 {
+            font-size: 18px;
+            margin-bottom: 15px;
             color: #0066cc;
         }
 
-        .back-link {
-            font-size: 16px;
-            margin-bottom: 30px;
-            display: inline-block;
-        }
-
-        h1 {
-            font-size: 36px;
-            font-weight: 400;
-            margin: 30px 0 20px 0;
-            color: #333;
-        }
-
-        h2 {
-            font-size: 24px;
-            font-weight: 400;
-            margin: 50px 0 30px 0;
-            color: #333;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        
-        h3 {
-            font-size: 20px;
-            font-weight: 400;
-            margin: 40px 0 20px 0;
-            color: #333;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        h4 {
-            font-size: 18px;
-            font-weight: 400;
-            margin: 30px 0 15px 0;
-            color: #333;
-        }
-
-         .project-image {
-            width: 100%;
-            max-width: 700px; /* 원본의 너비를 고려 */
-            height: auto;
-            border-radius: 8px;
-            margin: 30px auto;
-            display: block; /* 중앙 정렬을 위해 */
-        }
-
-        .post-meta {
-            font-size: 16px;
-            color: #666;
-            margin-bottom: 30px;
-        }
-
-        .post-tags span {
-            display: inline-block;
-            background-color: #e0e0e0;
-            color: #666;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 13px;
-            margin-right: 8px;
-            margin-top: 5px;
-        }
-
-        .post-content {
-            font-size: 17px;
-            color: #444;
-            margin-bottom: 60px;
-        }
-
-        .post-content p {
-            margin-bottom: 1.2em;
-        }
-
-        .post-content ul {
-            margin-bottom: 1.2em;
-            padding-left: 20px;
-        }
-
-        .post-content li {
-            margin-bottom: 0.8em;
-        }
-
-        /* 코드 블록 스타일 */
-        .post-content pre {
-            background-color: #282c34;
-            color: #abb2bf;
-            padding: 15px 20px;
-            border-radius: 8px;
-            overflow-x: auto;
-            margin: 25px 0;
-            font-family: 'Roboto Mono', monospace;
-            font-size: 15px;
-            line-height: 1.4;
-        }
-        
-        .post-content code {
-            font-family: 'Roboto Mono', monospace;
-            font-size: 1em;
-            background-color: #e0e0e0;
-            padding: 2px 5px;
-            border-radius: 4px;
-            color: #c7254e;
-        }
-        
-        .post-content pre code {
-            background-color: transparent;
-            color: inherit;
-            padding: 0;
-            border-radius: 0;
-        }
-
-        /* 표 스타일 */
-        .post-content table {
+        /* Table */
+        table {
             width: 100%;
             border-collapse: collapse;
-            margin: 25px 0;
+            margin: 30px 0;
         }
 
-        .post-content th, .post-content td {
-            border: 1px solid #ddd;
-            padding: 12px;
+        th, td {
+            border: 1px solid #e0e0e0;
+            padding: 15px;
             text-align: left;
+            font-size: 15px;
         }
 
-        .post-content th {
+        th {
             background-color: #f8f9fa;
-            font-weight: 700;
+            font-weight: 600;
         }
 
-        .post-content tr:nth-child(even) {
-            background-color: #f8f9fa;
+        tr:nth-child(even) {
+            background-color: #fafafa;
         }
 
+        /* Process Timeline */
+        .process-list {
+            margin: 30px 0;
+        }
+
+        .process-item {
+            display: flex;
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .process-item:last-child {
+            border-bottom: none;
+        }
+
+        .process-number {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            background: #0066cc;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 20px;
+        }
+
+        .process-content h4 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .process-content p {
+            font-size: 15px;
+            color: #666;
+            line-height: 1.7;
+        }
+
+        /* Footer */
         footer {
-            margin-top: 80px;
-            padding-top: 30px;
-            border-top: 1px solid #e0e0e0;
+            background: #f8f9fa;
+            padding: 40px 20px;
             text-align: center;
-            font-size: 13px;
+            border-top: 1px solid #e0e0e0;
+            margin-top: 100px;
+        }
+
+        footer p {
+            font-size: 14px;
             color: #999;
         }
 
+        /* Responsive */
         @media (max-width: 768px) {
-            body {
-                padding: 30px 15px;
+            header {
+                padding: 15px 20px;
             }
 
-            h1 {
-                font-size: 28px;
+            .header-nav a {
+                margin-left: 15px;
+                font-size: 13px;
             }
 
-            h2 {
-                font-size: 22px;
+            .hero {
+                padding: 60px 20px 40px;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .hero .subtitle {
+                font-size: 16px;
+            }
+
+            .container {
+                padding: 40px 20px;
+            }
+
+            .section-title {
+                font-size: 26px;
+            }
+
+            .section-subtitle {
+                font-size: 20px;
+            }
+
+            .project-info {
+                gap: 20px;
+            }
+
+            .process-item {
+                flex-direction: column;
+            }
+
+            .process-number {
+                margin-bottom: 15px;
             }
         }
     </style>
 </head>
 <body>
-   
     <header>
-        <div class="header-title">
-            <a href="/">TaehunKim0</a>
+        <div class="header-content">
+            <div class="header-title">
+                <a href="/">TaehunKim0</a>
+            </div>
+            <nav class="header-nav">
+                <a href="/">Home</a>
+                <a href="https://github.com/TaehunKim0" target="_blank">GitHub</a>
+            </nav>
         </div>
-        <nav class="header-nav">
-            <a href="/">Home</a>
-            <a href="https://github.com/TaehunKim0" target="_blank">GitHub</a>
-        </nav>
     </header>
 
-    <main>
-        <a href="/" class="back-link">← 돌아가기</a>
-
-        <h1>Nirvana 프로젝트</h1>
+    <section class="hero">
+        <h1>Nirvana</h1>
+        <p class="subtitle">멀티 액션 로그라이크 게임</p>
         
-        <div class="project-content">
-            <h2>개요</h2>
-            <p>
-                2023년 1월부터 11월까지 청강문화산업대학교에서 개발된 **멀티 액션 로그라이크** 게임입니다.
-            </p>
-            <p>
-                로그라이크 장르의 특성을 **티베트 불교의 윤회**라는 교리에 비유하여 기획되었습니다.
-            </p>
+        <div class="project-info">
+            <div class="info-item">
+                <div class="info-label">Role</div>
+                <div class="info-value">클라이언트 프로그래머</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Engine</div>
+                <div class="info-value">Unreal Engine 5.3</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Platform</div>
+                <div class="info-value">PC</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Team Size</div>
+                <div class="info-value">22명</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Duration</div>
+                <div class="info-value">2023.01 ~ 2023.11 (8개월)</div>
+            </div>
+        </div>
+    </section>
 
-            <img src="./resource/neowiz.jpg" alt="청강 CGC 전시 모습" class="project-image">
-            <p style="text-align: center; font-size: 14px; color: #888; margin-top: -15px; margin-bottom: 30px;">
-                개발 종료 후 청강 CGC (네오위즈 판교 타워)에서 전시와 함께 마무리되었습니다.
-            </p>
+    <div class="container">
+        <!-- 프로젝트 개요 -->
+        <section class="section">
+            <h2 class="section-title"><b>프로젝트 개요</b></h2>
+            <div class="role-container">
+                <div class="role-image">
+                    <img src="./resource/neowiz.jpg" alt="역할 및 기여" class="content-image">
+                </div>
+                <div class="content-block">
+                    <p>'로그라이크' 장르의 특성을 티베트 불교의 '윤회'라는 교리에 비유하여 제작한 게임입니다. 로그라이크 시초인 '로그'와 티벳 불교의 교리인 '윤회(육도윤회도)'를 결합한 컨셉으로 개발되었습니다.</p>
+                    
+                    <br>
+                    <p><strong>총 22명의 팀원이 8개월 동안 협업</strong>하였고, Unreal Engine 5를 사용하여 제작했습니다. 저는 이 프로젝트에서 <strong>클라이언트 프로그래머</strong>를 맡았습니다.</p>
+                    <p>또한, 파트장을 맡게 되어 관련된 기여도 같이 진행했습니다.</p>
 
-            <p>
-                **총 22명의 팀원이 8개월 동안 협업하였고, Unreal Engine 5를 사용하여 제작했습니다.**
-            </p>
-            <p>
-                저는 **클라이언트 프로그래머 (파트장)**를 맡아 프로젝트를 이끌었습니다.
-            </p>
-
-            <h3>주요 역할</h3>
-            <ul style="margin-left: 25px; margin-bottom: 1em;">
-                <li style="margin-bottom: 0.5em;">타 파트와의 소통을 통한 프로그래밍 파트 (본인 포함 4명)의 일정 조율, 업무 분배 및 지시</li>
-                <li style="margin-bottom: 0.5em;">협업을 위한 개발 규칙 및 환경 구축</li>
-                <li style="margin-bottom: 0.5em;">큰 봉을 든 파드마 캐릭터의 메인 개발 및 기타 시스템 제작</li>
-            </ul>
-
-            <h2>영상</h2>
-            <p>
-                
-            </p>
+                    <br>
+                    <p>개발 종료 후 청강 CGC 행사(네오위즈 판교 타워)에서 전시와 함께 마무리되었습니다. </p>
+                </div>
+            </div>
+            
             <iframe
-                width="750"
+                width="750" 
                 height="400"
                 src="https://www.youtube.com/embed/IK2acnw1DHY?controls=0"
-                title="YouTube video player"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                title="YouTube video player" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                 allowfullscreen>
-            </iframe> 
-            
-            <h2>포트폴리오</h2>
-            <p>
-                
-            </p>
-            <p>
-                PDF 포트폴리오: <a href="./resource/Nirvana.pdf">Nirvana.pdf 다운로드</a>
-            </p>
+            </iframe>
 
-            <h2>다운로드 링크</h2>
             <p>
                 <a href="https://store.onstove.com/ko/games/2643" target="_blank">
-                    스토브 스토어에서 게임 다운로드
+                    Stove Store 에서 다운로드 가능
                 </a>
             </p>
-            <img src="./resource/Download.png" class="project-image">
-        </div>
 
-    </main>
+        </section>
 
-    <footer>
-        <p>&copy; 2025 TaehunKim0. All rights reserved.</p>
-    </footer>
+        <!-- 역할 및 기여 -->
+        <section class="section">
+            <h2 class="section-title"><b>역할 및 기여</b></h2>
+            
+            <div class="role-container">
+                <div class="role-image">
+                    <img src="./resource/역할 및 기여.png" alt="역할 및 기여" class="content-image">
+                </div>
+                
+                <div class="role-content">
+                    <div class="content-block">
+                        <h3 class="section-subtitle">클라이언트 프로그래머</h3>
+                        <ul>
+                            <li>게임 속 플레이어블 캐릭터 '파드마' 구현</li>
+                            <li>보스전 빙결 시스템 구현</li>
+                            <li>프로그래머들의 협업을 위한 주요 코드 구조 결정</li>
+                        </ul>
+                    </div>
+
+                    <div class="content-block">
+                        <h3 class="section-subtitle">프로그래머 파트장</h3>
+                        <ul>
+                            <li>개발 환경 구축</li>
+                            <li>타 파트들과 소통하며 일정 조율, 업무 분배 및 지시</li>
+                            <li>노션 페이지를 통해 협업 관련 주요 페이지 직접 작성</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 개발 환경 구축 -->
+        <section class="section">
+            <h2 class="section-title"><b>개발 환경 구축</b></h2>
+            
+            <div class="content-block">
+                <h3 class="section-subtitle">1. 저장소 결정</h3>
+                <p>본격적인 프로젝트를 시작하기 전, 개발 환경을 구축했습니다. LFS 용량을 고려하여 저장소를 선택했습니다.</p>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>저장소</th>
+                            <th>Github</th>
+                            <th>GitLab</th>
+                            <th><u>Azure Devops</u></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>제한 용량</td>
+                            <td>1GB</td>
+                            <td>10GB</td>
+                            <td><u>무제한</u></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p>현 프로젝트에서는 Azure Devops 저장소를 사용했습니다.</p>
+                
+                <div class="highlight-box">
+                    <h4>맵 파일 관리 최적화</h4>
+                    <p>언리얼 엔진의 레벨 에셋(.umap)은 Google Drive로 관리했습니다. .umap 파일들은 크기가 커서 Git의 Pull, Push 작업을 느리게 만들었고, 저장소 최대 용량도 빨리 소모되게 하는 주 원인이었습니다. 이 문제를 해결하기 위해 맵 파일은 구글 드라이브로 공유하는 것으로 결정했습니다.</p>
+                </div>
+            </div>
+
+            <h3 class="section-subtitle">2. 버전 관리</h3>
+            <div class="role-container">
+                <div class="role-image">
+                    <img src="./resource/버젼관리.png" alt="역할 및 기여" class="content-image">
+                </div>
+
+                <div class="content-block">
+                    <p>프로젝트 버전관리의 측면에서 신경 쓴 것은 아래와 같습니다:</p>
+                    <ul>
+                        <li><strong>Main branch 작업:</strong> 팀 전원이 main branch에서 작업했습니다. Git에 미숙한 팀원들이 branch 를 사용하며 merge로 인한 이슈 해결에 개발 시간을 소모하지 않기 위해 결정했습니다.</li>
+                        <li><strong>Commit 메시지 규칙:</strong> 팀원들의 활동을 파악할 수 있고, 문제 원인도 빠르게 파악할 수 있다고 판단하여 규칙을 정했습니다.</li>
+                        <li><strong>Git 가이드 작성:</strong> Git에 익숙하지 않은 타 파트를 위해, 팀원들이 사용하는 Git 관리 툴에 맞춰 작성했습니다.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3 class="section-subtitle">3. 협업 규칙</h3>
+            <div class="role-container">
+                <div class="role-image">
+                    <img src="./resource/협업 규칙.png" alt="역할 및 기여" class="content-image">
+                </div>
+
+                <div class="content-block">
+                        <ul>
+                            <li><strong>폴더 구조 규칙:</strong><br> Unreal Engine에서 각 파트 별 폴더 구조 규칙을 정했습니다. 버전 관리에서 서로 충돌이 일어나지 않게 하기 위해 폴더를 구분하고 [이름] 폴더를 만들어 진행했습니다.</li>
+                            <br><br>
+                            <li><strong>개발 가이드 공유:</strong><br> Unreal Engine 개발 가이드를 작성하여 공유했습니다. 플러그인 적용 방법, 5.3 버전 업데이트 방법 등, 팀원들이 어려움 없이 프로젝트를 진행할 수 있도록 노션 페이지로 정리하여 공유했습니다.</li>
+                        </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 주요 기능 및 구현 -->
+        <section class="section">
+            <h2 class="section-title">주요 기능 및 구현 내용</h2>
+            
+            <div class="content-block">
+                <h3 class="section-subtitle">개발 과정 로드맵</h3>
+                <p>주요 기능을 구현한 내용들을 정리한 로드맵입니다. 시행착오를 겪으며 점진적으로 개선했습니다.</p>
+                
+                <div class="role-image">
+                    <img src="./resource/개발 과정 로드맵.png" alt="역할 및 기여" class="content-image">
+                </div>
+
+            </div>
+
+            <h3 class="section-subtitle">1. Component 구조로 시작</h3>
+            <div class="role-container">
+                <div class="role-image">
+                    <img src="./resource/초기의캐릭터구조.png" alt="역할 및 기여" class="content-image">
+                </div>
+
+                <div class="content-block">
+                    <p>초기에는 각 스킬을 컴포넌트로 분리해 캐릭터에게 붙이는 구조로 시작했습니다.</p>
+                    <div class="code-block">
+                        <p><strong>문제점:</strong></p>
+                        <p>• 스킬의 개수가 많아질수록 캐릭터 클래스가 복잡해짐</p>
+                        <p>• 관리해야 하는 데이터와 기능이 많아짐</p>
+                        <p>• 타 파트들과 같은 캐릭터 블루프린트를 수정하기 어려웠음</p>
+                        <p>• 협업 시 Git 충돌 문제가 잦게 발생함</p>
+                    </div>
+
+                    <p>위의 문제를 해결하기 위해, 구조를 다시 변경하게 되었습니다.</p>
+                </div>
+            </div>
+
+            <h3 class="section-subtitle">2. Action System 구조로 개선</h3>
+            <div class="role-container">
+                <div class="content-block">
+                    <p>Unreal Engine의 Game Ability System을 참고하여 Action System 기반의 구조로 캐릭터 시스템을 변경했습니다.</p>
+                    <p><strong>Action System 구성:</strong></p>
+                    <ul>
+                        <li><strong>ActionComponent:</strong> Action들을 관리하고 실행하는 역할</li>
+                        <li><strong>Action:</strong> 실제로 기능을 수행하고, GamePlayTags로 관리됨</li>
+                    </ul>
+                </div>
+                <div class="role-image">
+                    <img src="./resource/중반의 캐릭터 구조.png" alt="역할 및 기여" class="content-image">
+                </div>
+            </div>
+
+            <h4 class="section-subheading">2-1. Action 의 역할</h4>
+            <div class="role-container">
+                <div class="role-image">
+                    <img src="./resource/ActionSystem 구조로 개선.png" alt="역할 및 기여" class="content-image">
+                </div>
+
+                <div class="content-block">
+                    <p>Action들은 캐릭터가 수행하는 하나의 스킬을 담당하며, 초기화 → 실행 → 중지 순으로 진행됩니다.</p>
+                    <ul>
+                        <li><strong>Action 초기화:</strong> 게임 시작 시 모든 Action들은 ActionComponent의 DefaultActions 배열에 추가되며, 초기화 작업을 진행합니다.</li>
+                        <li><strong>Action 실행:</strong> ActionComponent는 StartActionByName을 통해 DefaultActions에서 이름으로 특정 액션을 찾아 실행합니다.</li>
+                        <li><strong>Action 중지:</strong> 캐릭터의 애니메이션이 종료되거나, 다음 Action을 실행할 때 자동으로 기존 Action을 중지하도록 구현했습니다.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h4 class="section-subheading">2-2. GamePlayTags를 통한 제어</h4>
+            <div class="role-container">
+                <div class="role-image">
+                    <img src="./resource/ActionSystem 구조로 개선2.png" alt="역할 및 기여" class="content-image">
+                </div>
+
+                <div class="content-block">
+                    <h4 class="section-subheading"></h4>
+                    <p>Action이 시작될 때, Action은 자신이 실행 가능한지를 판단합니다. 판단하기 위하여 ActionComponent가 가진 ActiveGamePlayTags Container에 Blocked Tag의 여부를 체크합니다.</p>
+                    
+                    <div class="code-block">
+                        <p><strong>Blocked Tag가 없을 경우:</strong></p>
+                        <p>1. Action의 StartAction 함수를 호출</p>
+                        <p>2. ActiveGamePlayTags Container에 GrantsTag를 추가</p>
+                        <p>3. Action 기능 수행</p>
+                        <p><strong>Blocked Tag가 있을 경우:</strong> Action이 실행되지 않음</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                            <h4>Action System 구조로 얻은 성과</h4>
+                            <p>• Action 클래스의 함수만 구현하면 스킬들을 만들 수 있음 (Initialize, StartAction, StopAction)</p>
+                            <p>• ActionComponent로 Action들을 쉽게 관리할 수 있음</p>
+                            <p>• 캐릭터의 동작 단위가 Action으로 구분되어 직관적이며, 디버깅이 편리함</p>
+                </div>
+
+            <h3 class="section-subtitle">2-1. 협업을 위한 Action Blueprint</h3>
+            <div class="role-container">
+                <div class="role-image">
+                    <img src="./resource/ActionSystem 구조로 개선2.png" alt="역할 및 기여" class="content-image">
+                </div>
+                <div class="content-block">
+                    <p>C++의 Action 클래스들을 언리얼 에디터에서 <strong>각각의 Blueprint로 생성</strong>해서 관리했습니다.</p>
+                    <p> 직접 코드를 수정하지 않고도, 프로퍼티들을 에디터에서 쉽게 수정할 수 있게 되었습니다</p>
+                    
+                    <p><strong>협업의 측면에서:</strong></p> <p>Blueprint 안의 프로퍼티 값 변경 및 사용 방법을 공유해 기획자들과의 협업도 원활하게 진행했습니다.</p>
+                </div>
+            </div>
+            
+            <h3 class="section-subtitle">3. AttackAction 구조로 확장</h3>
+            <div class="role-container">
+                <div class="role-image">
+                    <img src="./resource/AttackAction 구조로 확장.png" alt="역할 및 기여" class="content-image">
+                </div>
+                <div class="content-block">
+                    <p>근접 전투 캐릭터인 "파드마"의 Action들은 공통적인 데이터와 동작이 많았습니다.</p>
+                    
+                    <ul>
+                        <li><strong>Resource 데이터:</strong><br> 공격의 애니메이션 몽타주, 히트 이펙트</li>
+                        <li><strong>HitCheck 기능:</strong><br> 무기를 휘두를 때 특정 애니메이션 프레임에만 실제 공격 판정 적용. 공통적으로 Damage, Radius, Range, Hit Frame과 같은 데이터들이 필요</li>
+                        <li><strong>AttackCancel 기능:</strong><br> 공격 후 딜레이를 줄이기 위해서 공격을 캔슬하고 다른 공격을 수행하거나, 캐릭터가 이동할 수 있게 만듦</li>
+                    </ul>
+
+                    <p><strong>따라서 Action 클래스를 상속받아 확장했습니다.<br> 위와 같은 필요한 속성들을 가지고,<br> 기능을 수행하는 AttackAction을 구현했습니다.</strong></p>
+                </div>
+            </div>
+            
+            <h3 class="section-subtitle">4. Google Sheets로 데이터 관리</h3>
+            <div class="role-container">
+                <div class="role-image">
+                    <img src="./resource/AttackAction 의 문제.png" alt="역할 및 기여" class="content-image">
+                </div>
+                <div class="content-block">
+                    <p><strong>하지만 AttackAction이 기능을 수행하기 위한 데이터들이 많았고,</strong></p>
+                    <p>Action 클래스 블루프린트의 개수가 많아서 하나하나 클릭해 수정하는 것이 번거로웠습니다. </p>
+                    <p><strong>이를 해결하기 위해 Google Sheets를 사용했습니다.</strong></p>
+                </div>
+            </div>
+
+            <div class="role-container">
+                <div class="role-image">
+                    <img src="./resource/Google Sheets 로 데이터 관리.png" alt="역할 및 기여" class="content-image">
+                </div>
+                <div class="content-block">
+                    
+                    <p><strong>AttackAction에서 필요한 데이터들을 모두 시트로 분리 후 틀을 만들어 기획자들에게 공유했습니다. (AttackProperties 시트, HitFrame 시트, 차징 공격 시트 등)</strong></p>
+                    <div class="highlight-box">
+                        <h4>Google Sheets 사용 후 성과</h4>
+                        <p>• 기획자가 쉽게 원하는 데이터 추가 및 수정 가능</p>
+                        <p>• 시트 수정 후 플레이만 하면 되므로 테스트 속도 향상</p>
+                        <p>• 기획자들이 엔진을 사용하면서 생기는 실수가 줄어듦</p>
+                    </div>
+                    
+                    <p>공통적인 데이터들 이외에 고유의 데이터가 많은 AttackAction 들은 따로 시트를 추가해서 데이터를 파싱했습니다.</p>
+                    <img src="./resource/따로.png" alt="역할 및 기여" class="content-image">
+                </div>
+            </div>
+
+            <h3 class="section-subtitle">5. Unreal Editor 확장</h3>
+            <div class="role-container">
+                <div class="role-image">
+                    <img src="./resource/Unreal Editor 확장.png" alt="역할 및 기여" class="content-image">
+                </div>
+
+                <div class="content-block">
+                    <p>Google Sheets의 시트들은 download_csv.exe를 실행하면 .csv 파일로 다운받아 Contents 폴더에 저장됩니다. <strong>매번 파일 탐색기를 열어 더블 클릭해 실행시켜야 하는 것이 불편</strong>했습니다.</p>
+                    
+                    <p>따라서 <strong>에디터를 확장해 버튼을 누르면 실행 파일이 실행되도록 구현</strong>했습니다. Editor Module을 구현해 툴바 버튼을 만들었고, 버튼을 눌렀을 때 download_csv.exe를 실행합니다.</p>
+
+                    <div class="highlight-box">
+                        <h4>에디터 확장 후 성과</h4>
+                        <p>• 엔진 내에서 편하게 csv 파일을 다운로드 가능</p>
+                        <p>• 기획자, 프로그래머 모두 불편함을 해소</p>
+                        <p>• 생산성이 더 올라가는 효과</p>
+                    </div>
+
+            </div>
+            </div>
+            </section>
+            <h4 class="section-subheading">5-1. Editor 확장 세부 구현 요소</h4>
+            <div class="role-container">
+                 <div class="content-block">
+                    <p><strong>Editor 를 확장하는 데 필요한 요소</strong></p>
+                    <p>1. Editor Module</p>
+                    <p>2. Commands</p>
+                    <p>3. Editor Style</p>
+                </div>
+                <div class="role-image">
+                    <img src="./resource/Editor 확장 필요 요소.png" alt="역할 및 기여" class="content-image">
+                </div>
+            </div>
+
+            <div class="role-container">
+                 <div class="content-block">
+                    <p><strong>Editor 확장 플로우</strong></p>
+                    <p>1. Editor Module Startup 시, Commands 와 StyleSet 을 등록.</p>
+                    <p>2. 툴 바를 생성.</p>
+                    <p>3. 생성 시 Command 와 Style 을 버튼에 맵핑</p>
+                </div>
+                <div class="role-image">
+                    <img src="./resource/Editor 확장 플로우.png" alt="역할 및 기여" class="content-image">
+                </div>
+            </div>
+
+            <h3 class="section-subtitle">6. AttackActionData 로 분리</h3>
+            <div class="role-container">
+                <div class="role-image">
+                    <img src="./resource/AttackActionData 로 분리.png" alt="역할 및 기여" class="content-image">
+                </div>
+                <div class="content-block">
+                    <p>AttackAction 은 로직 뿐만 아니라 Google Sheets 에서 관리되는 모든 데이터들을 파싱 하며, 저장하고 있었습니다.</p>
+
+                    <p><strong>시간이 지날 수록 AttackAction 이 가진 데이터과 수행하는 기능이 많아졌습니다.</strong></p>
+                    <p>단일 책임 원칙에서 어긋날 뿐만 아니라 코드도 복잡해 진다고 판단했습니다.</p>
+
+                    <p><strong>따라서 AttackAction 의 데이터들과 파싱 기능을 분리해 AttackActionData 클래스로 구현했습니다.</strong></p>
+                </div>
+            </div>
+
+            <h3 class="section-subtitle">7. AttackActionData 의 기능</h3>
+            <div class="role-container">
+                <div class="role-image">
+                    <img src="./resource/AttackActionData 의 기능.png" alt="역할 및 기여" class="content-image">
+                </div>
+                <div class="content-block">
+                    <p><strong>AttackActionData 의 구조</strong></p>
+                    <p>1. Resource 와 Attack Properties, Frame 데이터<br>
+                    2. csv 파일을 파싱해 데이터들을 초기화하는 기능</p>
+                    <br>
+                    <p>AttackActionData 를 상속받아<br> 공통 데이터들과 고유의 데이터들도 관리할 수 있습니다</p>
+                    <p>또한 ParseOwnData 기능을 통해 고유의 데이터는 따로 파싱하도록 설계했습니다.</p>
+                </div>
+            </div>
+
+            <h3 class="section-subtitle">8. AttackActionData 와 DataAsset</h3>
+            <div class="role-container">
+                <div class="role-image">
+                    <img src="./resource/AttackActionData 와 DataAsset.png" alt="역할 및 기여" class="content-image">
+                </div>
+                <div class="content-block">
+                    <p><strong>이제 게임 시작 시 AttackAction 을 초기화할 때,<br>AttackActionData 를 같이 초기화합니다.</strong></p>
+                    <br>
+                    <p>AttackActionData 는 UDataAsset 클래스를 상속받아</p>
+                    <p>언리얼 기능 중 하나인 DataAsset 형식으로 에디터로 에셋을 열 수 있도록 구현했습니다.</p>
+                    <br>
+                    <p>그 이유는 <strong>디버깅 편의성</strong>입니다<br>
+                        에디터에서 직접 에셋을 클릭해, 파싱했을 때 데이터가 <br>
+                        정상적으로 들어왔는지 확인할 수 있습니다.
+                    </p>
+                    <p>또한, Read-Only 데이터로 설정해 실수를 방지하게 했습니다.</p>
+                </div>
+            </div>
+            
+
+
+        </section>
+    </div>
 </body>
 </html>
