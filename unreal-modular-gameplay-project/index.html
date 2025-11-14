@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unreal Modular Gameplay - TaehunKim0</title>
+    <title>Lyra 기반 모듈형 게임 플레이 프레임워크 구축</title>
     <style>
         * {
             margin: 0;
@@ -12,13 +12,10 @@
         }
 
         body {
-            font-family: 'Noto Sans KR', sans-serif;
+            font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
             background: #ffffff;
             color: #333;
-            line-height: 1.6;
-            padding: 40px 20px;
-            max-width: 900px;
-            margin: 0 auto;
+            line-height: 1.7;
         }
 
         a {
@@ -30,87 +27,178 @@
             text-decoration: underline;
         }
 
-        header {
-            margin-bottom: 60px;
-            padding-bottom: 20px;
+        h2 {
             border-bottom: 1px solid #e0e0e0;
+        }
+
+        h3 {
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        h4 {
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.98);
+            border-bottom: 1px solid #e0e0e0;
+            padding: 20px 40px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .header-title {
-            font-size: 32px;
-            font-weight: 400;
-            margin-bottom: 10px;
-        }
-
-        .header-nav {
-            margin-top: 15px;
+            font-size: 20px;
+            font-weight: 600;
         }
 
         .header-nav a {
-            margin-right: 20px;
+            margin-left: 30px;
             font-size: 14px;
-            color: #0066cc;
+            color: #666;
         }
 
-        .back-link {
+        /* Hero Section */
+        .hero {
+            margin-top: 80px;
+            padding: 80px 40px 60px;
+            background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 300;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+        }
+
+        .hero .subtitle {
+            font-size: 20px;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        .project-info {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #999;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .info-value {
             font-size: 16px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        /* Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 40px;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 80px;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 300;
             margin-bottom: 30px;
-            display: inline-block;
-        }
-
-        h1 {
-            font-size: 36px;
-            font-weight: 400;
-            margin: 30px 0 20px 0;
-            color: #333;
-        }
-
-        h2 {
-            font-size: 24px;
-            font-weight: 400;
-            margin: 50px 0 30px 0;
-            color: #333;
-            padding-bottom: 12px;
+            padding-bottom: 15px;
             border-bottom: 1px solid #e0e0e0;
         }
 
-        .project-meta {
-            font-size: 16px;
-            color: #666;
+        .section-subtitle {
+            font-size: 24px;
+            font-weight: 400;
+            margin: 50px 0 20px 0;
+            color: #444;
+        }
+
+        .section-subheading {
+            font-size: 20px;
+            font-weight: 500;
+            margin: 35px 0 15px 0;
+            color: #555;
+        }
+
+        /* Content */
+        .content-block {
             margin-bottom: 30px;
         }
 
-        .project-content {
-            font-size: 17px;
+        .content-block p {
+            margin-bottom: 15px;
+            font-size: 16px;
             color: #444;
-            margin-bottom: 60px;
         }
 
-        .project-content p {
-            margin-bottom: 1.2em;
+        .content-block ul {
+            margin: 20px 0;
+            padding-left: 25px;
         }
 
-        .project-image {
+        .content-block li {
+            margin-bottom: 12px;
+            font-size: 16px;
+            color: #444;
+            line-height: 1.8;
+        }
+
+        /* Role Container with Image */
+        .role-container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 40px;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        .role-image {
+            position: static;
+            top: 100px;
+        }
+
+        .role-image img {
             width: 100%;
             height: auto;
             border-radius: 8px;
-            margin: 30px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin: 0;
         }
 
-        .project-tags {
-            margin: 20px 0;
-        }
-
-        .project-tag {
-            display: inline-block;
-            margin-right: 10px;
-            font-size: 14px;
-            color: #666;
-        }
-
-        /* 글 목록 스타일 */
-        .post-list {
-            list-style: none;
+        .role-content {
+            flex: 1;
         }
 
         .post-item {
@@ -160,185 +248,542 @@
             color: #666;
         }
 
-        footer {
-            margin-top: 80px;
-            padding-top: 30px;
-            border-top: 1px solid #e0e0e0;
+        /* Image */
+        .content-image {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 40px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .image-caption {
             text-align: center;
-            font-size: 13px;
+            font-size: 14px;
+            color: #888;
+            margin-top: -25px;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+
+        /* Code Block */
+        .code-block {
+            background-color: #f8f9fa;
+            border-left: 3px solid #0066cc;
+            padding: 20px 25px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .code-block p {
+            font-size: 15px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        
+        .code-block pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 15px;
+            color: #555;
+            background-color: transparent;
+            border: none;
+            padding: 0;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+
+        /* Highlight Box */
+        .highlight-box {
+            background-color: #f0f7ff;
+            border: 1px solid #d0e7ff;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+
+        .highlight-box h4 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #0066cc;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+        }
+
+        th, td {
+            border: 1px solid #e0e0e0;
+            padding: 15px;
+            text-align: left;
+            font-size: 15px;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+
+        /* Process Timeline */
+        .process-list {
+            margin: 30px 0;
+        }
+
+        .process-item {
+            display: flex;
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .process-item:last-child {
+            border-bottom: none;
+        }
+
+        .process-number {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            background: #0066cc;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 20px;
+        }
+
+        .process-content h4 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .process-content p {
+            font-size: 15px;
+            color: #666;
+            line-height: 1.7;
+        }
+
+        /* Footer */
+        footer {
+            background: #f8f9fa;
+            padding: 40px 20px;
+            text-align: center;
+            border-top: 1px solid #e0e0e0;
+            margin-top: 100px;
+        }
+
+        footer p {
+            font-size: 14px;
             color: #999;
         }
 
+        /* Responsive */
         @media (max-width: 768px) {
-            body {
-                padding: 30px 15px;
+            header {
+                padding: 15px 20px;
             }
 
-            h1 {
-                font-size: 28px;
+            .header-nav a {
+                margin-left: 15px;
+                font-size: 13px;
             }
 
-            h2 {
-                font-size: 22px;
+            .hero {
+                padding: 60px 20px 40px;
             }
 
-            .post-item-title {
-                font-size: 18px;
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .hero .subtitle {
+                font-size: 16px;
+            }
+
+            .container {
+                padding: 40px 20px;
+            }
+
+            .section-title {
+                font-size: 26px;
+            }
+
+            .section-subtitle {
+                font-size: 20px;
+            }
+
+            .project-info {
+                gap: 20px;
+            }
+
+            .process-item {
+                flex-direction: column;
+            }
+
+            .process-number {
+                margin-bottom: 15px;
+            }
+
+            .role-container {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
     <header>
-        <div class="header-title">
-            <a href="/">TaehunKim0</a>
+        <div class="header-content">
+            <div class="header-title">
+                <a href="/">TaehunKim0</a>
+            </div>
+            <nav class="header-nav">
+                <a href="/">Home</a>
+                <a href="https://github.com/TaehunKim0" target="_blank">GitHub</a>
+            </nav>
         </div>
-        <nav class="header-nav">
-            <a href="/">Home</a>
-            <a href="https://github.com/TaehunKim0" target="_blank">GitHub</a>
-        </nav>
     </header>
 
-    <main>
-        <a href="/" class="back-link">← 돌아가기</a>
-
-        <h1>Unreal Modular Gameplay</h1>
+    <section class="hero">
+        <h1>Lyra 기반 모듈형 게임 플레이 프레임워크 구축</h1>
+        <p class="subtitle">GameFeature Plugin, ISS, Data Registry 활용</p>
         
-        <div class="project-content">
-            <p>
-                Epic Games의 Lyra 예제 프로젝트를 깊이 분석하고, 이를 팀 협업 환경에 최적화된 프레임워크로 발전시키는 연구 프로젝트입니다.
-            </p>
-
-            <img src="../images/Modular.png" alt="Modular Gameplay" class="project-image">
-
-            <p>
-                언리얼 엔진 5의 GameFeature Plugin 시스템을 활용하면, 게임의 핵심 로직을 건드리지 않고도 새로운 컨텐츠를 런타임에 추가하거나 제거할 수 있습니다. 
-                이러한 모듈형 구조는 대규모 팀 협업에서 각 팀원이 독립적으로 작업할 수 있게 해주며, 코드 충돌을 최소화합니다.
-            </p>
-
-            <p>
-                특히 Experience 시스템, Data Registry, 그리고 초기화 스테이트 시스템(Init State System)을 중심으로 연구하고 있으며,
-                이를 실제 프로젝트에 적용 가능한 형태로 재구성하는 작업을 진행하고 있습니다.
-            </p>
-
+        <div class="project-info">
+            <div class="info-item">
+                <div class="info-label">Role</div>
+                <div class="info-value">프레임워크 설계 및 개발</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Engine</div>
+                <div class="info-value">Unreal Engine 5</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Duration</div>
+                <div class="info-value">2개월</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Focus</div>
+                <div class="info-value">확장성, 협업 용이성</div>
+            </div>
         </div>
+    </section>
 
-        <h2>관련 글</h2>
+    <div class="container">
+        <section class="section">
+            <h2 class="section-title"><b>프로젝트 개요 및 목표</b></h2>
+            <div class="role-container">
+                <div class="role-image">
+                    <img src="resource/Main.png" class="content-image">
+                </div>
+                <div class="content-block">
+                    <p>언리얼의 Lyra 샘플 프로젝트를 분석하여, <strong>GameFeature Plugin, Initialize State System(ISS), Data Registry</strong>를 활용한 모듈형 게임 플레이 프레임워크를 구축했습니다.</p>
+                    <p>이 프로젝트의 목표는 플러그인 단위로 개발해 게임의 <strong>코어 로직과 콘텐츠를 완전히 분리</strong>하고, 협업에서 발생할 수 있는 문제들을 해결하여 <strong>생산성을 높이는 것</strong>입니다.</p>
+                    <p>추가적으로, GameFeature와 <strong>DataRegistry를 활용해 DLC 콘텐츠를 쉽게 추가</strong>할 수 있는 확장성을 확보했습니다.</p>
+                </div>
+            </div>
+        </section>
         
-        <ul class="post-list">
-            <li class="post-item">
-                <span class="post-icon">🎯</span>
-                <div class="post-item-title">
+        <section class="section">
+            <h2 class="section-title"><b>협업 문제와 해결책</b></h2>
+            
+            <div class="content-block">
+                <h3 class="section-subtitle">협업에서 발생할 수 있는 문제</h3>
+                <ul>
+                    <li><strong>팀원 간 코드 충돌 문제:</strong> <br>새로운 콘텐츠 개발·수정 시 코어 모듈(Character, GameMode 등)을 직접 수정<br> Merge Conflict가 지속적으로 발생.</li>
+                    <li><strong>초기화 시 의존 객체 준비 시점 불명확 (타이밍 이슈):</strong> <br>컴포넌트 간 의존성 해결을 위해 Tick이나 Timer를 사용하는 비효율적인 방법 사용.</li>
+                    <li><strong>초기화 로직 분산:</strong> <br>하나의 시스템 초기화에 필요한 코드가 여러 클래스에 흩어져 있음<br>전체 초기화 흐름 파악이 어렵고, 수정 시 여러 파일을 동시에 변경해야 함</li>
+                    <li><strong>객체 생성 후 유효 상태 불확실:</strong><br>언리얼 엔진 환경에서는 생성자 제약으로 인해 별도의 Init() 함수를 사용하는 경우가 많음. (다시 초기화 분산 발생 가능) <br>비동기 코드 등으로 인해 객체 생성 시점과 유효 상태 확보 시점을 알기 힘듦.</li>
+                </ul>
+            </div>
+            
+            <h3 class="section-subtitle">GameFeature Plugin & ISS 로 문제 해결</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>문제 유형</th>
+                        <th>상세 내용</th>
+                        <th>해결책</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>팀내 코드 충돌</td>
+                        <td>코어 모듈 직접 수정으로 인한 Merge Conflict 발생</td>
+                        <td><strong>GameFeature Plugin:</strong> 각 기능을 독립된 플러그인으로 분리하여 코어 모듈 수정 불필요</td>
+                    </tr>
+                    <tr>
+                        <td>의존 객체 준비 시점 불명확</td>
+                        <td>Tick/Timer 반복 체크 등 비효율적인 타이밍 관리</td>
+                        <td><strong>Initialize State System (ISS):</strong> <code><br>CanChangeInitState()</code>로 의존성 명시, 필요한 객체가 준비되면 자동으로 초기화 </td>
+                    </tr>
+                    <tr>
+                        <td>초기화 로직 분산</td>
+                        <td>초기화 코드가 여러 클래스에 흩어져 있어 흐름 파악 곤란</td>
+                        <td><strong>Initialize State System (ISS):</strong> 각 컴포넌트의 초기화 로직이 <br> 해당 클래스 내부에만 존재, 다른 클래스에서 Init 함수 호출 X</td>
+                    </tr>
+                    <tr>
+                        <td>초기화 흐름 파악 곤란</td>
+                        <td>시스템 전체 초기화 과정 추적 어려움</td>
+                        <td><strong>중앙 관리자 (PawnStateManager):</strong> 전체 초기화 흐름을 한 곳에서 파악, 디버깅 용이</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+
+        <section class="section">
+            <h2 class="section-title"><b>1. GameFeature Plugin 상세</b></h2>
+            <div class="role-container">
+                <div class="role-image">
+                    <img src="resource/GameFeature.png" class="content-image">
+                </div>
+                <div class="content-block">
+                    <p>게임 피처 플러그인은<br> <strong>하나의 기능을 독립적인 부품으로 분리하여 관리</strong>하고,<br>
+                    <strong>런타임에 추가/제거 가능한 모듈 시스템</strong> 입니다.<br><br> 팀원 간 코드 충돌을 줄이고, 모듈형 게임 플레이 개발의 핵심입니다.</p>
+                    <p>기존 게임에서는 코어 모듈에 기능들을 모두 포함하고, 콘텐츠만 따로 분리시켰다면 <b>기능, 콘텐츠 모두 독립적으로 개발</b>할 수 있습니다.</p>
+                    <p>게임은 피처에 의존 되지 않아, 플러그 앤 플레이 방식이 가능합니다.</p>
+                </div>
+            </div>
+            
+            <h3 class="section-subtitle">1-1. 결과 화면</h3>
+            <div class="role-image">
+                <img src="resource/웹 테스트1.gif" class="content-image">
+            </div>
+            <p>각 기능들을 독립적인 GameFeature Plugin 으로 개발했습니다. </p>
+            <p>게임 피처들을 필요할 때, 로드하며 레고 블록처럼 기능을 조립하는 방식입니다.</p>
+            <br>
+            <p>GameFeature 들을 묶고, 폰을 변경할 수 있는 Character Definition 이라는 PrimaryAsset 을 구현해</p>
+            <p>새로운 캐릭터 추가 시 기존 코드 수정 없이 해당 PrimaryAsset 만 생성하면 되어 확장성을 높였습니다.</p>
+            <p>예시: 스파이더맨 (Pawn - BP_Spidy / GameFeature - WebSwing, MovementStandard)</p>
+            <br>
+
+            <div class="highlight-box">
+                    <h4>GameFeature 적용 효과</h4>
+                    <ul>
+                        <li>모듈형 개발은 생산성을 높이고, 협업의 효율이 증가</li>
+                        <li>커스텀 GameFeatureAction 으로 빠른 프로토타이핑 가능  (예시: AddAbilities 특정 캐릭터에 능력 부여)</li>
+                        <li>동적 로딩으로 메모리 최적화                         (예시: 튜토리얼에서는 튜토리얼 관련 GameFeature만 로드)</li>
+                        <li>런타임 전환으로 동적 게임플레이 구현</li>
+                        <li>DLC 콘텐츠 쉽게 배포 가능</li>
+                    </ul>
+            </div>
+
+            <h3 class="section-subtitle">1-2. Lyra에서의 개선점 </h3>
+            <div class="content-block">
+                <p><b>Lyra는 GameFeature를 하나의 장르(예: ShooterCore)로서 접근</b>하여 여러 시스템(카메라, 무기 등)을 포함했지만,<br>범위가 넓으므로 여러 명의 팀원이 같이 개발할 가능성이 높아 보였습니다.</p>
+                <p></p>
+                <p>그러므로 <b>팀원 간 코드 충돌 문제를 해결하기 어려울 수 있다고 판단</b>했고, 다음과 같이 개선했습니다.</p>
+
+                <br>
+                <ul>
+                    <li><strong>GameFeature 1개</strong>를 <strong>하나의 기능 또는 콘텐츠</strong>로 정의 <br> (예: <code>GameFeature_ItemShop</code>, <code>GameFeature_WebSwing</code>)</li>
+                    <li><strong>하나의 기능 = 한 명의 담당자 → 완전한 독립 개발</strong>을 목표로 합니다.</li>
+                    <li>Lyra 는 게임 장르로서, 현재 프로젝트는 단일 기능으로 사용했습니다.</li>
+                </ul>
+            </div>
+            
+            <h3 class="section-subtitle">1-3. 구체적인 과정과 연구</h3>
+            <div class="post-item">
+                <span class="post-icon">🎯글 : </span>
+                    <a href="./unreal-modulegameplay-think/">기존 웹스윙 구조 글 작성 예정</a>
+             </div>
+             
+        </section>
+
+        <section class="section">
+            <h2 class="section-title"><b>2. Init State System(ISS) 상세</b></h2>
+            
+            <div class="role-container">
+                <div class="role-image">
+                    <img src="resource/Log.png" class="content-image">
+                </div>
+                <div class="content-block">
+                    <p>ISS는 <b>초기화에 필요한 의존성을 명확화하고, 자동으로 초기화</b>하여, <br> 기존의 수동적인 초기화 방식을 피하고 <b>타이밍 이슈를 제거</b>합니다.</p>
+                </div>
+            </div>
+
+            <h3 class="section-subtitle">2-1. 결과 </h3>
+<!-- HTML generated using hilite.me --><div style="background: #1d2331; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: #7E8AA1">// ===== 기존 방식 (수동 초기화) =====</span>
+<span style="color: #D4D2C8">    </span><span style="color: #73D0FF">void</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">AMyCharacter::BeginPlay</span><span style="color: #D4D2C8">()</span>
+<span style="color: #D4D2C8">    {</span>
+<span style="color: #D4D2C8">        Super</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">BeginPlay();</span>
+<span style="color: #D4D2C8">        </span>
+<span style="color: #D4D2C8">        AbilitySystemComponent</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">Initialize();  </span><span style="color: #7E8AA1">// 먼저 초기화되어야 함</span>
+<span style="color: #D4D2C8">        HealthComponent</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">Initialize();          </span><span style="color: #7E8AA1">// ASC에 의존하므로 ASC 이후에 초기화</span>
+<span style="color: #D4D2C8">        InputComponent</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">Initialize();</span>
+<span style="color: #D4D2C8">        InventoryComponent</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">Initialize();</span>
+<span style="color: #D4D2C8">    }</span>
+<span style="color: #D4D2C8">    </span>
+<span style="color: #D4D2C8">    </span><span style="color: #7E8AA1">// ===== ISS 적용 후 (각 컴포넌트 내부에서 자동 초기화) =====</span>
+<span style="color: #D4D2C8">    </span><span style="color: #73D0FF">void</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">ABSCharacter::BeginPlay</span><span style="color: #D4D2C8">()</span>
+<span style="color: #D4D2C8">    {</span>
+<span style="color: #D4D2C8">        Super</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">BeginPlay();</span>
+<span style="color: #D4D2C8">    }</span>
+</pre></div>
+
+                <div class="highlight-box">
+                    <h4>ISS 적용 효과 1</h4>
+                    <ul>
+                        <li>ISS가 모든 컴포넌트를 자동으로 초기화</li>
+                        <li>Git 충돌 위험 <strong>제거</strong>: Character.cpp 수정 최소화</li>
+                        <li>캐릭터의 BeginPlay 에는 아무것도 없음.</li>
+                    </ul>
+                </div>
+
+
+
+<!-- HTML generated using hilite.me --><div style="background: #1d2331; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: #73D0FF">void</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">UBSHealthComponent::HandleChangeInitState</span><span style="color: #D4D2C8">(UGameFrameworkComponentManager</span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> Manager, FGameplayTag CurrentState,</span>
+
+<span style="color: #D4D2C8">	FGameplayTag DesiredState) </span><span style="color: #FFAD66">const</span>
+<span style="color: #D4D2C8">{</span>
+<span style="color: #D4D2C8">	</span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (DesiredState </span><span style="color: #FFAD66">==</span><span style="color: #D4D2C8"> BSGamePlayTags</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">InitState_DataInitialized)</span>
+<span style="color: #D4D2C8">	{</span>
+<span style="color: #D4D2C8">		</span><span style="color: #FFAD66">const</span><span style="color: #D4D2C8"> </span><span style="color: #FFAD66">auto</span><span style="color: #D4D2C8"> PS </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> Cast</span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8">APawn</span><span style="color: #FFAD66">&gt;</span><span style="color: #D4D2C8">(GetOwningActor())</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">GetPlayerState();</span>
+<span style="color: #D4D2C8">		</span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (</span><span style="color: #FFAD66">!</span><span style="color: #D4D2C8">PS)</span>
+<span style="color: #D4D2C8">			</span><span style="color: #FFAD66">return</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">false</span><span style="color: #D4D2C8">;</span>
+
+<span style="color: #D4D2C8">		</span><span style="color: #7E8AA1">// DataInitialized 상태가 되려면 PlayerState, ASC가 필요해</span>
+<span style="color: #D4D2C8">		</span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (Manager</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">HasFeatureReachedInitState(</span>
+<span style="color: #D4D2C8">			PS, ABSPlayerState</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">NAME_PLAYERSTATE,</span>
+<span style="color: #D4D2C8">			BSGamePlayTags</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">InitState_DataInitialized)</span>
+<span style="color: #D4D2C8">			</span>
+<span style="color: #D4D2C8">		</span><span style="color: #FFAD66">&amp;&amp;</span><span style="color: #D4D2C8"> Manager</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">HasFeatureReachedInitState(</span>
+<span style="color: #D4D2C8">			PS, UBSAbilitySystemComponent</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">NAME_ABILITYSYSTEMCOMPONENT,</span>
+<span style="color: #D4D2C8">			BSGamePlayTags</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">InitState_DataInitialized))</span>
+<span style="color: #D4D2C8">		{</span>
+<span style="color: #D4D2C8">			</span><span style="color: #FFAD66">return</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">true</span><span style="color: #D4D2C8">;</span>
+<span style="color: #D4D2C8">		}</span>
+
+<span style="color: #D4D2C8">		</span><span style="color: #FFAD66">return</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">false</span><span style="color: #D4D2C8">;</span>
+<span style="color: #D4D2C8">	}</span>
+
+<span style="color: #D4D2C8">	</span><span style="color: #FFAD66">return</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">true</span><span style="color: #D4D2C8">;</span>
+<span style="color: #D4D2C8">}</span>
+
+<span style="color: #73D0FF">bool</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">UBSHealthComponent::CanChangeInitState</span><span style="color: #D4D2C8">(UGameFrameworkComponentManager</span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> Manager, FGameplayTag CurrentState,</span>
+<span style="color: #D4D2C8">											   FGameplayTag DesiredState)</span>
+<span style="color: #D4D2C8">{</span>
+<span style="color: #D4D2C8">	</span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (DesiredState </span><span style="color: #FFAD66">==</span><span style="color: #D4D2C8"> BSGamePlayTags</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">InitState_DataInitialized)</span>
+<span style="color: #D4D2C8">	{</span>
+<span style="color: #D4D2C8">		</span><span style="color: #FFAD66">const</span><span style="color: #D4D2C8"> </span><span style="color: #FFAD66">auto</span><span style="color: #D4D2C8"> BSCharacter </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> Cast</span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8">ABSCharacter</span><span style="color: #FFAD66">&gt;</span><span style="color: #D4D2C8">(GetOwningActor());</span>
+<span style="color: #D4D2C8">		</span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (BSCharacter)</span>
+<span style="color: #D4D2C8">		{</span>
+<span style="color: #D4D2C8">		</span><span style="color: #7E8AA1">        // DataInitialized 상태가 될 때, 초기화</span>
+<span style="color: #D4D2C8">			InitializeWithAbilitySystem(BSCharacter</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">GetBSAbilitySystemComponent());</span>
+<span style="color: #D4D2C8">		}</span>
+<span style="color: #D4D2C8">	}</span>
+<span style="color: #D4D2C8">}</span>
+</pre></div>
+                <div class="highlight-box">
+                <h4>ISS 적용 효과 2</h4>
+                <ul>
+                    <li>의존성 <strong>명확화</strong>: <code>CanChangeInitState()</code> 함수로 의존 관계 표현</li>
+                    <li>의존성이 확보 되면 컴포넌트에서 자동으로 초기화 (현재 상태에 따라 처리 가능)</li>
+                    <li>수동으로 초기화 함수를 호출할 필요 없음.</li>
+                </ul>
+            </div>
+
+            <h3 class="section-subtitle">2-2. Lyra 에서의 개선점과 적용 효과</h3>
+            <p><b>Lyra 는 컴포넌트들 중 일부만 ISS 를 적용</b>했고, LyraHealthComponent의 <b>Initialize 는 수동으로 호출</b>하고 있습니다.</p>
+            <p>이는 일관성을 유지하기 힘들고, 후에 코드를 유지보수에도 영향을 끼칠 수 있다고 판단했습니다.</p>
+            <p>이어서 컴포넌트들의 초기화 상태가 어떻게 진행되고 있는지 파악하기 힘들었습니다.</p>
+
+            <br>
+            
+            <p>따라서, 현재 프로젝트에는 다음과 같이 개선했습니다.</p>
+            <br>
+            <strong>1. ISS 를 사용한다면, 모든 컴포넌트에 적용하기 (수동 초기화 로직 피하기)</strong>
+            <br>
+            <strong>2. 모든 컴포넌트들의 상태를 한 곳에서 조율하는 중앙 관리자 클래스 추가하기 (PawnStateManager)</strong>
+
+            <br>
+            <div class="highlight-box">
+                <h4>적용 효과 </h4>
+                <ul>
+                    <li>Character의 BeginPlay 에 초기화 관련 코드가 없음.</li>
+                    <li>각 컴포넌트에서 자동으로 초기화하여 일관성이 유지됨.</li>
+                    <li>중앙 관리자 컴포넌트의 상태로 컴포넌트들의 최소 상태가 보장되고, 디버깅이 용이함.</li>
+                </ul>
+            </div>
+
+            <h3 class="section-subtitle">2-3 구체적인 과정 및 연구</h3>
+            <div class="post-item">
+                <span class="post-icon">🎯글 : </span>
+                    <a href="./unreal-iss/">Unreal 초기화 스테이트 시스템을 이용한 컴포넌트 초기화 개선</a>
+             </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title"><b>3. Data Registry 로 DLC 추가</b></h2>
+            
+            <h3 class="section-subheading">3-1. 결과</h3>
+            <img src="resource/상점DLC2.gif" class="content-image">
+
+            <div class="content-block">
+                <p>Data Registry를 활용하여 게임의 정적 데이터를 관리하고, 추가적인 코드 작성 없이<br> <strong>GameFeatureAction 으로 Data Registry Source를 추가</strong>하여 <strong>코어 시스템 수정 없이 DLC 콘텐츠를 확장</strong>했습니다.</p>
+            </div>
+            
+            <h3 class="section-subheading">3-2. 동작 흐름</h3>
+
+            <h4 class="section-subheading">1. 기본 상점 활성화</h4>
+            <img src="resource/ItemShop.png" class="content-image">
+            <div class="content-block">
+                <ul>
+                    <li><strong>ItemShop 게임 피처 플러그인 활성화:</strong> <br> <code>DR_ShopItems</code> 레지스트리 추가 및 기본 데이터 테이블(<code>DT_Default_Consumable</code>) 등록.</li>
+                    <li><strong>상점 UI 표시:</strong> <br><code>UDataRegistrySubsystem</code>을 이용해 <code>ShopItems</code> 레지스트리의 모든 아이템 조회 및 UI 초기화.<br> 기본 소비 아이템들이 상점에 표시됨.</li>
+                </ul>
+            </div>
+
+            <br>
+
+            <h4 class="section-subheading">2. DLC 추가 및 콘텐츠 자동 확장</h4>
+            <div class="content-block">
+                <ul>
+                    <li><strong>DLC_SpecialEdition 게임 피처 활성화:</strong>
+                        <ul>
+                            <li>기존 ShopItems Data Registry에 Data Registry Source로 DT_DLC_Consumable 추가</li>
+                            <li>코어 시스템 수정 없이 순수하게 데이터만 추가</li>
+                        </ul>
+                    <li><strong>자동으로 상점의 콘텐츠 확장:</strong> <br>
+                        <ul>
+                            <li>ShopItems 레지스트리가 자동으로 DLC 아이템 포함</li>
+                            <li>상점 UI 오픈 시 기본 아이템 + DLC 아이템 모두 표시</li>
+                            <li>런타임 소스 확인 시 데이터 테이블이 추가된 것을 확인 가능</li>
+                        </ul>
+                </ul>
+            <div class="role-container">
+                <div class="role-image">
+                    <img src="resource/RuntimeSource1.png" class="content-image">
+                </div>
+                <div class="role-image">
+                    <img src="resource/RuntimeSource2.png" class="content-image">
+                </div>
+            </div>
+
+            </div>
+            <h4 class="section-subheading">3-3. 구체적인 과정 및 연구</h4>
+            <div class="content-block">
+                <div class="post-item">
+                    <span class="post-icon">🎯글 : </span>
                     <a href="./unreal-data-registry/">Unreal GameFeature + Data Registry 로 DLC 데이터 추가하기</a>
                 </div>
-                <div class="post-item-date">2025년 10월 29일</div>
-                <p class="post-item-excerpt">
-                    언리얼 엔진 5의 GameFeature Plugin 시스템을 활용하면, 게임의 핵심 로직을 건드리지 않고도 새로운 컨텐츠를 런타임에 추가하거나 제거할 수 있다.
-                </p>
-                <div class="post-item-tags">
-                    <span class="post-item-tag">#UnrealEngine</span>
-                    <span class="post-item-tag">#GameFeature</span>
-                    <span class="post-item-tag">#DataRegistry</span>
-                </div>
-            </li>
-
-            <li class="post-item">
-                <span class="post-icon">🎯</span>
-                <div class="post-item-title">
-                    <a href="./unreal-iss/">Unreal 초기화 스테이트 시스템을 이용한 컴포넌트 초기화 개선</a>
-                </div>
-                <div class="post-item-date">2025년 10월 21일</div>
-                <p class="post-item-excerpt">
-                    Unreal을 사용하면서 자주 겪었던 초기화 시점 문제를 해결하기 위해 초기화 스테이트 시스템을 도입했다. 직접적인 의존성을 줄이고 더 나은 구조를 만들어보자.
-                </p>
-                <div class="post-item-tags">
-                    <span class="post-item-tag">#UnrealEngine</span>
-                    <span class="post-item-tag">#InitStateSystem</span>
-                </div>
-            </li>
-
-            <li class="post-item">
-                <span class="post-icon">🎯</span>
-                <div class="post-item-title">
-                    <a href="./unreal-modulegameplay-think/">Unreal 특정 게임에 적용할 모듈형 개발 구조 고민</a>
-                </div>
-                <div class="post-item-date">2025년 10월 09일</div>
-                <p class="post-item-excerpt">
-                    Lyra를 보며 GameFeature의 활용 방법이 정말 다양한 것 같다는 생각이 들었다. 그 방법은 어떤 게임을 만들 것인지에 따라 결정될 것으로 보였다.
-                </p>
-                <div class="post-item-tags">
-                    <span class="post-item-tag">#UnrealEngine</span>
-                    <span class="post-item-tag">#GameFeature</span>
-                </div>
-            </li>
-
-            <li class="post-item">
-                <span class="post-icon">🎯</span>
-                <div class="post-item-title">
-                    <a href="./unreal-lyra-experience/">Unreal Lyra의 Experience 설계 이유</a>
-                </div>
-                <div class="post-item-date">2025년 9월 29일</div>
-                <p class="post-item-excerpt">
-                    언리얼 엔진5의 라이라 예제에서 Experience와 GameFeature를 사용한 모듈형 게임 플레이를 보여주고 있다. 이 예제를 분석해 왜 이렇게 설계했는지 분석해보았다.
-                </p>
-                <div class="post-item-tags">
-                    <span class="post-item-tag">#UnrealEngine</span>
-                    <span class="post-item-tag">#Lyra</span>
-                    <span class="post-item-tag">#GameFeature</span>
-                </div>
-            </li>
-
-            <li class="post-item">
-                <span class="post-icon">🎯</span>
-                <div class="post-item-title">
-                    <a href="./unreal-gameframeworkcomponentmanager/">GameFrameworkComponentManager 시스템을 이용한 복잡한 다중 컴포넌트 초기화 순서 보장</a>
-                </div>
-                <div class="post-item-date">2025년 6월 22일</div>
-                <p class="post-item-excerpt">
-                    Lyra 분석 중, ModularActor 클래스들을 상속받고, IGameFrameworkInitStateInterface를 구현하는 클래스들이 존재했다. 이를 사용해 다중 컴포넌트 간의 초기화 순서를 보장하는 방법을 알아보자.
-                </p>
-                <div class="post-item-tags">
-                    <span class="post-item-tag">#UnrealEngine</span>
-                    <span class="post-item-tag">#GameFramework</span>
-                    <span class="post-item-tag">#Lyra</span>
-                </div>
-            </li>
-
-            <li class="post-item">
-                <span class="post-icon">🎯</span>
-                <div class="post-item-title">
-                    <a href="./unreal-game-engine-flow/">Unreal engine Game Engine Flow 분석</a>
-                </div>
-                <div class="post-item-date">2025년 6월 15일</div>
-                <p class="post-item-excerpt">
-                    Lyra Sample을 분석하다보니, UGameFrameworkComponentManager를 사용해서 컴포넌트의 초기화 순서를 결정하고 있었다. 왜 컴포넌트들의 순서를 확실하게 분리하고 결정하려고 하는지 알아야 했다.
-                </p>
-                <div class="post-item-tags">
-                    <span class="post-item-tag">#UnrealEngine</span>
-                    <span class="post-item-tag">#GameFramework</span>
-                </div>
-            </li>
-
-            <li class="post-item">
-                <span class="post-icon">🎯</span>
-                <div class="post-item-title">
-                    <a href="./tps-architecture/">Lyra 시스템을 참고한 TPS 게임 구조 설계</a>
-                </div>
-                <div class="post-item-date">2025년 6월 15일</div>
-                <p class="post-item-excerpt">
-                    World War Z와 같은 캐릭터 클래스 중심의 좀비 게임을 개발할 때 Lyra를 참고해 설계해 보려고 한다. Lyra의 게임 장르 변경을 위한 Experience 시스템을 캐릭터 클래스 변경 중심의 시스템으로 재설계 했다.
-                </p>
-                <div class="post-item-tags">
-                    <span class="post-item-tag">#UnrealEngine</span>
-                    <span class="post-item-tag">#GameFramework</span>
-                    <span class="post-item-tag">#Lyra</span>
-                </div>
-            </li>
-        </ul>
-    </main>
+            </div>
+        </section>
+    </div>
 
     <footer>
-        <p>&copy; 2025 TaehunKim0. All rights reserved.</p>
+        <p>&copy; 2024 [Your Name]. All rights reserved.</p>
     </footer>
 </body>
 </html>
