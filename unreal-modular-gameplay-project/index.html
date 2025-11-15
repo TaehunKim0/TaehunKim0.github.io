@@ -94,6 +94,24 @@
             margin-bottom: 40px;
         }
 
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            margin: 40px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .video-container video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
         .project-info {
             display: flex;
             justify-content: center;
@@ -596,8 +614,10 @@
             </div>
             
             <h3 class="section-subtitle">1-1. 결과 화면</h3>
-            <div class="role-image">
-                <img src="resource/Demo.mp4" class="content-image">
+            <div class="video-container">
+            <video controls>
+                <source src="resource/Demo.mp4" type="video/mp4">
+            </video>
             </div>
             <br>
             <p><b>각 기능들을 독립적인 GameFeature Plugin 으로 개발</b>했습니다. </p>
