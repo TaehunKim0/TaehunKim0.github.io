@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게임 수학 학습 - TaehunKim0</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #ffffff;
+            color: #333;
+            line-height: 1.7;
+        }
+
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        h2 {
+            border-bottom: 1px solid #e0e0e0;
+            background-color: #f5f5f5;
+            padding: 5px; 
+        }
+
+        h3 {
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        h4 {
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.98);
+            border-bottom: 1px solid #e0e0e0;
+            padding: 20px 40px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .header-nav a {
+            margin-left: 30px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 80px;
+            padding: 80px 40px 60px;
+            background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 300;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+        }
+
+        .hero .subtitle {
+            font-size: 20px;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        .project-info {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #999;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .info-value {
+            font-size: 16px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        /* Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 40px;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 80px;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 300;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .section-subtitle {
+            font-size: 24px;
+            font-weight: 400;
+            margin: 50px 0 20px 0;
+            color: #444;
+        }
+
+        .section-subheading {
+            font-size: 20px;
+            font-weight: 500;
+            margin: 35px 0 15px 0;
+            color: #555;
+        }
+
+        /* Content */
+        .content-block {
+            margin-bottom: 30px;
+        }
+
+        .content-block p {
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: #444;
+        }
+
+       .content-block ul,
+        .content-block ol {
+            margin: 20px 0;
+            padding-left: 25px;
+        }
+
+        .content-block li {
+            margin-bottom: 12px;
+            font-size: 16px;
+            color: #444;
+            line-height: 1.8;
+        }
+
+         .content-block ol li {
+            padding-left: 10px;
+        }
+
+        .content-block li {
+            margin-bottom: 12px;
+            font-size: 16px;
+            color: #444;
+            line-height: 1.8;
+        }
+
+        /* Image */
+        .content-image {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 40px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .image-caption {
+            text-align: center;
+            font-size: 14px;
+            color: #888;
+            margin-top: -25px;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+
+        /* Highlight Box */
+        .highlight-box {
+            background-color: #f0f7ff;
+            border: 1px solid #d0e7ff;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+
+        .highlight-box h4 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #0066cc;
+        }
+
+        .highlight-box p {
+            margin-bottom: 10px;
+        }
+
+        .highlight-box ul {
+            margin-top: 15px;
+        }
+
+        /* Feature Box */
+        .feature-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #0066cc;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .feature-box h4 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+
+        .feature-box h4::before {
+            content: "";
+            color: #0066cc;
+            font-size: 20px;
+            margin-right: 10px;
+        }
+
+        .feature-box ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .feature-box li {
+            padding-left: 25px;
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .feature-box li::before {
+            content: "•";
+            color: #0066cc;
+            font-weight: bold;
+            position: absolute;
+            left: 10px;
+        }
+
+        /* CTA Box */
+        .cta-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 50px 0;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+        }
+
+        .cta-box h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            border: none;
+        }
+
+        .cta-box p {
+            font-size: 16px;
+            margin-bottom: 25px;
+            opacity: 0.95;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 15px 40px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            text-decoration: none;
+        }
+
+        /* Footer */
+        footer {
+            background: #f8f9fa;
+            padding: 40px 20px;
+            text-align: center;
+            border-top: 1px solid #e0e0e0;
+            margin-top: 100px;
+        }
+
+        footer p {
+            font-size: 14px;
+            color: #999;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+            }
+
+            .header-nav a {
+                margin-left: 15px;
+                font-size: 13px;
+            }
+
+            .hero {
+                padding: 60px 20px 40px;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .hero .subtitle {
+                font-size: 16px;
+            }
+
+            .container {
+                padding: 40px 20px;
+            }
+
+            .section-title {
+                font-size: 26px;
+            }
+
+            .section-subtitle {
+                font-size: 20px;
+            }
+
+            .project-info {
+                gap: 20px;
+            }
+
+            .cta-box {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="header-title">
+                <a href="/">TaehunKim0</a>
+            </div>
+            <nav class="header-nav">
+                <a href="/">Home</a>
+                <a href="https://github.com/TaehunKim0" target="_blank">GitHub</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1>게임 수학 학습과 정리</h1>
+        <p class="subtitle">Game Mathematics Study</p>
+        
+    </section>
+
+    <div class="container">
+        <!-- 개요 -->
+        <section class="section">
+            <h2 class="section-title"><b>개요</b></h2>
+            <div class="content-block">
+
+                <p>이득우의 『게임수학』을 기반으로 주요 게임 수학 요소(벡터, 외적 내적, 회전 변환, 좌표계등)를 정리하며 학습했습니다.</p>
+                <p>모든 공식을 즉시 대답할 정도의 수준은 아니지만, 개발 과정에서 어떤 문제에 어떤 수학 개념이 필요한지 판단할 수 있으며, 실제 프로젝트에서도 이를 적용해 문제를 해결해왔습니다.</p>
+                <p>수학적 개념을 이해하고 활용하는 데 지속적으로 관심을 가지고 있습니다.</p>
+
+                
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="section">
+            <h2 class="section-title"><b>결과</b></h2>
+            <img src="./resource/Result.gif" alt="게임 수학 학습" class="content-image">
+
+            <p>최종적으로 MMD 파일을 로딩하고 렌더링한 후 애니메이션을 수행하는 것으로 마무리했습니다.</p>
+            <div class="cta-box">
+                <h3>게임 수학 학습 정리 노션</h3>
+                <a href="https://ten-toothbrush-91c.notion.site/Software-Renderer-a925170fac4d48d69ba7f1d52ffa3a35?source=copy_link" class="cta-button" target="_blank">노션 페이지 보기 →</a>
+            </div>
+        </section>
+
+        <!-- 실제 적용 사례 -->
+        <section class="section">
+            <h2 class="section-title"><b>실제 적용 사례</b></h2>
+            <h3 class="section-subtitle">스파이더맨 웹스윙에서의 내적·외적 활용</h3>
+            <div class="highlight-box">
+                <span class="post-icon">🎯글 : </span>
+                    <a href="./unreal-modulegameplay-spiderman/">모듈형 게임 플레이 프레임워크로 스파이더맨 제작</a>
+             </div>
+            <div class="content-block">
+                <p>스파이더맨 웹스윙 시스템을 구현하는 과정에서 내적과 외적 개념을 실제 게임 플레이 로직에 직접 적용했습니다.</p>
+            </div>
+
+            <!-- 내적 활용 -->
+            <div class="feature-box">
+                <h4>스파이더맨 웹스윙이 가능하게 만드는 줄의 장력 (내적)</h4>
+                <ul>
+                    <li>현재 캐릭터가 가는 방향과 웹이 부착된 지점까지의 방향을 내적해 음수라면, 캐릭터를 줄 쪽으로 당겨 장력을 구현했습니다.</li>
+                    <li>현재 캐릭터의 방향과 중력 방향을 내적에 1에 가깝다면 속도를 올려 자연스러운 스윙을 구현했습니다.</li>
+                </ul>
+            </div>
+
+            <!-- 외적 활용 -->
+            <div class="feature-box">
+                <h4>캐릭터가 스윙하는 방향에 따라 몸을 회전하게 만들기 (외적)</h4>
+                <ul>
+                    <li>캐릭터 이동 방향과 웹스윙 회전축을 계산하기 위해 <strong>외적을 사용</strong>했습니다.</li>
+                    <li>외적을 통해 얻은 축을 기준으로 스윙 방향을 조정하여 자연스럽게 캐릭터의 몸이 기울도록 했습니다.</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 TaehunKim0. All rights reserved.</p>
+    </footer>
+</body>
+</html>
