@@ -65,18 +65,41 @@
             border-bottom: 1px solid #e0e0e0;
         }
 
+        h1 {
+            font-size: 24px;
+            font-weight: 400;
+            margin: 30px 0 30px 0;
+            color: #111;
+            position: relative;
+            padding-left: 18px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        /* 왼쪽 강조 바 */
+        h1::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 6px;
+            width: 4px;
+            height: 70%;
+            background-color: #0066cc;
+            border-radius: 2px;
+        }
+
+
         h2 {
             font-size: 20px;
             font-weight: 600;
-            margin: 30px 0 10px 0;
+            margin: 10px 0 10px 0;
             color: #333;
         }
 
         .intro-section {
-            min-height: 60vh;
+            min-height: auto;
             display: flex;
             align-items: center;
-            margin-bottom: 50px;
+            margin-bottom: 20px;
         }
 
         .profile-wrapper {
@@ -256,19 +279,22 @@
             <a href="/nirvana-project/">Nirvana</a>
         </div>
         <div class="project-logo-item">
-            <a href="/webswing-project/">WebSwing</a>
+            <a href="/catchhim-project/">CatchHim</a>
+        </div>
+        <div class="project-logo-item">
+            <a href="/query-optimization-project/">Query Optimization</a>
+        </div>
+        <div class="project-logo-item">
+            <a href="/perlin-noise-project/">Perlin Noise</a>
         </div>
         <div class="project-logo-item">
             <a href="/voxel-project/">Voxel</a>
         </div>
         <div class="project-logo-item">
+            <a href="/webswing-project/">WebSwing</a>
+        </div>
+        <div class="project-logo-item">
             <a href="/staticmesh-editor-project/">Custom Editor</a>
-        </div>
-        <div class="project-logo-item">
-            <a href="/catchhim-project/">CatchHim</a>
-        </div>
-        <div class="project-logo-item">
-            <a href="/perlin-noise-project/">Perlin Noise</a>
         </div>
         <div class="project-logo-item">
             <a href="/tip-project/">UE5 Tips</a>
@@ -279,7 +305,6 @@
         <section class="intro-section">
             <div style="width: 100%;">
                 <h1>About</h1>
-                
                 <div class="profile-wrapper">
                     <div style="display: flex; flex-direction: column; align-items: center;">
                         <img src="./images/Me.png" alt="프로필 이미지" class="profile-image">
@@ -299,41 +324,37 @@
                         </div>
                     </div>
                     <div class="profile-text">
-                        <h2>김태훈 (TaehunKim)</h2>
-                        <p class="profile-description">
+                    <h2>김태훈 (TaehunKim)</h2>
+                    <p class="profile-description">
+                        <p><b>클라이언트 게임 프로그래머</b></p>
+                        <p>게임을 통해 다양한 경험을 전달하고, 플레이어가 몰입할 수 있는 세계를 만드는 개발자가 되는 것을 목표로 하고 있습니다.</p>
+                        <br>
 
-                            <p><b>저는 클라이언트 게임 프로그래머 입니다.</b></p>
-                            <br>
+                        <p>청강문화산업대학교에서 멀티 액션 로그라이크 <b>Nirvana</b>(22명, 8개월)와 러닝 액션 <b>CatchHim</b>(20명, 3개월)에서 파트장으로 <b>코어 게임플레이 시스템과 팀 협업 프로세스를 설계</b>했습니다.</p>
+                        <br>
 
-                            <p>게임을 통해 다양한 경험을 전달하고 , 플레이어가 몰입할 수 있는 세계를 만드는 개발자가 되는 것을 목표로 하고 있습니다.</p>
-                            <br>
+                        <p>대규모 협업에서 겪은 코드 충돌과 초기화 타이밍 문제를 해결하기 위해 <b>GameFeature Plugin과 Initialize State System을 활용한 모듈형 프레임워크</b>를 구축했습니다. 이를 통해 팀원 간 독립적인 개발이 가능해졌고, 새로운 콘텐츠 추가 시 코어 코드 수정 없이 확장할 수 있는 구조를 완성했습니다.</p>
+                        <br>
 
-                            <p>청강문화산업대학교 에서 멀티 액션 로그라이크 게임인 <b>Nirvana</b> 와 러닝 액션 게임인 <b>CatchHim</b> 을 구현했습니다.</p>
-                            <p>새로운 언어와 게임 기술에도 관심이 많아, <b>Rust 와 Bevy 엔진을 이용한 복셀 맵</b>을 제작해보았습니다.</p>
-                            <br>
+                        <p>기술적 도전에도 관심이 많아 <b>C++로 대규모 객체 쿼리 최적화</b>(공간분할, SIMD, 메모리 최적화)와 <b>2차원 Perline Noise</b>를 구현했고, 새로운 언어 학습을 위해 <b>Rust와 Bevy 엔진으로 복셀 맵</b>을 제작했습니다.</p>
+                        <br>
 
-                            <p>학교, 회사의 프로젝트에서 깨달은 것은, 기술력과 코드 품질도 중요하지만 <b>어떻게 하면 더 효율적이고 유연한 협업이 가능할지가 더 중요</b>하다고 느끼게 되었습니다.
-                            따라서, <b>GameFeature, ISS 를 활용한 팀 협업을 위한 모듈형 게임 플레이 프레임워크</b>를 제작했습니다.</p>
-
-                            <br>
-                            <p>주로 PC 플랫폼에서의 작업을 해왔으며, 여러 프로젝트로 다양한 게임 기술 경험을 보유하고 있습니다.</p>
-                            <br>
-
-                            <p>다양한 게임을 만들고, 팀원들과 소통하며 점점 더 재밌는 게임을 만드는 경험을 쌓을 수 있어서 영광이었고,</p>
-                            <p>앞으로도 항상 새로운 기술을 배우고, 주변 사람들 모두 같이 성장할 수 있도록 노력하고 싶습니다.</p>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                        </p>
-                    </div>
+                        <p><b>실제 프로젝트에서 부딪힌 문제를 분석하고, 팀 전체의 생산성을 높이는 솔루션을 만드는 것</b>이 제 강점입니다.</p>
+                        <br>
+                        <p>다양한 게임을 만들고, 팀원들과 소통하며 점점 더 재밌는 게임을 만드는 경험을 쌓을 수 있어서 영광이었고,</p>
+                        <p>앞으로도 항상 새로운 기술을 배우고, 주변 사람들 모두 같이 성장할 수 있도록 노력하고 싶습니다.</p>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                    </p>
+                </div>
                 </div>
             </div>
         </section>
 
-        <h1>Highlight Projects</h1>
-        
+        <h1>Game Architecture & Team Collaboration</h1>
         <div class="projects-grid">
 
             <div class="project-item">
@@ -369,32 +390,61 @@
                 <div class="project-details"><strong>플랫폼:</strong> PC</div>
                 <div class="project-details"><strong>엔진 및 도구:</strong> Unreal5 , C++</div>
             </div>
-
-            
+                <div class="project-item">
+                <img src="./images/CatchHim.png" alt="CatchHim 프로젝트 썸네일" class="project-image">
+                <div class="project-title">
+                    <a href="/catchhim-project/">CatchHim</a>
+                </div>
+                <div class="project-meta">2022년</div>
+                <p class="project-description">
+                    총 20명의 팀원이 3개월동안 협업하였고, 주인공 <u>캐릭터의 이동 및 장애물 회피 시 가속 시스템과
+                    펀치를 구현</u>했습니다. 게임 클리어 조건인 <u>초고속 질주 시스템도 제작</u>했습니다.
+                    파트장 역할을 맡게 되어 <u>파트의 일정 관리와 개발 규칙, 팀의 협업 방식</u>을 정하는데 기여했습니다.
+                </p>
+                <div class="project-details"><strong>직책:</strong> 클라이언트 프로그래머</div>
+                <div class="project-details"><strong>플랫폼:</strong> PC</div>
+                <div class="project-details"><strong>엔진 및 도구:</strong> Unity , C#</div>
+            </div>
         </div>
 
-        <h1>Projects</h1>
-
+        <h1>Optimization & Algorithm</h1>
         <div class="projects-grid">
             <div class="project-item">
-                <img src="./images/WebSwing.png" alt="웹스윙 구현 썸네일" class="project-image">
-                <div class="project-title">
-                    <a href="/webswing-project/">Unreal5 스파이더맨 웹스윙 구현</a>
-                </div>
-                <div class="project-meta">2025년</div>
+                <img src="./images/Query.png" alt="쿼리 최적화 썸네일" class="project-image">
+                <div class="project-title"><a href="/query-optimization-project/">C++ Large-Scale Query Optimization</a></div>
+                <div class="project-meta"><span>2025년</span></div>
                 <p class="project-description">
-                    스파이더맨의 웹스윙을 구현한 프로젝트입니다. <u>줄이 캐릭터를 부착점 쪽으로 계속 당기는 장력</u>을 이용해
-                    스윙을 구현했습니다. <u>키보드 이동에서 오는 힘</u>과 <u>캐릭터가 궤적을 그릴 때 Velocity 의 방향이 비슷할 때 속도를 올려주는
-                    힘</u>을 더해 최종 힘을 계산했습니다.
+                    1만 명 이상의 대규모 유닛 환경에서 <u>대량의 쿼리 처리</u>를 최적화하기 위해 
+                    <u>std::vector 기반 공간 분할</u>과 <u>SoA(Structure of Arrays)</u> 구조를 도입했습니다.
+                     데이터 지향 설계를 통해 캐시 적중률을 극대화하고 <u>SSE(SIMD)</u> 병렬 가속을 적용함으로써, 
+                     기존 대비 <u>쿼리 연산 속도를 2배 이상 향상</u>시킨 프로젝트입니다.
                 </p>
                 <div class="project-details"><strong>플랫폼:</strong> PC</div>
-                <div class="project-details"><strong>엔진 및 도구:</strong> Unreal5 , C++</div>
-                <div class="project-details"><strong>Github:</strong> <a href="https://github.com/TaehunKim0/unreal_modular_gameplay/tree/71badfa206b47a612affed86e10d3dd3f822fcb9/Plugins/GameFeatures/BaseGame/Spidy/WebSwing" target="_blank"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
+                <div class="project-details"><strong>엔진 및 도구:</strong>C++, OpenGL</div>
+                <div class="project-details"><strong>Github:</strong> <a href="https://github.com/TaehunKim0/optimization-openworld.git" target="_blank"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
                                         <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
                                     </svg></a></div>
-            </div>
+                                </div>
+                                
+                <div class="project-item">
+                    <img src="./images/PerlinNoise.png" alt="Perlin Noise 썸네일" class="project-image">
+                    <div class="project-title">
+                        <a href="/perlin-noise-project/">C++ 2차원 Perlin Noise 구현</a>
+                    </div>
+                    <div class="project-meta">2024년</div>
+                    <p class="project-description">
+                        단순한 난수 생성하기 위한 선형 합동법부터 테스트하며, <u>질서를 가진 일련 값들을 만드는 KenPerlin의 노이즈 알고리즘을 구현</u>했습니다.
+                        SFML 을 사용해 노이즈 결과를 출력했습니다.
+    
+                    </p>
+                    <div class="project-details"><strong>플랫폼:</strong> PC</div>
+                    <div class="project-details"><strong>엔진 및 도구:</strong> C++, SFML</div>
+                    <div class="project-details"><strong>Github:</strong> <a href="https://github.com/TaehunKim0/perlin_noise2d.git" target="_blank"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
+                                            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                                        </svg></a></div>
+                </div>
 
-            <div class="project-item">
+                <div class="project-item">
                 <img src="./images/Voxel.png" alt="복셀 맵 썸네일" class="project-image">
                 <div class="project-title">
                     <a href="/voxel-project/">Rust와 Bevy 엔진을 사용한 복셀 맵 구현</a>
@@ -412,89 +462,80 @@
                                     </svg></a></div>
             </div>
 
-            <div class="project-item">
-                <img src="./images/Mesh.png" alt="에디터 개발 썸네일" class="project-image">
-                <div class="project-title">
-                    <a href="/staticmesh-editor-project/">CustomEditor 개발</a>
-                </div>
-                <div class="project-meta">2023년</div>
-                <p class="project-description">
-                    Unreal의 Slate UI 프레임워크를 사용하여 커스텀 StaticMesh 편집 에디터를 개발했습니다.
-                    <u>CustomAsset 을 생성하여, Asset 을 열면 CustomEditor 가 열리는 구조</u>입니다.
-                    <u>에디터에서는 단순히 에셋의 Mesh 와 Material 변경</u>이 가능합니다.
-                </p>
-                <div class="project-details"><strong>플랫폼:</strong> PC</div>
-                <div class="project-details"><strong>엔진 및 도구:</strong> Unreal5 , C++</div>
-                <div class="project-details"><strong>Github:</strong> <a href="https://github.com/TaehunKim0/unreal-custom-editor.git" target="_blank"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
-                                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-                                    </svg></a></div>
-            </div>
-
-            <div class="project-item">
-                <img src="./images/CatchHim.png" alt="CatchHim 프로젝트 썸네일" class="project-image">
-                <div class="project-title">
-                    <a href="/catchhim-project/">CatchHim</a>
-                </div>
-                <div class="project-meta">2022년</div>
-                <p class="project-description">
-                    총 20명의 팀원이 3개월동안 협업하였고, 주인공 <u>캐릭터의 이동 및 장애물 회피 시 가속 시스템과
-                    펀치를 구현</u>했습니다. 게임 클리어 조건인 <u>초고속 질주 시스템도 제작</u>했습니다.
-                    파트장 역할을 맡게 되어 <u>파트의 일정 관리와 개발 규칙, 팀의 협업 방식</u>을 정하는데 기여했습니다.
-                </p>
-                <div class="project-details"><strong>직책:</strong> 클라이언트 프로그래머</div>
-                <div class="project-details"><strong>플랫폼:</strong> PC</div>
-                <div class="project-details"><strong>엔진 및 도구:</strong> Unity , C#</div>
-            </div>
-
-            <div class="project-item">
-                <img src="./images/PerlinNoise.png" alt="Perlin Noise 썸네일" class="project-image">
-                <div class="project-title">
-                    <a href="/perlin-noise-project/">C++ 2차원 Perlin Noise 구현</a>
-                </div>
-                <div class="project-meta">2024년</div>
-                <p class="project-description">
-                    단순한 난수 생성하기 위한 선형 합동법부터 테스트하며, <u>질서를 가진 일련 값들을 만드는 KenPerlin의 노이즈 알고리즘을 구현</u>했습니다.
-                    SFML 을 사용해 노이즈 결과를 출력했습니다.
-
-                </p>
-                <div class="project-details"><strong>플랫폼:</strong> PC</div>
-                <div class="project-details"><strong>엔진 및 도구:</strong> SFML, C++</div>
-                <div class="project-details"><strong>Github:</strong> <a href="https://github.com/TaehunKim0/perlin_noise2d.git" target="_blank"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
-                                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-                                    </svg></a></div>
-            </div>
-
-            <div class="project-item">
-                <img src="./images/Math.gif" alt="Math" class="project-image">
-                <div class="project-title">
-                    <a href="/math-project/">게임 수학 학습과 정리</a>
-                </div>
-                <div class="project-meta">2022년</div>
-                <p class="project-description">
-                    <u>이득우의 『게임수학』을 기반으로 주요 게임 수학 요소(벡터, 외적 내적, 회전 변환, 좌표계등)를 정리</u>하며 학습했습니다.
-                    모든 공식을 즉시 대답할 정도의 수준은 아니지만, 개발 과정에서 어떤 문제에 어떤 수학 개념이 필요한지 판단할 수 있으며,
-                    실제 프로젝트에서도 이를 적용해 문제를 해결해왔습니다.
-                </p>
-                <div class="project-details"><strong>플랫폼:</strong> PC</div>
-                <div class="project-details"><strong>엔진 및 도구:</strong> C++</div>
-            </div>
-
-            <div class="project-item">
-                <img src="./images/Tip.png" alt="UE5 팁 썸네일" class="project-image">
-                <div class="project-title">
-                    <a href="/tip-project/">Unreal Engine5 개발 팁</a>
-                </div>
-                <div class="project-meta">2025년 | 5개의 글</div>
-                <p class="project-description">
-                    Unreal Engine 개발 시 유용한 팁과 기능 설명을 공유합니다.
-                    자주 발생하는 단순한 문제부터 언리얼 프레임워크를 분석해야 하는 내용도 포함됩니다.
-                    <u>하드 레퍼런스의 문제점, AssetManager 사용 방법, Pawn 제거 시 IMC 가 제거되지 않는 이유 등</u> 이 있습니다.
-                </p>
-                <div class="project-details"><strong>플랫폼:</strong> PC</div>
-                <div class="project-details"><strong>엔진 및 도구:</strong> Unreal, C++</div>
-            </div>
-
             
+            </div>
+
+            <h1>Gameplay Systems & Editor Tools</h1>
+            <div class="projects-grid">
+                <div class="project-item">
+                    <img src="./images/WebSwing.png" alt="웹스윙 구현 썸네일" class="project-image">
+                    <div class="project-title">
+                        <a href="/webswing-project/">Unreal 스파이더맨 웹스윙 구현</a>
+                    </div>
+                    <div class="project-meta">2025년</div>
+                    <p class="project-description">
+                        스파이더맨의 웹스윙을 구현한 프로젝트입니다. <u>줄이 캐릭터를 부착점 쪽으로 계속 당기는 장력</u>을 이용해
+                        스윙을 구현했습니다. <u>키보드 이동에서 오는 힘</u>과 <u>캐릭터가 궤적을 그릴 때 Velocity 의 방향이 비슷할 때 속도를 올려주는
+                        힘</u>을 더해 최종 힘을 계산했습니다.
+                    </p>
+                    <div class="project-details"><strong>플랫폼:</strong> PC</div>
+                    <div class="project-details"><strong>엔진 및 도구:</strong> Unreal5 , C++</div>
+                    <div class="project-details"><strong>Github:</strong> <a href="https://github.com/TaehunKim0/unreal_modular_gameplay/tree/71badfa206b47a612affed86e10d3dd3f822fcb9/Plugins/GameFeatures/BaseGame/Spidy/WebSwing" target="_blank"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
+                                            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                                        </svg></a></div>
+                </div>
+                <div class="project-item">
+                    <img src="./images/Mesh.png" alt="에디터 개발 썸네일" class="project-image">
+                    <div class="project-title">
+                        <a href="/staticmesh-editor-project/">Unreal CustomEditor 개발</a>
+                    </div>
+                    <div class="project-meta">2023년</div>
+                    <p class="project-description">
+                        Unreal의 Slate UI 프레임워크를 사용하여 커스텀 StaticMesh 편집 에디터를 개발했습니다.
+                        <u>CustomAsset 을 생성하여, Asset 을 열면 CustomEditor 가 열리는 구조</u>입니다.
+                        <u>에디터에서는 단순히 에셋의 Mesh 와 Material 변경</u>이 가능합니다.
+                    </p>
+                    <div class="project-details"><strong>플랫폼:</strong> PC</div>
+                    <div class="project-details"><strong>엔진 및 도구:</strong> Unreal5 , C++</div>
+                    <div class="project-details"><strong>Github:</strong> <a href="https://github.com/TaehunKim0/unreal-custom-editor.git" target="_blank"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
+                                            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                                        </svg></a></div>
+                </div>
+            </div>
+            
+            <h1>Documentation & Study</h1>
+            <div class="projects-grid">
+                <div class="project-item">
+                    <img src="./images/Tip.png" alt="UE5 팁 썸네일" class="project-image">
+                    <div class="project-title">
+                        <a href="/tip-project/">Unreal Engine5 개발 팁</a>
+                    </div>
+                    <div class="project-meta">2025년 | 5개의 글</div>
+                    <p class="project-description">
+                        Unreal Engine 개발 시 유용한 팁과 기능 설명을 공유합니다.
+                        자주 발생하는 단순한 문제부터 언리얼 프레임워크를 분석해야 하는 내용도 포함됩니다.
+                        <u>하드 레퍼런스의 문제점, AssetManager 사용 방법, Pawn 제거 시 IMC 가 제거되지 않는 이유 등</u> 이 있습니다.
+                    </p>
+                    <div class="project-details"><strong>플랫폼:</strong> PC</div>
+                    <div class="project-details"><strong>엔진 및 도구:</strong> Unreal, C++</div>
+                </div>
+
+                <div class="project-item">
+                    <img src="./images/Math.gif" alt="Math" class="project-image">
+                    <div class="project-title">
+                        <a href="/math-project/">게임 수학 학습과 정리</a>
+                    </div>
+                    <div class="project-meta">2022년</div>
+                    <p class="project-description">
+                        <u>이득우의 『게임수학』을 기반으로 주요 게임 수학 요소(벡터, 외적 내적, 회전 변환, 좌표계등)를 정리</u>하며 학습했습니다.
+                        모든 공식을 즉시 대답할 정도의 수준은 아니지만, 개발 과정에서 어떤 문제에 어떤 수학 개념이 필요한지 판단할 수 있으며,
+                        실제 프로젝트에서도 이를 적용해 문제를 해결해왔습니다.
+                    </p>
+                    <div class="project-details"><strong>플랫폼:</strong> PC</div>
+                    <div class="project-details"><strong>엔진 및 도구:</strong> C++</div>
+                </div>
+
+            </div>
             
         </div>
     </main>

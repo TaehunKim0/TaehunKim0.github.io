@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++ Large-Scale Query Optimization</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #ffffff;
+            color: #333;
+            line-height: 1.7;
+        }
+
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        h2 {
+            border-bottom: 1px solid #e0e0e0;
+            background-color: #f5f5f5;
+            padding: 5px;
+        }
+
+        h3 {
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        h4 {
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.98);
+            border-bottom: 1px solid #e0e0e0;
+            padding: 20px 40px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .header-nav a {
+            margin-left: 30px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 80px;
+            padding: 80px 40px 60px;
+            background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 300;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+        }
+
+        .hero .subtitle {
+            font-size: 20px;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        /* Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 40px;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 80px;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 300;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .section-subtitle {
+            font-size: 24px;
+            font-weight: 400;
+            margin: 50px 0 20px 0;
+            color: #444;
+        }
+
+        .section-subheading {
+            font-size: 20px;
+            font-weight: 500;
+            margin: 35px 0 15px 0;
+            color: #555;
+        }
+
+        /* Content */
+        .content-block {
+            margin-bottom: 30px;
+        }
+
+        .content-block p {
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: #444;
+        }
+
+        .content-block ul,
+        .content-block ol {
+            margin: 20px 0;
+            padding-left: 25px;
+        }
+
+        .content-block li {
+            margin-bottom: 12px;
+            font-size: 16px;
+            color: #444;
+            line-height: 1.8;
+        }
+
+        .content-block ol li {
+            padding-left: 10px;
+        }
+
+        /* Code Block */
+        .code-block {
+            background-color: #1d2331;
+            border-left: 3px solid #0066cc;
+            padding: 20px 25px;
+            margin: 30px 0;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+
+        .code-block pre {
+            white-space: pre;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            color: #D4D2C8;
+            background-color: transparent;
+            border: none;
+            padding: 0;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* Highlight Box */
+        .highlight-box {
+            background-color: #f0f7ff;
+            border: 1px solid #d0e7ff;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+
+        .highlight-box h4 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #0066cc;
+        }
+
+        /* Footer */
+        footer {
+            background: #f8f9fa;
+            padding: 40px 20px;
+            text-align: center;
+            border-top: 1px solid #e0e0e0;
+            margin-top: 100px;
+        }
+
+        footer p {
+            font-size: 14px;
+            color: #999;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+            }
+
+            .header-nav a {
+                margin-left: 15px;
+                font-size: 13px;
+            }
+
+            .hero {
+                padding: 60px 20px 40px;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .hero .subtitle {
+                font-size: 16px;
+            }
+
+            .container {
+                padding: 40px 20px;
+            }
+
+            .section-title {
+                font-size: 26px;
+            }
+
+            .section-subtitle {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="header-title">
+                <a href="/">TaehunKim0</a>
+            </div>
+            <nav class="header-nav">
+                <a href="/">Home</a>
+                <a href="https://github.com/TaehunKim0" target="_blank">GitHub</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1>C++ Large-Scale Query Optimization</h1>
+        <p class="subtitle">공간 분할, 데이터 지향 설계, SIMD 최적화</p>
+    </section>
+
+    <div class="container">
+        <section class="section">
+            <h2 class="section-title"><b>프로젝트 개요 및 목표</b></h2>
+            <div class="content-block">
+                <p>RTS, 배틀로얄 같은 대규모 게임에서는 많은 유닛이 동시에 움직이며, 각 유닛은 주변 적을 탐지하거나 공격 범위를 계산해야 합니다. 이러한 <strong>거리 기반 공간 쿼리</strong>가 매 프레임마다 수행되면서 성능 병목이 발생합니다.</p>
+                <br>
+                <p>이 프로젝트는 <strong>1만 개 이상의 객체를 실시간으로 처리</strong>할 수 있는 고성능 공간 쿼리 시스템을 구축하는 것을 목표로 합니다.</p>
+                <p>단순 알고리즘 개선을 넘어, <strong>자료구조 선택, 메모리 레이아웃 설계, CPU 하드웨어 활용</strong>까지 전 과정을 최적화했습니다.</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title"><b>결과</b></h2>
+            <iframe
+                width="800" 
+                height="400"
+                src="https://www.youtube.com/embed/Ll3VTxmk5dQ?controls=0"
+                title="YouTube video player" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                allowfullscreen>
+            </iframe>
+
+            <div class="content-block">
+                <p>나이브 방식 대비 <strong>2배 이상의 성능 향상</strong>을 달성하여, 1만 개 이상의 객체를 실시간으로 처리할 수 있게 되었습니다.</p>
+            </div>
+
+
+
+            <div class="highlight-box">
+                <h4>핵심 최적화 기술</h4>
+                <ul>
+                    <li><strong>Uniform Hash Grid:</strong> O(N) → O(K) 복잡도로 개선. 맵을 격자로 나누어 주변 셀만 탐색해 불필요한 연산 제거</li>
+                    <li><strong>데이터 지향 설계 (AoS → SoA):</strong> 객체 포인터 배열에서 연속된 데이터 배열로 전환하여 캐시 히트율 향상.</li>
+                    <li><strong>메모리 사전 할당:</strong> 셀 당 평균 밀도를 계산해 미리 reserve()로 공간 확보. 런타임 중 발생하는 vector 재할당 제거</li>
+                    <li><strong>SSE SIMD 병렬 처리:</strong> 128비트 레지스터로 4개 유닛을 동시 연산해 성능 향상</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title"><b>문제 분석</b></h2>
+            
+            <h3 class="section-subtitle">1. 불필요한 전수 조사: O(N)</h3>
+            <div class="content-block">
+                <p>
+                    가장 기본적인 Naive 방식은 플레이어 주변의 대상을 찾기 위해 <b>월드에 존재하는 모든 유닛(N명)을 전수 조사</b>합니다. 
+                    비록 플레이어 1명을 대상으로 한 쿼리일지라도, 유닛이 1만 명으로 늘어나면 매 프레임 1만 번의 거리 계산이 필요하며, 
+                    이러한 호출이 늘어날수록 CPU 부하는 선형적으로 증가하여 성능 병목의 원인이 됩니다.
+                </p>
+            </div>
+
+ <!-- HTML generated using hilite.me --><div style="background: #1d2331; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: #7E8AA1">// Naive 방식: 주변 유닛을 찾기 위해 전체 리스트를 순회</span>
+<span style="color: #FFAD66">for</span><span style="color: #D4D2C8"> (</span><span style="color: #73D0FF">size_t</span><span style="color: #D4D2C8"> i </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> </span><span style="color: #DFBFFF">0</span><span style="color: #D4D2C8">; i </span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8"> allUnits.size(); </span><span style="color: #FFAD66">++</span><span style="color: #D4D2C8">i) { </span>
+<span style="color: #D4D2C8">    </span><span style="color: #73D0FF">float</span><span style="color: #D4D2C8"> distSq </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> CalculateDistanceSq(playerPos, allUnits[i].pos);</span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (distSq </span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8"> radiusSq) {</span>
+<span style="color: #D4D2C8">        </span><span style="color: #7E8AA1">// 결과 저장</span>
+<span style="color: #D4D2C8">    }</span>
+<span style="color: #D4D2C8">}</span>
+</pre></div>
+
+            <h3 class="section-subtitle">2. 포인터 체이싱 및 캐시 미스</h3>
+            <div class="content-block">
+                <p><code>std::vector&lt;GameObject*&gt;</code>는 포인터 배열이라 객체의 실제 데이터가 메모리에 흩어져 있습니다. CPU가 데이터를 읽을 때 메모리를 여기저기 점프해야 해서(포인터 체이싱) 캐시 효율이 떨어지고, 결과적으로 대규모 연산에서 성능 병목이 발생합니다.</p>
+            </div>
+
+<!-- HTML generated using hilite.me --><div style="background: #1d2331; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: #7E8AA1">// 포인터 배열: 주소값은 연속적이나, 실제 데이터는 메모리 곳곳에 흩어져 있음</span>
+<span style="color: #D4D2C8">std</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">vector</span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8">GameObject</span><span style="color: #FFAD66">*&gt;</span><span style="color: #D4D2C8"> Objects; </span>
+
+<span style="color: #FFAD66">for</span><span style="color: #D4D2C8"> (</span><span style="color: #FFAD66">auto*</span><span style="color: #D4D2C8"> Obj </span><span style="color: #FFAD66">:</span><span style="color: #D4D2C8"> Objects) {</span>
+<span style="color: #D4D2C8">    </span><span style="color: #7E8AA1">// 1. Obj 역참조시 메모리가 흩어져 있어 캐시 미스 확률 높음</span>
+<span style="color: #D4D2C8">    </span><span style="color: #7E8AA1">// 2. GetPosition() 호출을 위해 메모리 점프</span>
+<span style="color: #D4D2C8">    </span><span style="color: #73D0FF">float</span><span style="color: #D4D2C8"> dist </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> glm</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">distance(PlayerPos, Obj</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">GetPosition()); </span>
+<span style="color: #D4D2C8">}</span>
+</pre></div>
+
+
+            <h3 class="section-subtitle">3. 동적 할당 오버헤드</h3>
+            <div class="content-block">
+                <p>알고리즘 최적화 외에도 매 루프마다 발생하는 작은 오버헤드들이 대규모 데이터에서는 큰 성능 저하를 일으킵니다.</p>
+                <p><code>std::vector</code>에 <code>push_back</code>을 반복적으로 호출하면, 내부 용량이 부족할 때마다 더 큰 메모리를 새로 할당하고 기존 데이터를 전체 복사합니다. 1만 개의 객체를 처리할 때 이러한 재할당이 수십 번 발생하면, 단순한 데이터 추가 작업만으로도 상당한 시간이 소요됩니다.</p>
+                <p>이를 해결하기 위해 미리 예상되는 크기만큼 <code>reserve()</code>로 공간을 확보하여 불필요한 재할당을 방지했습니다.</p>
+            </div>
+
+            <h3 class="section-subtitle">4. SIMD 미사용 시의 하드웨어적 한계</h3>
+            <div class="content-block">
+                <p>알고리즘을 최적화한 후에도 CPU의 하드웨어 기능을 활용하지 않으면 성능 향상에 한계가 있습니다.</p>
+                <p>일반적인 코드는 한 번에 유닛 1명의 거리만 계산합니다. 하지만 SSE(SIMD 명령어)를 사용하면 128비트 레지스터에 4명의 좌표 데이터를 동시에 로드하여, 단일 명령어로 4개의 거리를 병렬로 계산할 수 있습니다.</p>
+                <p>예를 들어 1만 명의 유닛을 처리할 때, 일반 코드는 1만 번의 연산이 필요하지만 SSE를 사용하면 약 2,500번의 연산으로 줄어들어 이론상 4배 가까운 성능 향상이 가능합니다.</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title"><b>해결 방안</b></h2>
+
+            <h3 class="section-subtitle">1. 공간 분할을 통한 쿼리 최적화: O(K)</h3>
+            <div class="content-block">
+                <p>
+        Grid 공간 분할을 적용하여 <b>탐색 범위를 플레이어가 속한 셀과 인접한 셀(K개)로 제한</b>했습니다. 
+        이제 전체 유닛 수(N)가 아무리 많아져도 실제 쿼리 연산량은 플레이어 주변의 유닛 밀도(K)에만 영향을 받게 되어 
+        실질적인 연산 비용을 상수 시간 수준으로 관리할 수 있게 되었습니다.
+    </p>
+            </div>
+
+            <h4 class="section-subheading">자료구조 선택 과정</h4>
+            <div class="content-block">
+                <p>각 셀의 유닛을 저장하는 자료구조로 세 가지 옵션을 고려했습니다:</p>
+                <ul>
+                    <li><strong>Linked List:</strong> 삽입/삭제는 O(1)이지만, 순회 시 포인터 체이싱으로 인한 캐시 미스가 심각합니다. 쿼리가 빈번한 환경에서는 치명적인 단점입니다.</li>
+                    <li><strong>HashMap:</strong> 빠른 검색이 가능하지만, 해시 충돌 처리와 메모리 오버헤드가 큽니다. 또한 순회 시 메모리 접근 패턴이 불규칙적이어서 캐시 효율이 떨어집니다.</li>
+                    <li><strong>Vector:</strong> 연속된 메모리 배열로 캐시 친화적입니다. 삽입/삭제가 O(N)이지만, 매 프레임 전체 재구축 방식에서는 문제가 되지 않으며, 순회 성능이 좋습니다.</li>
+                </ul>
+                <p><strong>결론:</strong> 매 프레임 격자를 재구축하고 빈번한 쿼리를 수행하는 구조이기 때문에, 삽입/삭제보다 <strong>순회 성능과 캐시 효율</strong>이 중요하므로 <code>std::vector</code>를 선택했습니다.</p>
+            </div>
+
+<!-- HTML generated using hilite.me --><div style="background: #1d2331; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: #7E8AA1">/**</span>
+<span style="color: #7E8AA1"> * x, z : 쿼리 중심 좌표</span>
+<span style="color: #7E8AA1"> * InRadius : 탐색 반경</span>
+<span style="color: #7E8AA1"> */</span>
+<span style="color: #FFAD66">const</span><span style="color: #D4D2C8"> </span><span style="color: #73D0FF">void</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">OptimizedGridVectorRebuild::GetNeighborGridable</span><span style="color: #D4D2C8">(</span><span style="color: #73D0FF">float</span><span style="color: #D4D2C8"> x, </span><span style="color: #73D0FF">float</span><span style="color: #D4D2C8"> z, </span><span style="color: #73D0FF">float</span><span style="color: #D4D2C8"> InRadius,
+     std</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">vector</span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8">QueryResult</span><span style="color: #FFAD66">&gt;&amp;</span><span style="color: #D4D2C8"> OutResult)</span>
+<span style="color: #D4D2C8">{</span>
+<span style="color: #D4D2C8">    OutResult.clear();</span>
+<span style="color: #D4D2C8">    </span>
+<span style="color: #D4D2C8">    </span><span style="color: #7E8AA1">// 1. 탐색할 셀 범위 계산</span>
+<span style="color: #D4D2C8">    </span><span style="color: #73D0FF">int</span><span style="color: #D4D2C8"> CellSearchRange </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> </span><span style="color: #FFAD66">static_cast&lt;</span><span style="color: #73D0FF">int</span><span style="color: #FFAD66">&gt;</span><span style="color: #D4D2C8">(std</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">ceil(InRadius </span><span style="color: #FFAD66">/</span><span style="color: #D4D2C8"> CellSize));</span>
+<span style="color: #D4D2C8">    </span><span style="color: #73D0FF">float</span><span style="color: #D4D2C8"> RadiusSq </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> InRadius </span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> InRadius;</span>
+
+<span style="color: #D4D2C8">    </span><span style="color: #73D0FF">int</span><span style="color: #D4D2C8"> CenterCol </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> </span><span style="color: #FFAD66">static_cast&lt;</span><span style="color: #73D0FF">int</span><span style="color: #FFAD66">&gt;</span><span style="color: #D4D2C8">(x </span><span style="color: #FFAD66">/</span><span style="color: #D4D2C8"> CellSize);</span>
+<span style="color: #D4D2C8">    </span><span style="color: #73D0FF">int</span><span style="color: #D4D2C8"> CenterRow </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> </span><span style="color: #FFAD66">static_cast&lt;</span><span style="color: #73D0FF">int</span><span style="color: #FFAD66">&gt;</span><span style="color: #D4D2C8">(z </span><span style="color: #FFAD66">/</span><span style="color: #D4D2C8"> CellSize);</span>
+
+<span style="color: #D4D2C8">    </span><span style="color: #7E8AA1">// 2. 주변 셀만 순회</span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">for</span><span style="color: #D4D2C8"> (</span><span style="color: #73D0FF">int</span><span style="color: #D4D2C8"> R </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> CenterRow </span><span style="color: #FFAD66">-</span><span style="color: #D4D2C8"> CellSearchRange; R </span><span style="color: #FFAD66">&lt;=</span><span style="color: #D4D2C8"> CenterRow </span><span style="color: #FFAD66">+</span><span style="color: #D4D2C8"> CellSearchRange; </span><span style="color: #FFAD66">++</span><span style="color: #D4D2C8">R) {</span>
+<span style="color: #D4D2C8">        </span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (R </span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8"> </span><span style="color: #DFBFFF">0</span><span style="color: #D4D2C8"> </span><span style="color: #FFAD66">||</span><span style="color: #D4D2C8"> R </span><span style="color: #FFAD66">&gt;=</span><span style="color: #D4D2C8"> Rows) </span><span style="color: #FFAD66">continue</span><span style="color: #D4D2C8">;</span>
+<span style="color: #D4D2C8">        </span><span style="color: #73D0FF">int</span><span style="color: #D4D2C8"> RowOffset </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> R </span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> Cols;</span>
+
+<span style="color: #D4D2C8">        </span><span style="color: #FFAD66">for</span><span style="color: #D4D2C8"> (</span><span style="color: #73D0FF">int</span><span style="color: #D4D2C8"> C </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> CenterCol </span><span style="color: #FFAD66">-</span><span style="color: #D4D2C8"> CellSearchRange; C </span><span style="color: #FFAD66">&lt;=</span><span style="color: #D4D2C8"> CenterCol </span><span style="color: #FFAD66">+</span><span style="color: #D4D2C8"> CellSearchRange; </span><span style="color: #FFAD66">++</span><span style="color: #D4D2C8">C) {</span>
+<span style="color: #D4D2C8">            </span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (C </span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8"> </span><span style="color: #DFBFFF">0</span><span style="color: #D4D2C8"> </span><span style="color: #FFAD66">||</span><span style="color: #D4D2C8"> C </span><span style="color: #FFAD66">&gt;=</span><span style="color: #D4D2C8"> Cols) </span><span style="color: #FFAD66">continue</span><span style="color: #D4D2C8">;</span>
+
+<span style="color: #D4D2C8">            </span><span style="color: #FFAD66">auto&amp;</span><span style="color: #D4D2C8"> Cell </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> Cells[RowOffset </span><span style="color: #FFAD66">+</span><span style="color: #D4D2C8"> C];</span>
+<span style="color: #D4D2C8">            </span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (Cell.Actors.empty()) </span><span style="color: #FFAD66">continue</span><span style="color: #D4D2C8">;</span>
+
+<span style="color: #D4D2C8">            </span><span style="color: #7E8AA1">// [셀 내 유닛 정밀 검사]</span>
+<span style="color: #D4D2C8">            </span><span style="color: #7E8AA1">// ... (아래 SIMD 로직으로 이어짐)</span>
+<span style="color: #D4D2C8">        }</span>
+<span style="color: #D4D2C8">    }</span>
+<span style="color: #D4D2C8">}</span>
+</pre></div>
+
+
+            <h3 class="section-subtitle">2. 데이터 지향 설계 AoS → SoA 로 전환 (포인터 체이싱, 캐시 미스 문제 해결)</h3>
+            
+            <h4 class="section-subheading">기존 객체 중심 구조 (AoS)의 문제점</h4>
+            <div class="content-block">
+                <p>유닛의 모든 정보(위치, HP, 이름, 상태 등)를 하나의 객체(<code>GameObject</code>)에 담고, 그 <strong>객체의 포인터</strong>를 배열로 관리했습니다.</p>
+                <p>Obj->GetPosition() 호출 시 매번 메모리 여기 저기를 점프해야 합니다. 또한 각 객체의 실제 메모리는 흩어져 있어 캐시를 활용하기 힘듭니다.</p>
+
+                <p>결과적으로 대규모 연산에서 캐시 미스가 빈번하게 발생하여 성능 병목이 됩니다.</p>
+            </div>
+
+<!-- HTML generated using hilite.me --><div style="background: #1d2331; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: #7E8AA1">// AoS (Array of Structures)</span>
+<span style="color: #7E8AA1">// 유닛이 각자 객체 형태로 존재하며, 포인터를 통해 쿼리를 수행</span>
+<span style="color: #FFAD66">for</span><span style="color: #D4D2C8"> (</span><span style="color: #FFAD66">auto*</span><span style="color: #D4D2C8"> Obj </span><span style="color: #FFAD66">:</span><span style="color: #D4D2C8"> Objects)
+{</span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">static</span><span style="color: #D4D2C8"> std</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">vector</span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8">IGridable</span><span style="color: #FFAD66">*&gt;</span><span style="color: #D4D2C8"> QueryResults;</span>
+<span style="color: #D4D2C8">    QueryResults.clear();</span>
+
+<span style="color: #D4D2C8">    </span><span style="color: #7E8AA1">// 문제 1: Obj-&gt;GetPosition() 호출 시 포인터 체이싱 발생</span>
+<span style="color: #D4D2C8">    </span><span style="color: #7E8AA1">// 문제 2: 객체 내 연산에 불필요한 데이터(HP, Name 등)가 캐시 라인을 점유함</span>
+<span style="color: #D4D2C8">    </span><span style="color: #73D0FF">int</span><span style="color: #D4D2C8"> QueryRadius </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> </span><span style="color: #DFBFFF">1</span><span style="color: #D4D2C8">; </span>
+<span style="color: #D4D2C8">    CurrentGrid</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">GetNeighborGridable(Obj</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">GetPosition(), QueryRadius, QueryResults);</span>
+<span style="color: #D4D2C8">}</span>
+</pre></div>
+
+
+            <h4 class="section-subheading">데이터 중심 구조 (SoA) 전환의 장점</h4>
+            <div class="content-block">
+                <p>연산에 필요한 <strong>위치 데이터(X, Z)만</strong> 따로 추출하여 연속된 배열(<code>std::vector&lt;float&gt;</code>)로 재구성했습니다. 유닛 객체를 찾아가는 대신, 데이터가 모여있는 배열을 직접 순회합니다.</p>
+                <p>포인터의 역참조가 제거되고, 필요한 데이터만 로드되어 캐시 효율이 향상됩니다.</p>
+            </div>
+
+<!-- HTML generated using hilite.me --><div style="background: #1d2331; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: #7E8AA1">// SoA (Structure of Arrays)</span>
+<span style="color: #7E8AA1">// 연산에 필요한 핵심 데이터(X, Z)만 배열로 모아 선형적으로 처리</span>
+<span style="color: #FFAD66">for</span><span style="color: #D4D2C8"> (</span><span style="color: #73D0FF">int</span><span style="color: #D4D2C8"> i </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> </span><span style="color: #DFBFFF">0</span><span style="color: #D4D2C8">; i </span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8"> Objects.size(); i</span><span style="color: #FFAD66">++</span><span style="color: #D4D2C8">)</span>
+<span style="color: #D4D2C8">{</span>
+<span style="color: #D4D2C8">    </span><span style="color: #7E8AA1">// 1. 역참조 없이 연속된 메모리 배열(pX, pZ)에서 직접 읽기 (캐시 히트율 증가)</span>
+<span style="color: #D4D2C8">    </span><span style="color: #73D0FF">float</span><span style="color: #D4D2C8"> CurrentX </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> pX[i];</span>
+<span style="color: #D4D2C8">    </span><span style="color: #73D0FF">float</span><span style="color: #D4D2C8"> CurrentZ </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> pZ[i];</span>
+
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">static</span><span style="color: #D4D2C8"> std</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">vector</span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8">QueryResult</span><span style="color: #FFAD66">&gt;</span><span style="color: #D4D2C8"> QueryResults;</span>
+<span style="color: #D4D2C8">    QueryResults.clear();</span>
+<span style="color: #D4D2C8">    </span>
+<span style="color: #D4D2C8">    </span><span style="color: #7E8AA1">// 2. 불필요한 재할당 방지를 위한 reserve 활용</span>
+<span style="color: #D4D2C8">    QueryResults.reserve(FinalReserve);</span>
+
+<span style="color: #D4D2C8">    </span><span style="color: #7E8AA1">// 3. 인자값으로 좌표를 직접 전달하여 포인터 역참조 제거</span>
+<span style="color: #D4D2C8">    OptimizedVectorGrid</span><span style="color: #FFAD66">-&gt;</span><span style="color: #D4D2C8">GetNeighborGridable(CurrentX, CurrentZ, QueryRadius, QueryResults);</span>
+<span style="color: #D4D2C8">}</span>
+</pre></div>
+
+
+            <h3 class="section-subtitle">3. 메모리 할당 최적화</h3>
+            <div class="content-block">
+                <p>사전에 크기를 예약하지 않으면 데이터가 추가될 때마다 <strong>재할당</strong>이 발생합니다. 기존 데이터를 커진 새 공간으로 전체 복사하여 많은 비용이 들게 됩니다.</p>
+                <p>따라서 그리드를 초기화할 때, 각 셀의 vector 들에게 셀 당 평균 밀도를 계산해 공간을 확보했습니다.</p>
+            </div>
+
+<!-- HTML generated using hilite.me --><div style="background: #1d2331; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: #7E8AA1">// OptimizedGridVectorRebuild 생성자 로직</span>
+<span style="color: #D4D2C8">OptimizedGridVectorRebuild</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">OptimizedGridVectorRebuild(</span><span style="color: #73D0FF">float</span><span style="color: #D4D2C8"> InWidth, </span><span style="color: #73D0FF">float</span><span style="color: #D4D2C8"> InHeight,
+    </span><span style="color: #73D0FF">float</span><span style="color: #D4D2C8"> InCellSize)</span>
+<span style="color: #D4D2C8">{</span>
+<span style="color: #D4D2C8">    Cells.resize(Rows </span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> Cols);</span>
+
+<span style="color: #D4D2C8">    </span><span style="color: #7E8AA1">// 셀당 평균 밀도 계산 (예: 1만 명 / 100개 셀 = 셀당 100명)</span>
+<span style="color: #D4D2C8">    </span><span style="color: #73D0FF">size_t</span><span style="color: #D4D2C8"> AverageDensity </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> World</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">MaxSpawnCount </span><span style="color: #FFAD66">/</span><span style="color: #D4D2C8"> (Rows </span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> Cols);</span>
+
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">for</span><span style="color: #D4D2C8"> (</span><span style="color: #FFAD66">auto&amp;</span><span style="color: #D4D2C8"> cell </span><span style="color: #FFAD66">:</span><span style="color: #D4D2C8"> Cells)</span>
+<span style="color: #D4D2C8">    {</span>
+<span style="color: #D4D2C8">        </span><span style="color: #7E8AA1">// 런타임 중 push_back 시 메모리 재할당이 발생하지 않도록 미리 예약</span>
+<span style="color: #D4D2C8">        cell.PosX.reserve(AverageDensity);</span>
+<span style="color: #D4D2C8">        cell.PosZ.reserve(AverageDensity);</span>
+<span style="color: #D4D2C8">        cell.Actors.reserve(AverageDensity);</span>
+<span style="color: #D4D2C8">    }</span>
+<span style="color: #D4D2C8">}</span>
+</pre></div>
+
+
+            <div class="content-block">
+                <br>
+                <p>또한, 쿼리 결과를 받아올 QueryResult vector는 static으로 선언해 매번 새로운 벡터를 만들지 않고, 내가 쿼리할 반경 내에 몇 명이 있을지 기대값을 미리 계산하여 공간을 확보했습니다.</p>
+            </div>
+
+            <!-- HTML generated using hilite.me --><div style="background: #1d2331; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: #73D0FF">void</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">World::QueryTestOptimizedVectorRebuild</span><span style="color: #D4D2C8">()</span>
+<span style="color: #D4D2C8">{</span>
+<span style="color: #D4D2C8">    ...</span>
+<span style="color: #D4D2C8">    </span><span style="color: #73D0FF">float</span><span style="color: #D4D2C8"> WorldArea </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> GridWidth </span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> GridHeight;</span>
+<span style="color: #D4D2C8">    </span><span style="color: #73D0FF">float</span><span style="color: #D4D2C8"> UnitDensity </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> Objects.size() </span><span style="color: #FFAD66">/</span><span style="color: #D4D2C8"> WorldArea; </span><span style="color: #7E8AA1">// 유닛 밀도</span>
+<span style="color: #D4D2C8">    </span><span style="color: #73D0FF">float</span><span style="color: #D4D2C8"> QueryArea </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> (</span><span style="color: #DFBFFF">2</span><span style="color: #D4D2C8"> </span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> QueryRadius) </span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> (</span><span style="color: #DFBFFF">2</span><span style="color: #D4D2C8"> </span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> QueryRadius); </span><span style="color: #7E8AA1">//원형 -&gt; 사각형</span>
+<span style="color: #D4D2C8">    </span>
+<span style="color: #D4D2C8">    </span><span style="color: #73D0FF">float</span><span style="color: #D4D2C8"> MarginRatio </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> </span><span style="color: #DFBFFF">2.0f</span><span style="color: #D4D2C8">; </span><span style="color: #7E8AA1">// 여유 확보 비율</span>
+<span style="color: #D4D2C8">    </span><span style="color: #73D0FF">int</span><span style="color: #D4D2C8"> FinalReserve </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> </span><span style="color: #FFAD66">static_cast&lt;</span><span style="color: #73D0FF">size_t</span><span style="color: #FFAD66">&gt;</span><span style="color: #D4D2C8">(UnitDensity </span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> QueryArea </span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> MarginRatio); </span><span style="color: #7E8AA1">
+     // 특정 범위에 몇 명의 유닛이 있을 지 기대값</span>
+<span style="color: #D4D2C8">    </span>
+<span style="color: #D4D2C8">    ...</span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">for</span><span style="color: #D4D2C8"> (</span><span style="color: #73D0FF">int</span><span style="color: #D4D2C8"> i </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> </span><span style="color: #DFBFFF">0</span><span style="color: #D4D2C8">; i </span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8"> Objects.size(); i</span><span style="color: #FFAD66">++</span><span style="color: #D4D2C8">)</span>
+<span style="color: #D4D2C8">    {</span>
+<span style="color: #D4D2C8">        ...</span>
+<span style="color: #D4D2C8">        </span><span style="color: #FFAD66">static</span><span style="color: #D4D2C8"> std</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">vector</span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8">QueryResult</span><span style="color: #FFAD66">&gt;</span><span style="color: #D4D2C8"> QueryResults;</span>
+<span style="color: #D4D2C8">        QueryResults.clear();</span>
+<span style="color: #D4D2C8">        QueryResults.reserve(FinalReserve);</span>
+<span style="color: #D4D2C8">        ...</span>
+</pre></div>
+
+
+            <h3 class="section-subtitle">4. SSE (128bit SIMD) 를 이용해 데이터 병렬 처리</h3>
+            <div class="content-block">
+                <p>일반적인 연산은 유닛 1명의 거리를 계산하기 위해 여러 단계의 명령어를 거치지만, SSE를 사용하면 <strong>128비트 레지스터</strong>에 4명의 좌표(float 4개)를 동시에 실어 한 번의 명령어로 처리합니다.</p>
+                <p>1만 명을 처리할 때 약 <strong>2,500번의 연산</strong>으로 줄어들어, 이론상 최대 4배의 성능 향상이 가능합니다.</p>
+            </div>
+
+       <!-- HTML generated using hilite.me --><div style="background: #1d2331; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%;"><span></span><span style="color: #FFAD66">const</span><span style="color: #D4D2C8"> </span><span style="color: #73D0FF">void</span><span style="color: #D4D2C8"> </span><span style="color: #FFD173">OptimizedGridVectorRebuild::GetNeighborGridableWithSSE</span><span style="color: #D4D2C8">(</span><span style="color: #73D0FF">float</span><span style="color: #D4D2C8"> X, </span><span style="color: #73D0FF">float</span><span style="color: #D4D2C8"> Z, </span><span style="color: #73D0FF">float</span><span style="color: #D4D2C8"> InRadius,
+         std</span><span style="color: #FFAD66">::</span><span style="color: #D4D2C8">vector</span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8">QueryResult</span><span style="color: #FFAD66">&gt;&amp;</span><span style="color: #D4D2C8"> OutResult)</span>
+<span style="color: #D4D2C8">{</span>
+<span style="color: #D4D2C8">    ...    </span>
+<span style="color: #D4D2C8">    </span><span style="color: #7E8AA1">// SIMD 비교를 위한 레지스터 준비 </span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">__m128</span><span style="color: #D4D2C8"> vCenterX </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> _mm_set1_ps(X);</span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">__m128</span><span style="color: #D4D2C8"> vCenterZ </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> _mm_set1_ps(Z);</span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">__m128</span><span style="color: #D4D2C8"> vRadiusSq </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> _mm_set1_ps(RadiusSq);</span>
+
+<span style="color: #D4D2C8">    </span><span style="color: #73D0FF">int</span><span style="color: #D4D2C8"> CenterCol </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> </span><span style="color: #FFAD66">static_cast&lt;</span><span style="color: #73D0FF">int</span><span style="color: #FFAD66">&gt;</span><span style="color: #D4D2C8">(X </span><span style="color: #FFAD66">/</span><span style="color: #D4D2C8"> CellSize);</span>
+<span style="color: #D4D2C8">    </span><span style="color: #73D0FF">int</span><span style="color: #D4D2C8"> CenterRow </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> </span><span style="color: #FFAD66">static_cast&lt;</span><span style="color: #73D0FF">int</span><span style="color: #FFAD66">&gt;</span><span style="color: #D4D2C8">(Z </span><span style="color: #FFAD66">/</span><span style="color: #D4D2C8"> CellSize);</span>
+
+<span style="color: #D4D2C8">    </span><span style="color: #7E8AA1">// 셀 탐색 루프 </span>
+<span style="color: #D4D2C8">    </span><span style="color: #FFAD66">for</span><span style="color: #D4D2C8"> (</span><span style="color: #73D0FF">int</span><span style="color: #D4D2C8"> R </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> CenterRow </span><span style="color: #FFAD66">-</span><span style="color: #D4D2C8"> CellSearchRange; R </span><span style="color: #FFAD66">&lt;=</span><span style="color: #D4D2C8"> CenterRow </span><span style="color: #FFAD66">+</span><span style="color: #D4D2C8"> CellSearchRange; </span><span style="color: #FFAD66">++</span><span style="color: #D4D2C8">R)</span>
+<span style="color: #D4D2C8">    {</span>
+<span style="color: #D4D2C8">        </span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (R </span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8"> </span><span style="color: #DFBFFF">0</span><span style="color: #D4D2C8"> </span><span style="color: #FFAD66">||</span><span style="color: #D4D2C8"> R </span><span style="color: #FFAD66">&gt;=</span><span style="color: #D4D2C8"> Rows) </span><span style="color: #FFAD66">continue</span><span style="color: #D4D2C8">;</span>
+<span style="color: #D4D2C8">        </span><span style="color: #73D0FF">int</span><span style="color: #D4D2C8"> RowOffset </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> R </span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> Cols;</span>
+
+<span style="color: #D4D2C8">        </span><span style="color: #FFAD66">for</span><span style="color: #D4D2C8"> (</span><span style="color: #73D0FF">int</span><span style="color: #D4D2C8"> C </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> CenterCol </span><span style="color: #FFAD66">-</span><span style="color: #D4D2C8"> CellSearchRange; C </span><span style="color: #FFAD66">&lt;=</span><span style="color: #D4D2C8"> CenterCol </span><span style="color: #FFAD66">+</span><span style="color: #D4D2C8"> CellSearchRange; </span><span style="color: #FFAD66">++</span><span style="color: #D4D2C8">C)</span>
+<span style="color: #D4D2C8">        {</span>
+<span style="color: #D4D2C8">            </span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (C </span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8"> </span><span style="color: #DFBFFF">0</span><span style="color: #D4D2C8"> </span><span style="color: #FFAD66">||</span><span style="color: #D4D2C8"> C </span><span style="color: #FFAD66">&gt;=</span><span style="color: #D4D2C8"> Cols) </span><span style="color: #FFAD66">continue</span><span style="color: #D4D2C8">;</span>
+
+<span style="color: #D4D2C8">            </span><span style="color: #FFAD66">auto&amp;</span><span style="color: #D4D2C8"> Cell </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> Cells[RowOffset </span><span style="color: #FFAD66">+</span><span style="color: #D4D2C8"> C];</span>
+<span style="color: #D4D2C8">            </span><span style="color: #FFAD66">const</span><span style="color: #D4D2C8"> </span><span style="color: #73D0FF">size_t</span><span style="color: #D4D2C8"> Count </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> Cell.Actors.size();</span>
+<span style="color: #D4D2C8">            </span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (Count </span><span style="color: #FFAD66">==</span><span style="color: #D4D2C8"> </span><span style="color: #DFBFFF">0</span><span style="color: #D4D2C8">) </span><span style="color: #FFAD66">continue</span><span style="color: #D4D2C8">;</span>
+
+<span style="color: #D4D2C8">            </span><span style="color: #FFAD66">const</span><span style="color: #D4D2C8"> </span><span style="color: #73D0FF">float</span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> pX </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> Cell.PosX.data();</span>
+<span style="color: #D4D2C8">            </span><span style="color: #FFAD66">const</span><span style="color: #D4D2C8"> </span><span style="color: #73D0FF">float</span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> pZ </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> Cell.PosZ.data();</span>
+<span style="color: #D4D2C8">            IGridable</span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> </span><span style="color: #FFAD66">const*</span><span style="color: #D4D2C8"> pActors </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> Cell.Actors.data();</span>
+
+<span style="color: #D4D2C8">            </span><span style="color: #73D0FF">size_t</span><span style="color: #D4D2C8"> i </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> </span><span style="color: #DFBFFF">0</span><span style="color: #D4D2C8">;</span>
+
+<span style="color: #D4D2C8">            </span><span style="color: #7E8AA1">// SIMD 로 실제 반경 내 유닛만 정밀 선별</span>
+<span style="color: #D4D2C8">            </span><span style="color: #FFAD66">for</span><span style="color: #D4D2C8"> (; i </span><span style="color: #FFAD66">+</span><span style="color: #D4D2C8"> </span><span style="color: #DFBFFF">3</span><span style="color: #D4D2C8"> </span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8"> Count; i </span><span style="color: #FFAD66">+=</span><span style="color: #D4D2C8"> </span><span style="color: #DFBFFF">4</span><span style="color: #D4D2C8">)</span>
+<span style="color: #D4D2C8">            {</span>
+<span style="color: #D4D2C8">                </span><span style="color: #7E8AA1">// 유닛 4명의 좌표 로드</span>
+<span style="color: #D4D2C8">                </span><span style="color: #FFAD66">__m128</span><span style="color: #D4D2C8"> PackedX </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> _mm_loadu_ps(</span><span style="color: #FFAD66">&amp;</span><span style="color: #D4D2C8">pX[i]); </span><span style="color: #7E8AA1">// 시작 주소부터 128비트(float * 4) 로드</span>
+<span style="color: #D4D2C8">                </span><span style="color: #FFAD66">__m128</span><span style="color: #D4D2C8"> PackedZ </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> _mm_loadu_ps(</span><span style="color: #FFAD66">&amp;</span><span style="color: #D4D2C8">pZ[i]); </span><span style="color: #7E8AA1">// _ps =  Packed Single 32bit 4개로 취급</span>
+
+<span style="color: #D4D2C8">                </span><span style="color: #7E8AA1">// dx, dz 계산 (내 위치 - 유닛 위치)</span>
+<span style="color: #D4D2C8">                </span><span style="color: #FFAD66">__m128</span><span style="color: #D4D2C8"> vDx </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> _mm_sub_ps(vCenterX, PackedX);</span>
+<span style="color: #D4D2C8">                </span><span style="color: #FFAD66">__m128</span><span style="color: #D4D2C8"> vDz </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> _mm_sub_ps(vCenterZ, PackedZ);</span>
+
+<span style="color: #D4D2C8">                </span><span style="color: #7E8AA1">// 거리 제곱 계산: (dx*dx + dz*dz)</span>
+<span style="color: #D4D2C8">                </span><span style="color: #FFAD66">__m128</span><span style="color: #D4D2C8"> vDistSq </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> _mm_add_ps(_mm_mul_ps(vDx, vDx), _mm_mul_ps(vDz, vDz));</span>
+
+<span style="color: #D4D2C8">                </span><span style="color: #7E8AA1">// 공격 반경과 비교하여 마스크 생성 (vDistSq &lt; vRadiusSq)</span>
+<span style="color: #D4D2C8">                </span><span style="color: #FFAD66">__m128</span><span style="color: #D4D2C8"> vMask </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> _mm_cmplt_ps(vDistSq, vRadiusSq); </span><span style="color: #7E8AA1">// 32bit 를 모두 0 or 1 값으로 채움</span>
+<span style="color: #D4D2C8">                </span><span style="color: #73D0FF">int</span><span style="color: #D4D2C8"> Bitmask </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> _mm_movemask_ps(vMask); </span><span style="color: #7E8AA1">// 32bit 를 1bit 로 압축 0 or 1 총 4bit ex) 1010 -&gt; int(10)</span>
+
+<span style="color: #D4D2C8">                </span><span style="color: #7E8AA1">// 범위 안에 한 명이라도 있다면 실행</span>
+<span style="color: #D4D2C8">                </span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (Bitmask </span><span style="color: #FFAD66">!=</span><span style="color: #D4D2C8"> </span><span style="color: #DFBFFF">0</span><span style="color: #D4D2C8">)</span>
+<span style="color: #D4D2C8">                {</span>
+<span style="color: #D4D2C8">                    </span><span style="color: #FFAD66">for</span><span style="color: #D4D2C8"> (</span><span style="color: #73D0FF">int</span><span style="color: #D4D2C8"> j </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> </span><span style="color: #DFBFFF">0</span><span style="color: #D4D2C8">; j </span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8"> </span><span style="color: #DFBFFF">4</span><span style="color: #D4D2C8">; </span><span style="color: #FFAD66">++</span><span style="color: #D4D2C8">j)</span>
+<span style="color: #D4D2C8">                    {</span>
+<span style="color: #D4D2C8">                        </span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (Bitmask </span><span style="color: #FFAD66">&amp;</span><span style="color: #D4D2C8"> (</span><span style="color: #DFBFFF">1</span><span style="color: #D4D2C8"> </span><span style="color: #FFAD66">&lt;&lt;</span><span style="color: #D4D2C8"> j)) </span><span style="color: #7E8AA1">//ex) 1010 에서 오른쪽 0 부터 왼쪽으로 1칸씩 쉬프트하여 &amp; 비교</span>
+<span style="color: #D4D2C8">                        {</span>
+<span style="color: #D4D2C8">                            </span><span style="color: #7E8AA1">// i는 현재 4명 묶음의 시작 번호, j는 그 안에서의 순서(0-3)</span>
+<span style="color: #D4D2C8">                            OutResult.push_back({ pActors[i </span><span style="color: #FFAD66">+</span><span style="color: #D4D2C8"> j], pX[i </span><span style="color: #FFAD66">+</span><span style="color: #D4D2C8"> j], pZ[i </span><span style="color: #FFAD66">+</span><span style="color: #D4D2C8"> j] });</span>
+<span style="color: #D4D2C8">                        }</span>
+<span style="color: #D4D2C8">                    }</span>
+<span style="color: #D4D2C8">                }</span>
+<span style="color: #D4D2C8">            }</span>
+
+<span style="color: #D4D2C8">            </span><span style="color: #7E8AA1">// 4로 나누어 떨어지지 않는 데이터는 따로 처리</span>
+<span style="color: #D4D2C8">            </span><span style="color: #FFAD66">for</span><span style="color: #D4D2C8"> (; i </span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8"> Count; </span><span style="color: #FFAD66">++</span><span style="color: #D4D2C8">i)</span>
+<span style="color: #D4D2C8">            {</span>
+<span style="color: #D4D2C8">                </span><span style="color: #73D0FF">float</span><span style="color: #D4D2C8"> dx </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> x </span><span style="color: #FFAD66">-</span><span style="color: #D4D2C8"> pX[i];</span>
+<span style="color: #D4D2C8">                </span><span style="color: #73D0FF">float</span><span style="color: #D4D2C8"> dz </span><span style="color: #FFAD66">=</span><span style="color: #D4D2C8"> z </span><span style="color: #FFAD66">-</span><span style="color: #D4D2C8"> pZ[i];</span>
+<span style="color: #D4D2C8">                </span><span style="color: #FFAD66">if</span><span style="color: #D4D2C8"> (dx </span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> dx </span><span style="color: #FFAD66">+</span><span style="color: #D4D2C8"> dz </span><span style="color: #FFAD66">*</span><span style="color: #D4D2C8"> dz </span><span style="color: #FFAD66">&lt;</span><span style="color: #D4D2C8"> RadiusSq)</span>
+<span style="color: #D4D2C8">                {</span>
+<span style="color: #D4D2C8">                    OutResult.push_back({ pActors[i], pX[i], pZ[i] });</span>
+<span style="color: #D4D2C8">                }</span>
+<span style="color: #D4D2C8">            }</span>
+<span style="color: #D4D2C8">        }</span>
+<span style="color: #D4D2C8">    }</span>
+<span style="color: #D4D2C8">}</span>
+</pre></div>
+
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 TaehunKim0. All rights reserved.</p>
+    </footer>
+</body>
+</html>
