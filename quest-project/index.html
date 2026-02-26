@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MMORPG 퀘스트 시스템</title>
+    <style>
+        /* 제공된 index.html의 핵심 스타일 적용 */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #ffffff;
+            color: #333;
+            line-height: 1.7;
+        }
+        header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            background: rgba(255, 255, 255, 0.98);
+            border-bottom: 1px solid #e0e0e0;
+            padding: 20px 40px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-title { font-size: 20px; font-weight: 600; }
+        .header-title a { color: #0066cc; text-decoration: none; }
+        
+        .hero {
+            margin-top: 80px;
+            padding: 80px 40px 60px;
+            background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);
+            text-align: center;
+        }
+        .hero h1 { font-size: 48px; font-weight: 300; margin-bottom: 20px; color: #1a1a1a; }
+        .hero .subtitle { font-size: 20px; color: #666; margin-bottom: 40px; }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 60px 40px; }
+        
+        .section { margin-bottom: 80px; }
+        .section-title {
+            font-size: 32px;
+            font-weight: 300;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .section-subtitle {
+            font-size: 24px;
+            font-weight: 400;
+            margin: 50px 0 20px 0;
+            color: #444;
+        }
+        .content-block { margin-bottom: 30px; }
+        .content-block p { margin-bottom: 15px; font-size: 16px; color: #444; }
+        .content-block ul { margin: 20px 0; padding-left: 25px; }
+        .content-block li { margin-bottom: 12px; font-size: 16px; color: #444; line-height: 1.8; }
+        
+        .highlight-box {
+            background-color: #f0f7ff;
+            border: 1px solid #d0e7ff;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+        
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="header-title">
+                <a href="#">TaehunKim0</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1>UE5 MMORPG 퀘스트 시스템</h1>
+        <p class="subtitle">UE5 , C++ IOCP 기반 프로젝트</p>
+    </section>
+
+    <div class="container" style="max-width: 900px; margin: 0 auto; padding: 40px;">
+
+        <div style="margin-top: 35px; padding: 25px; background-color: #f9f9f9; border: 1px solid #eee; border-radius: 8px;">
+            <h4 style="font-size: 14px; color: #999; margin-bottom: 20px; font-weight: 500; letter-spacing: 1px;">CONTENTS</h4>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px 40px;">
+                <div style="font-size: 15px; color: #444;">
+                    <strong style="color: #0066cc; margin-right: 8px;">00</strong> 개요 및 결과
+                </div>
+                <div style="font-size: 15px; color: #444;">
+                    <strong style="color: #0066cc; margin-right: 8px;">01</strong> 서버 권위 기반 데이터 동기화
+                </div>
+                <div style="font-size: 15px; color: #444;">
+                    <strong style="color: #0066cc; margin-right: 8px;">02</strong> 재접속 시 상태 복원 플로우
+                </div>
+                <div style="font-size: 15px; color: #444;">
+                    <strong style="color: #0066cc; margin-right: 8px;">03</strong> 서버 패킷 & ID 매핑 구조
+                </div>
+                <div style="font-size: 15px; color: #444;">
+                    <strong style="color: #0066cc; margin-right: 8px;">04</strong> 기본 퀘스트 진행 플로우
+                </div>
+                <div style="font-size: 15px; color: #444;">
+                    <strong style="color: #0066cc; margin-right: 8px;">05</strong> 기획 데이터의 에셋화 흐름
+                </div>
+                    <div style="font-size: 15px; color: #444;">
+                    <strong style="color: #0066cc; margin-right: 8px;">06</strong> QuestTracker UI 
+                </div>
+                    <div style="font-size: 15px; color: #444;">
+                    <strong style="color: #0066cc; margin-right: 8px;">07</strong> QuestJournal UI 
+                </div>
+                    <div style="font-size: 15px; color: #444;">
+                    <strong style="color: #0066cc; margin-right: 8px;">08</strong> NPC 헤드 아이콘 시스템
+                </div>
+                <div style="font-size: 15px; color: #444;">
+                    <strong style="color: #0066cc; margin-right: 8px;">09</strong> FText 기반 현지화 시스템
+                </div>
+            </div>
+        </div>
+
+        <br><br>
+
+
+        <section style="margin-bottom: 80px;">
+        <h2 style="border-bottom: 1px solid #e0e0e0; background-color: #f5f5f5; padding: 10px 15px; font-size: 24px; font-weight: 600; margin-bottom: 30px;">
+            프로젝트 개요
+        </h2>
+
+        <div style="display: flex; gap: 40px; align-items: flex-start; flex-wrap: wrap;">
+            
+            <div style="flex: 1; min-width: 300px;">
+                <div style="width: 100%; aspect-ratio: 16/9; background-color: #f8f9fa; border: 1px dashed #ced4da; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+                    <img src="Images/메인.png" class="content-image" style="width: 100%; height: auto; border-radius: 8px; border: 1px solid #e0e0e0;">
+                </div>
+            </div>
+
+            <div style="flex: 1.2; min-width: 300px;">
+                <div style="margin-bottom: 25px;">
+                    <h3 style="border-bottom: 1px solid #e0e0e0; font-size: 20px; padding-bottom: 8px; margin-bottom: 15px; color: #1a1a1a;">
+                        MMORPG 퀘스트 시스템
+                    </h3>
+                    <p style="color: #444; line-height: 1.8; margin-bottom: 15px;">
+                        <strong>UE5</strong>와 <strong>C++ IOCP 서버</strong>를 연동한 MMORPG 퀘스트 시스템<br><strong>(클라이언트)</strong> 프로젝트입니다.<br>
+                        <br>
+                        <strong>QuestManageSubSystem</strong> 클래스를 중심으로 설계하여 서버<br> 패킷을 수신해, 
+                        <strong>Delegate 기반의 이벤트를 브로드캐스팅</strong>합니다.
+                        <br>
+                        <br><strong>퀘스트 저널, 퀘스트 트래커, NPC 다이얼로그 및 헤드 아이콘 UI </strong> 시스템과 연동되어 작동합니다.
+                    </p>
+                </div>
+
+                
+            </div>
+
+            <section class="section">
+                <h2 class="section-title"><b>결과</b></h2>
+                    <iframe
+                        width="800" 
+                        height="400"
+                        src="https://www.youtube.com/embed/5LCm_1jy7lE?controls=0"
+                        title="YouTube video player" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        allowfullscreen>
+                    </iframe>
+            </section>
+
+            <div style="margin-bottom: 20px;">
+                    <p style="font-weight: 600; color: #333; margin-bottom: 10px;">주요 구현 흐름</p>
+                    <ul style="list-style-type: disc; padding-left: 20px; color: #555; line-height: 1.6;">
+                        <li style="margin-bottom: 8px;">서버로부터 수신된 패킷을 기반으로 한 <strong>4단계 처리 프로세스</strong></li>
+                        <div style="flex: 1; min-width: 300px;">
+                            <img src="Images/개요1.png" class="content-image" style="width: 100%; height: auto; border-radius: 8px; border: 1px solid #e0e0e0;">
+                        </div>
+                        <br>
+                        
+                        <li style="margin-bottom: 8px;">기획 데이터 시트(CSV/Excel)의 <strong>DataTable/DataAsset 변환</strong></li>
+                        <li style="margin-bottom: 8px;">런타임 퀘스트 인스턴스 생성 및 델리게이트를 이용한 <strong>UI 및 게임 플레이 로직 연동</strong></li>
+                        <div style="flex: 1; min-width: 300px;">
+                            <img src="Images/개요2.png" class="content-image" style="width: 100%; height: auto; border-radius: 8px; border: 1px solid #e0e0e0;">
+                        </div>
+                    </ul>
+                </div>
+
+        </div>
+    </section>
+
+    
+    <section style="margin-bottom: 60px;">
+        <h2 style="border-bottom: 1px solid #e0e0e0; background-color: #f5f5f5; padding: 10px 15px; font-size: 24px; font-weight: 600; margin-bottom: 30px;">
+            1. 서버 권위 기반의 런타임 데이터 동기화 및 캐싱
+        </h2>
+
+        <div style="margin-bottom: 40px;">
+            <h3 style="border-bottom: 1px solid #e0e0e0; font-size: 20px; padding-bottom: 8px; margin-bottom: 15px; color: #1a1a1a;">
+                서버 책임 (데이터)
+            </h3>
+            <ul style="list-style-type: disc; padding-left: 25px; color: #444;">
+                <li style="margin-bottom: 8px;">퀘스트 수락/진행/완료 상태</li>
+                <li style="margin-bottom: 8px;">각 미션의 CurrentCount, RequiredCount, bClear 등 진행도</li>
+                <li style="margin-bottom: 8px;">어떤 퀘스트가 수락 가능/완료 가능 인지 (NPC별 가능한 퀘스트 목록)</li>
+                <li style="margin-bottom: 8px;">퀘스트 추적 여부(bIsTracking)의 최종 상태</li>
+                <li style="margin-bottom: 8px;">재접속/로그인 시, 현재 퀘스트 전체 상태 제공</li>
+            </ul>
+        </div>
+
+        <div style="margin-bottom: 40px;">
+            <h3 style="border-bottom: 1px solid #e0e0e0; font-size: 20px; padding-bottom: 8px; margin-bottom: 15px; color: #1a1a1a;">
+                클라이언트 책임 (표현 + 런타임 캐시 데이터)
+            </h3>
+            
+            <div style="margin-bottom: 20px;">
+                <p style="font-weight: 600; margin-bottom: 10px; color: #333;">퀘스트 인스턴스 런타임 캐싱</p>
+                <ul style="list-style-type: circle; padding-left: 25px; color: #555;">
+                    <li style="margin-bottom: 5px;">ActiveQuests에 현재 진행 중인 퀘스트들의 FQuestInstance 보관</li>
+                    <li style="margin-bottom: 5px;">각 FQuestInstance 안에 MissionInstances, RewardInstances 등 미션/보상 인스턴스 캐싱</li>
+                </ul>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <p style="font-weight: 600; margin-bottom: 10px; color: #333;">NPC별 상호작용 가능 퀘스트 캐싱</p>
+                <ul style="list-style-type: circle; padding-left: 25px; color: #555;">
+                    <li style="margin-bottom: 5px;">NpcToAcceptableQuestsMap, NpcToACompletableQuestsMap 으로<br> ”이 NPC에게 어떤 퀘스트를 수락/완료할 수 있는지”를 조회용으로 유지</li>
+                </ul>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <p style="font-weight: 600; margin-bottom: 10px; color: #333;">UI/표현 상태</p>
+                <ul style="list-style-type: circle; padding-left: 25px; color: #555;">
+                    <li style="margin-bottom: 5px;">TrackingQuestIDs (어떤 퀘스트를 추적 중인지)</li>
+                    <li style="margin-bottom: 5px;">퀘스트 트래커/저널/NPC 헤드 아이콘 위젯의 열림/선택/스크롤 등 순수 UI 상태</li>
+                </ul>
+            </div>
+        </div>
+
+        <div style="background-color: #f8f9fa; border-left: 4px solid #0066cc; padding: 20px; margin-top: 30px;">
+            <p style="font-size: 15px; color: #555; margin: 0; line-height: 1.6;">
+                위 값들은 모두 서버에서 내려준 패킷을 기반으로 재구성하며, <br>
+                <strong>퀘스트 완료 여부, 미션 달성 여부 자체의 판정은 항상 서버가 최종 권위를 가집니다.</strong>
+            </p>
+        </div>
+    </section>
+
+    <section style="margin-bottom: 80px;">
+        <h2 style="border-bottom: 1px solid #e0e0e0; background-color: #f5f5f5; padding: 10px 15px; font-size: 24px; font-weight: 600; margin-bottom: 30px;">
+            2. 재접속/로그인 시 퀘스트 상태 복원 플로우
+        </h2>
+
+        <div style="margin-bottom: 30px; text-align: center;">
+            <img src="Images/재접속 플로우.png" class="content-image" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #e0e0e0;">
+        </div>
+
+        <div class="content-block">
+            <ul style="list-style-type: disc; padding-left: 25px; color: #444; line-height: 1.8;">
+                <li style="margin-bottom: 15px;">
+                    클라이언트가 로그인/재접속을 완료하면, 서버는 퀘스트 전체 상태를 담은 <strong>SC_QUEST_INITIAL</strong> 패킷을 전송합니다.
+                </li>
+                <li style="margin-bottom: 15px;">
+                    클라이언트는 이 패킷들을 타입별 큐에 적재하고, <code>UQuestManageSubSystem::Tick()</code>에서 순차 처리하면서 <strong>ActiveQuests, NpcToAcceptableQuestsMap, TrackingQuestIDs</strong> 등을 재구성합니다.
+                </li>
+                <li style="margin-bottom: 15px;">
+                    마지막으로 <strong>OnQuestInitialized, OnQuestStarted, OnQuestUpdated</strong> 같은 델리게이트를 브로드캐스트해서 QuestTracker / QuestJournal / NPC 아이콘 UI 가 한 번에 현재 서버 상태와 동기화되도록 합니다.
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <section style="margin-bottom: 80px;">
+        <h2 style="border-bottom: 1px solid #e0e0e0; background-color: #f5f5f5; padding: 10px 15px; font-size: 24px; font-weight: 600; margin-bottom: 30px;">
+            3. 서버 패킷 & ID 매핑 구조
+        </h2>
+
+        <div style="margin-bottom: 30px; text-align: center;">
+            <img src="Images/매핑구조.png" class="content-image" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #e0e0e0;">
+        </div>
+
+        <p style="color: #444; margin-bottom: 25px;">
+            패킷에서는 숫자 ID만 오지만, 파싱 시점에 유틸 함수를 통해 클라이언트 내부 ID 타입(FName)으로 변환하여 매핑합니다.
+        </p>
+
+        <div style="margin-bottom: 35px;">
+            <h3 style="border-bottom: 1px solid #e0e0e0; font-size: 20px; padding-bottom: 8px; margin-bottom: 15px; color: #1a1a1a;">
+                ID 체계 차이
+            </h3>
+            <ul style="list-style-type: circle; padding-left: 25px; color: #555;">
+                <li style="margin-bottom: 8px;"><strong>서버:</strong> QuestID, MissionID, NpcID를 모두 <code>int32</code> ID로 관리</li>
+                <li style="margin-bottom: 8px;"><strong>클라이언트:</strong> 기획 DataTable / DataAsset이 Q001, MIS001 같은 문자열 ID를 <code>FName</code> 키로 사용</li>
+            </ul>
+        </div>
+
+        <div style="margin-bottom: 35px;">
+            <h3 style="border-bottom: 1px solid #e0e0e0; font-size: 20px; padding-bottom: 8px; margin-bottom: 15px; color: #1a1a1a;">
+                ID 변환 유틸 함수 예시
+            </h3>
+            <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; font-family: 'Consolas', monospace; font-size: 14px; color: #333; border-left: 4px solid #ced4da;">
+                <p style="margin-bottom: 5px;">int32 → FName (Quest) : IntToQuestID(1) == "Q001"</p>
+                <p style="margin-bottom: 5px;">int32 → FName (Mission) : IntToMissionID(1) == "MIS001"</p>
+                <p style="margin: 0;">int32 → FName (NPC) : UNPCManageSubSystem::IntToNpcID() 등</p>
+            </div>
+        </div>
+
+        <div>
+            <h3 style="border-bottom: 1px solid #e0e0e0; font-size: 20px; padding-bottom: 8px; margin-bottom: 15px; color: #1a1a1a;">
+                패킷 파싱 & 큐 적재 예시
+            </h3>
+            <pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', monospace; font-size: 13.5px; line-height: 1.5;">
+<span style="color: #66d9ef;">Dispatcher</span>-&gt;<span style="color: #a6e22e;">RegisterHandler</span>(EPacketType::SC_QUEST_START, [<span style="color: #fd971f;">this</span>](<span style="color: #66d9ef;">const</span> TArray&lt;uint8&gt;&amp; RawData)
+{
+    PKT_SC_QUEST_START* Pkt = (PKT_SC_QUEST_START*)RawData.<span style="color: #a6e22e;">GetData</span>();
+
+    FQuestStartPacketData PacketData;
+    PacketData.QuestID = Pkt-&gt;QuestID;              <span style="color: #75715e;">// int32</span>
+    PacketData.NpcID = Pkt-&gt;NpcID;                  <span style="color: #75715e;">// int32</span>
+    PacketData.bHasTimeLimit = Pkt-&gt;HasTimeLimit;
+    PacketData.TimeLimitSeconds = Pkt-&gt;TimeLimitSeconds;
+    PacketData.bIsTracking = Pkt-&gt;bIsTracking;
+
+    <span style="color: #f92672;">for</span> (<span style="color: #66d9ef;">int32</span> i = <span style="color: #ae81ff;">0</span>; i &lt; Pkt-&gt;MissionCount; ++i)
+    {
+        FMissionInfo MissionData;
+        <span style="color: #75715e;">// 여기서 FName 변환 수행</span>
+        MissionData.MissionID = <span style="color: #a6e22e;">IntToMissionID</span>(Pkt-&gt;Missions[i].MissionID); 
+        MissionData.CurrentCount = Pkt-&gt;Missions[i].CurrentCount;
+        MissionData.RequiredCount = Pkt-&gt;Missions[i].RequiredCount;
+
+        PacketData.Missions.<span style="color: #a6e22e;">Add</span>(MissionData);
+    }
+
+    QuestStartQueue.<span style="color: #a6e22e;">Enqueue</span>(PacketData);
+});</pre>
+        </div>
+    </section>
+
+    <section style="margin-bottom: 80px;">
+        <h2 style="border-bottom: 1px solid #e0e0e0; background-color: #f5f5f5; padding: 10px 15px; font-size: 24px; font-weight: 600; margin-bottom: 30px;">
+            4. 기본 퀘스트 진행 플로우
+        </h2>
+
+        <div style="margin-bottom: 50px;">
+            <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 15px; color: #1a1a1a;">
+                1-1. 큐와 델리게이트 기반의 상태 동기화
+            </h3>
+            <p style="color: #444; line-height: 1.8; margin-bottom: 20px;">
+                서버에서 받은 패킷을 즉시 처리하지 않고 <strong>타입별 큐(QuestInitialQueue, QuestStartQueue 등)</strong>에 적재한 뒤, 
+                <code>UQuestManageSubSystem::Tick()</code>에서 순차적으로 처리합니다.
+            </p>
+
+            <div style="text-align: center; background: #ffffff; padding: 20px; border: 1px solid #eee; border-radius: 12px; margin-bottom: 20px;">
+                <img src="Images/퀘스트플로우.png" class="content-image" alt="Quest Process Flow" style="max-width: 100%; height: auto;">
+                <p style="font-size: 13px; color: #888; margin-top: 10px;">[이벤트 기반의 퀘스트 상태 동기화 파이프라인]</p>
+            </div>
+
+            <div style="background-color: #f8f9fa; border-left: 4px solid #0066cc; padding: 20px;">
+                <p style="font-size: 15px; color: #555; margin: 0;">
+                    상태 갱신 완료 후 <code>OnQuestStarted</code>, <code>OnQuestUpdated</code>와 같은 델리게이트를 브로드캐스트하여,<br> 
+                    <strong>QuestTracker / QuestJournal / NPC Icon UI</strong>가 서버 상태와 실시간으로 동기화되도록 구현했습니다.
+                </p>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 50px;">
+            <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 15px; color: #1a1a1a;">
+                1-2. 패킷 ID 변환 및 큐 적재 (Dispatcher)
+            </h3>
+            <p style="color: #444; margin-bottom: 15px;">
+                서버의 <code>int32 ID</code>를 클라이언트 기획 데이터인 <code>FName</code>(Q001, MIS001 등) 체계로 변환하여 큐에 적재합니다.
+            </p>
+
+<pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', monospace; font-size: 13.5px; line-height: 1.6; border: 1px solid #3e3e3e; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);">
+<span style="color: #66d9ef;">Dispatcher</span>-&gt;<span style="color: #a6e22e;">RegisterHandler</span>(EPacketType::SC_QUEST_START, [<span style="color: #fd971f;">this</span>](<span style="color: #66d9ef;">const</span> TArray&lt;uint8&gt;&amp; RawData)
+{
+    <span style="color: #75715e;">// 1. 수신된 Raw 데이터를 패킷 구조체로 역직렬화</span>
+    PKT_SC_QUEST_START* Pkt = (PKT_SC_QUEST_START*)RawData.<span style="color: #a6e22e;">GetData</span>();
+
+    <span style="color: #75715e;">// 2. 클라이언트 내부 통신용 구조체(FQuestStartPacketData) 생성 및 기본 정보 복사</span>
+    FQuestStartPacketData PacketData;
+    PacketData.QuestID = Pkt-&gt;QuestID;
+    PacketData.NpcID = Pkt-&gt;NpcID;
+    PacketData.bHasTimeLimit = Pkt-&gt;HasTimeLimit;
+    PacketData.TimeLimitSeconds = Pkt-&gt;TimeLimitSeconds;
+    PacketData.bIsTracking = Pkt-&gt;bIsTracking;
+
+    <span style="color: #75715e;">// 3. 미션 목록 가공: 서버 ID(int32)를 클라이언트 ID(FName)로 변환하며 리스트화</span>
+    <span style="color: #f92672;">for</span> (<span style="color: #66d9ef;">int32</span> i = <span style="color: #ae81ff;">0</span>; i &lt; Pkt-&gt;MissionCount; ++i)
+    {
+        FMissionInfo MissionData;
+        <span style="color: #75715e;">// 유틸 함수를 사용해 서버 ID를 기획 데이터 키(FName)로 매핑</span>
+        MissionData.MissionID = <span style="color: #a6e22e;">IntToMissionID</span>(Pkt-&gt;Missions[i].MissionID);
+        MissionData.CurrentCount = Pkt-&gt;Missions[i].CurrentCount;
+        MissionData.RequiredCount = Pkt-&gt;Missions[i].RequiredCount;
+
+        PacketData.Missions.<span style="color: #a6e22e;">Add</span>(MissionData);
+    }
+
+    <span style="color: #75715e;">// 4. 가공 완료된 데이터를 퀘스트 전용 처리 큐에 적재</span>
+    QuestStartQueue.<span style="color: #a6e22e;">Enqueue</span>(PacketData);
+});</pre>
+
+</div>
+<br>
+
+        <div>
+            <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 15px; color: #1a1a1a;">
+                1-3. Tick 기반 데이터 갱신 및 브로드캐스트
+            </h3>
+            <p style="color: #444; margin-bottom: 15px;">
+                게임 스레드의 <code>Tick</code>에서 큐에 쌓인 데이터를 소비하며 실제 런타임 인스턴스를 생성하고 UI에 이벤트를 전파합니다.
+            </p>
+        </div>
+
+        <br>
+<div class="container" style="max-width: 900px; margin: 0 auto; padding: 0px;">
+    <section style="margin-bottom: 60px;">
+        <h3 style="border-bottom: 1px solid #e0e0e0; font-size: 20px; padding-bottom: 8px; margin-bottom: 15px; color: #1a1a1a;">
+            Quest Instance 생성 및 초기화 로직
+        </h3>
+        
+        <p style="color: #444; margin-bottom: 20px; line-height: 1.8;">
+            서버에서 전달받은 <code>FQuestStartPacketData</code>를 바탕으로 클라이언트 런타임 객체인 <code>FQuestInstance</code>를 생성합니다. 
+            이 과정에서 정적 데이터(DataTable)와 서버의 동적 데이터를 결합하여 최종적인 퀘스트 상태를 구성합니다.
+        </p>
+
+        <pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', monospace; font-size: 13.5px; line-height: 1.6; border: 1px solid #3e3e3e; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);">
+<span style="color: #66d9ef;">void</span> <span style="color: #a6e22e;">UQuestManageSubSystem::HandleQuestStart</span>(<span style="color: #66d9ef;">const</span> FQuestStartPacketData&amp; ReceivedData)
+{
+    <span style="color: #75715e;">// 1. 새로운 퀘스트 인스턴스 생성 및 ID 변환 (int32 -> FName)</span>
+    FQuestInstance NewQuest;
+    NewQuest.QuestID = <span style="color: #a6e22e;">IntToQuestID</span>(ReceivedData.QuestID);
+    NewQuest.NpcID = <span style="color: #66d9ef;">UNPCManageSubSystem</span>::<span style="color: #a6e22e;">IntToNpcID</span>(ReceivedData.NpcID);
+
+    <span style="color: #75715e;">// 2. 클라이언트 DataTable에서 정적 기획 데이터 조회</span>
+    <span style="color: #66d9ef;">const</span> FQuestRow* LocalQuestData = <span style="color: #a6e22e;">GetQuestData</span>(NewQuest.QuestID);
+    <span style="color: #f92672;">if</span> (!LocalQuestData) <span style="color: #f92672;">return</span>;
+
+    <span style="color: #75715e;">// 3. 서버에서 보내준 각 미션 진행 상태(Raw Data)를 미션 인스턴스로 변환</span>
+    <span style="color: #f92672;">for</span> (<span style="color: #66d9ef;">const</span> <span style="color: #f92672;">auto</span>&amp; ServerMission : ReceivedData.Missions)
+    {
+        FMissionInstance NewMission;
+        NewMission.MissionID = ServerMission.MissionID;
+        NewMission.CurrentCount = ServerMission.CurrentCount;
+        NewMission.RequiredCount = ServerMission.RequiredCount;
+        
+        <span style="color: #75715e;">// 퀘스트 인스턴스 내 미션 맵에 추가</span>
+        NewQuest.MissionInstances.<span style="color: #a6e22e;">Add</span>(ServerMission.MissionID, NewMission);
+    }
+
+    <span style="color: #75715e;">// 4. 활성화된 퀘스트 목록(ActiveQuests)에 캐싱</span>
+    ActiveQuests.<span style="color: #a6e22e;">Add</span>(NewQuest.QuestID, NewQuest);
+
+    <span style="color: #75715e;">// 5. 퀘스트 추적(Tracking) 설정 처리</span>
+    <span style="color: #f92672;">if</span> (ReceivedData.bIsTracking)
+    {
+        TrackingQuestIDs.<span style="color: #a6e22e;">Add</span>(NewQuest.QuestID);
+        OnQuestTrackingChanged.<span style="color: #a6e22e;">Broadcast</span>(NewQuest.QuestID, <span style="color: #ae81ff;">true</span>);
+    }
+
+    <span style="color: #75715e;">// 6. UI 및 게임 로직에 퀘스트 시작 알림 (Delegate)</span>
+    OnQuestStarted.<span style="color: #a6e22e;">Broadcast</span>(NewQuest.QuestID);
+}</pre>
+
+    </section>
+
+    <div class="container" style="max-width: 900px; margin: 0 auto; padding: 0px;">
+    <section style="margin-bottom: 80px;">
+        <h2 style="border-bottom: 1px solid #e0e0e0; background-color: #f5f5f5; padding: 10px 15px; font-size: 24px; font-weight: 600; margin-bottom: 30px;">
+            5. 기획 데이터의 에셋화 흐름
+        </h2>
+
+        <div style="margin-bottom: 40px; padding: 0 15px;">
+            <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 15px; color: #1a1a1a;">
+                2-1. DataTable과 DataAsset 활용
+            </h3>
+            <ul style="list-style-type: disc; padding-left: 25px; color: #444; line-height: 1.8;">
+                <li style="margin-bottom: 10px;">
+                    <strong>DataTable (정적 데이터):</strong> 퀘스트 정보, 미션 수치, 보상 ID, NPC 대사, 아이템 기본 정보 등 텍스트와 수치 데이터를 관리합니다.
+                </li>
+                <li>
+                    <strong>DataAsset (비주얼 리소스):</strong> NPC 상태별 아이콘, 아이템 아이콘, 퀘스트 등급별 UI 비주얼 에셋 등 실제 리소스(Texture, Material)와 데이터를 매핑합니다.
+                </li>
+            </ul>
+        </div>
+
+        <div style="margin-bottom: 40px; padding: 0 15px;">
+            <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 15px; color: #1a1a1a;">
+                2-2. 서브시스템 기반 데이터 액세스
+            </h3>
+            <p style="color: #444; margin-bottom: 20px;">
+                데이터들은 UI에서 직접 접근하지 않고, 각 담당 서브시스템 클래스를 이용해 값을 가져옵니다.
+            </p>
+            
+            <div style="margin-bottom: 20px; text-align: center;">
+                <img src="Images/데이터 접근.png" class="content-image" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #e0e0e0;">
+            </div>
+
+            <pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', monospace; font-size: 13px; line-height: 1.5; margin-bottom: 15px;">
+<span style="color: #66d9ef;">void</span> <span style="color: #a6e22e;">UQuestTrackerItemWidget::InitQuestItem</span>(<span style="color: #66d9ef;">FName</span> InQuestID)
+{
+    <span style="color: #f92672;">if</span> (<span style="color: #66d9ef;">const auto</span> Icon <span style="color: #f92672;">=</span> QuestManageSubSystem<span style="color: #f92672;">-&gt;</span><span style="color: #a6e22e;">GetQuestIcon</span>(QuestData<span style="color: #f92672;">-&gt;</span>Type))
+    {
+        Image_QuestIcon<span style="color: #f92672;">-&gt;</span><span style="color: #a6e22e;">SetBrushFromAtlasInterface</span>(Icon);
+    }
+}
+
+<span style="color: #66d9ef;">UPaperSprite*</span> <span style="color: #a6e22e;">UQuestManageSubSystem::GetQuestIcon</span>(<span style="color: #66d9ef;">EUEQuestType</span> InQuestType) <span style="color: #66d9ef;">const</span>
+{
+    <span style="color: #f92672;">if</span> (<span style="color: #f92672;">!</span>CachedNPCVisualDataAsset) <span style="color: #f92672;">return</span> <span style="color: #ae81ff;">nullptr</span>;
+
+    <span style="color: #66d9ef;">auto</span> IconPtr <span style="color: #f92672;">=</span> CachedNPCVisualDataAsset<span style="color: #f92672;">-&gt;</span>QuestIconMap.<span style="color: #a6e22e;">FindRef</span>(InQuestType);
+    <span style="color: #f92672;">return</span> IconPtr.<span style="color: #a6e22e;">IsValid</span>() <span style="color: #f92672;">?</span> IconPtr.<span style="color: #a6e22e;">Get</span>() <span style="color: #f92672;">:</span> IconPtr.<span style="color: #a6e22e;">LoadSynchronous</span>();
+}</pre>
+        </div>
+
+        <div style="margin-bottom: 40px; padding: 0 15px;">
+            <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 15px; color: #1a1a1a;">
+                2-3. ID 기반 데이터/에셋 매핑
+            </h3>
+            <p style="color: #444; margin-bottom: 15px;">DataTable과 DataAsset은 ID를 통해 접근하며, 직접 ID와 리소스를 매핑하여 관리합니다.</p>
+            
+            <div style="margin-bottom: 20px; text-align: center;">
+                <img src="Images/퀘스트시트.png" class="content-image" style="width: 100%; border: 1px solid #eee;">
+                <p style="font-size: 13px; color: #888; margin-top: 0px;">[Quest 시트]</p>
+                <br>
+                <img src="Images/미션시트.png" class="content-image" style="width: 100%; border: 1px solid #eee;">
+                <p style="font-size: 13px; color: #888; margin-top: 0px;">[Mission 시트]</p>
+                <br>
+                <img src="Images/다이얼로그시트.png" class="content-image" style="width: 100%; border: 1px solid #eee;">
+                <p style="font-size: 13px; color: #888; margin-top: 0px;">[Dialog 시트]</p>
+                <br>
+            </div>
+
+            <p style="color: #444; margin-bottom: 15px;">DataAsset 도 ID 를 통해 데이터에 접근하며, 직접 ID 와 리소스를 매핑해줘야 합니다.</p>
+             <div style="margin-bottom: 20px; text-align: center;">
+                <img src="Images/데이터에셋1.png" class="content-image" style="width: 100%; border: 1px solid #eee;">
+                <p style="font-size: 13px; color: #888; margin-top: 0px;">[DA_NPCIcon]</p>
+                <img src="Images/데이터에셋2.png" class="content-image" style="width: 100%; border: 1px solid #eee;">
+                <p style="font-size: 13px; color: #888; margin-top: 0px;">[DA_QuestVisualConfig]</p>
+                <br>
+            </div>
+
+            <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 15px; color: #1a1a1a; padding: 0 15px;">
+                2-3-1. 텍스쳐 아틀라스를 이용한 메모리 및 로딩 최적화
+            </h3>
+
+            <div style="display: flex; align-items: flex-start; gap: 25px; flex-wrap: wrap; margin-bottom: 30px; margin-top: 20px; padding: 0 15px;">
+                
+                <div style="flex: 1; min-width: 300px;">
+                    <div style="width: 100%; background-color: #f8f9fa; border: 1px dashed #ced4da; border-radius: 8px; overflow: hidden;">
+                        <img src="Images/텍스쳐아틀라스예시.png" class="content-image" style="width: 100%; height: auto; display: block; border-radius: 8px; border: 1px solid #e0e0e0;">
+                    </div>
+                    <p style="font-size: 12px; color: #888; text-align: center; margin-top: 8px;">[다양한 퀘스트 아이콘을 하나의 아틀라스로 관리하는 예시]</p>
+                </div>
+
+                <div style="flex: 1.2; min-width: 300px;">
+                    <p style="color: #444; margin-bottom: 20px; line-height: 1.8; margin-top: 0;">
+                        수많은 퀘스트 아이콘과 UI 리소스를 개별 텍스쳐로 관리할 경우 발생하는 <strong>잦은 메모리 로드 및 드로우 콜 낭비</strong>를 방지하기 위해 <strong>텍스쳐 아틀라스</strong>를 활용했습니다. 
+                        <br><br>
+                        하나의 큰 텍스쳐 시트 안에 여러 아이콘을 통합하고, 데이터 에셋에서 각 ID에 맞는 <strong>Sprite 정보를 매핑</strong>했습니다.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 40px; padding: 0 15px;">
+            <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 15px; color: #1a1a1a;">
+                2-4. RPGDataSettings를 통한 통합 관리
+            </h3>
+            <p style="color: #444; margin-bottom: 20px;">
+                DT와 DA들은 <code>RPGDataSettings (UDeveloperSettings 상속)</code>에서 관리합니다. 
+                서브 시스템들은 <code>URPGDataSettings::Get()</code>을 통해 필요한 테이블과 에셋을 가져와 사용하며, 빌드 환경에 따라 코드 수정 없이 설정 교체가 가능합니다.
+            </p>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <img src="Images/데이터세팅.png" class="content-image" style="max-width: 100%; height: auto; border: 1px solid #e0e0e0;">
+            </div>
+        </div>
+
+        <div style="padding: 0 15px;">
+            <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 15px; color: #1a1a1a;">
+                2-5. DT/DA/Texture 사전 로딩 및 캐싱 전략
+            </h3>
+            <p style="color: #444; margin-bottom: 20px;">
+                자주 사용하는 정적 데이터와 비주얼 리소스는 서브시스템의 <code>Initialize</code> 시점에 미리 로드하여 캐싱해둡니다. 
+                이후 제공되는 헬퍼 함수들은 미리 로드된 메모리 상의 값을 즉시 반환합니다.
+            </p>
+
+            <pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', monospace; font-size: 13px; line-height: 1.5; margin-bottom: 15px;">
+<span style="color: #66d9ef;">void</span> <span style="color: #a6e22e;">UNPCStatusWidget::UpdateStatus</span>(<span style="color: #66d9ef;">EUEQuestState</span> State)
+{
+    <span style="color: #66d9ef;">UQuestManageSubSystem*</span> QuestManager <span style="color: #f92672;">=</span> <span style="color: #a6e22e;">GetGameInstance</span>()<span style="color: #f92672;">-&gt;</span><span style="color: #a6e22e;">GetSubsystem</span><span style="color: #f92672;">&lt;</span><span style="color: #66d9ef;">UQuestManageSubSystem</span><span style="color: #f92672;">&gt;</span>();
+    <span style="color: #f92672;">if</span> (<span style="color: #f92672;">!</span>QuestManager) <span style="color: #f92672;">return</span> ;
+
+    <span style="color: #f92672;">if</span> (State <span style="color: #f92672;">!=</span> EUEQuestState<span style="color: #f92672;">::</span>None)
+    {
+        Image_QuestIcon<span style="color: #f92672;">-&gt;</span><span style="color: #a6e22e;">SetVisibility</span>(ESlateVisibility<span style="color: #f92672;">::</span>Visible);
+        <span style="color: #66d9ef;">auto</span> Icon <span style="color: #f92672;">=</span> QuestManager<span style="color: #f92672;">-&gt;</span><span style="color: #a6e22e;">GetQuestStateIcon</span>(State);
+        Image_QuestIcon<span style="color: #f92672;">-&gt;</span><span style="color: #a6e22e;">SetBrushFromAtlasInterface</span>(Icon);
+    }
+    <span style="color: #f92672;">else</span>
+    {
+        Image_QuestIcon<span style="color: #f92672;">-&gt;</span><span style="color: #a6e22e;">SetVisibility</span>(ESlateVisibility<span style="color: #f92672;">::</span>Collapsed);
+    }
+}
+
+<span style="color: #66d9ef;">class UPaperSprite*</span> <span style="color: #a6e22e;">UQuestManageSubSystem::GetQuestStateIcon</span>(<span style="color: #66d9ef;">EUEQuestState</span> State)
+{
+    <span style="color: #f92672;">if</span> (<span style="color: #f92672;">!</span>CachedNPCVisualDataAsset) <span style="color: #f92672;">return</span> <span style="color: #ae81ff;">nullptr</span>;
+
+    <span style="color: #66d9ef;">auto</span> Icon <span style="color: #f92672;">=</span> CachedNPCVisualDataAsset<span style="color: #f92672;">-&gt;</span>QuestStateIconMap.<span style="color: #a6e22e;">FindRef</span>(State);
+    <span style="color: #f92672;">return</span> Icon.<span style="color: #a6e22e;">IsValid</span>() <span style="color: #f92672;">?</span> Icon.<span style="color: #a6e22e;">Get</span>() <span style="color: #f92672;">:</span> Icon.<span style="color: #a6e22e;">LoadSynchronous</span>();
+}</pre>
+        </div>
+    </section>
+
+    <section class="section" style="margin-bottom: 80px;">
+        <h2 style="border-bottom: 1px solid #e0e0e0; background-color: #f5f5f5; padding: 10px 15px; font-size: 24px; font-weight: 600; margin-bottom: 30px;">
+            6. QuestTracker UI
+        </h2>
+
+        <div style="display: flex; align-items: flex-start; gap: 25px; flex-wrap: wrap; margin-bottom: 30px;">
+    
+            <div style="display: flex; align-items: flex-start; gap: 25px; flex-wrap: wrap; margin-bottom: 30px;">
+            <div style="flex: 1; min-width: 300px;">
+                <div style="width: 100%; background-color: #f8f9fa; border: 1px dashed #ced4da; border-radius: 8px; overflow: hidden;">
+                    <img src="Images/트래커예시.png" class="content-image" style="width: 100%; height: auto; display: block; border-radius: 8px;">
+                </div>
+            </div>
+
+            <div style="flex: 1.2; min-width: 300px;">
+                <p style="color: #444; margin-bottom: 20px; line-height: 1.8; margin-top: 0;">
+                    퀘스트 트래커는 현재 트래킹 중인 퀘스트들의 요약 정보와 미션 진행도를 보여주는 UI입니다.<br><br>
+                    서버에서 퀘스트 상태가 바뀌면 델리게이트로 <strong>트래커 아이템 / 미션 위젯 / 네비게이션 버튼</strong>이 순차적으로 갱신됩니다.
+                </p>
+            </div>
+        </div>
+        </div>
+
+            <div style="margin-bottom: 40px; text-align: center;">
+                <img src="Images/트래커1.png" class="content-image" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #e0e0e0;">
+                <p style="font-size: 13px; color: #888; margin-top: 10px;">[게임 내 퀘스트 트래커 및 미션 리스트 UI 구성]</p>
+            </div>
+
+            <p style="color: #444; margin-bottom: 20px; line-height: 1.8;">
+                UI는 퀘스트 ID만 넘겨받으며, 텍스트·색상·아이콘·네비게이션 위치 등은 <strong>퀘스트 서브 시스템</strong>을 통해 조회해 구성합니다.
+            </p>
+
+            <div style="margin-bottom: 40px; text-align: center;">
+                <img src="Images/트래커2.png" class="content-image" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #e0e0e0;">
+                <p style="font-size: 13px; color: #888; margin-top: 10px;"></p>
+            </div>
+
+            <div style="margin-bottom: 50px;">
+                <h3 style="border-bottom: 1px solid #e0e0e0; font-size: 20px; padding-bottom: 8px; margin-bottom: 15px; color: #1a1a1a;">
+                    3-1. 트래커 아이템 초기화: 데이터 조회 + 비주얼 세팅
+                </h3>
+                <p style="color: #444; margin-bottom: 15px;">
+                    QuestID를 기반으로 <code>ActiveQuests</code>의 런타임 상태와 <code>DataTable</code>의 정적 데이터를 조합하여 진행도와 메타 정보를 구성합니다.
+                </p>
+
+                <pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', monospace; font-size: 13.5px; line-height: 1.6; border: 1px solid #3e3e3e;">
+<span style="color: #66d9ef;">void</span> <span style="color: #a6e22e;">UQuestTrackerItemWidget::InitQuestItem</span>(FName InQuestID)
+{
+    QuestID = InQuestID;
+    QuestManager = GetGameInstance()->GetSubsystem&lt;UQuestManageSubSystem&gt;();
+    <span style="color: #f92672;">if</span> (!QuestManager) <span style="color: #f92672;">return</span>;
+
+    <span style="color: #66d9ef;">const</span> FQuestRow* QuestData = QuestManager-><span style="color: #a6e22e;">GetQuestData</span>(QuestID);
+    <span style="color: #f92672;">if</span> (!QuestData) <span style="color: #f92672;">return</span>;
+
+    QuestType = QuestData->Type;
+
+    <span style="color: #75715e;">// 서브시스템을 통한 비주얼 설정 조회</span>
+    FColor QuestColor = QuestManager-><span style="color: #a6e22e;">GetQuestTitleColor</span>(QuestData->Type);
+    TextBlock_QuestName-><span style="color: #a6e22e;">SetText</span>(QuestData->Title);
+    TextBlock_QuestName-><span style="color: #a6e22e;">SetColorAndOpacity</span>(QuestColor);
+
+    <span style="color: #f92672;">if</span> (<span style="color: #66d9ef;">const auto</span> Icon = QuestManager-><span style="color: #a6e22e;">GetQuestIcon</span>(QuestData->Type))
+    {
+        Image_QuestIcon-><span style="color: #a6e22e;">SetBrushFromAtlasInterface</span>(Icon);
+    }
+
+    <span style="color: #66d9ef;">const</span> FQuestInstance* QuestInstance = QuestManager-><span style="color: #a6e22e;">GetActiveQuest</span>(QuestID);
+    <span style="color: #f92672;">if</span> (!QuestInstance) <span style="color: #f92672;">return</span>;
+
+    <span style="color: #f92672;">for</span> (<span style="color: #66d9ef;">const auto</span>& Mission: QuestInstance->MissionInstances)
+    {
+        <span style="color: #a6e22e;">AddMissionWidget</span>(Mission.Key);
+    }
+}</pre>
+            </div>
+
+            <div style="margin-bottom: 50px;">
+                <h3 style="border-bottom: 1px solid #e0e0e0; font-size: 20px; padding-bottom: 8px; margin-bottom: 15px; color: #1a1a1a;">
+                    3-2. 미션 위젯 생성: 타입별 동적 위젯 바인딩
+                </h3>
+                <p style="color: #444; margin-bottom: 15px;">
+                    미션의 종류(수집, 처치 등)에 따라 필요한 UI 형태가 다를 수 있으므로, <strong>DataAsset의 매핑 정보</strong>를 참조하여 적절한 위젯 클래스를 동적으로 생성합니다.
+                </p>
+
+                <pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', monospace; font-size: 13.5px; line-height: 1.6; border: 1px solid #3e3e3e;">
+<span style="color: #66d9ef;">void</span> <span style="color: #a6e22e;">UQuestTrackerItemWidget::AddMissionWidget</span>(FName MissionID)
+{
+    <span style="color: #f92672;">if</span> (MissionWidgets.<span style="color: #a6e22e;">Contains</span>(MissionID)) <span style="color: #f92672;">return</span>;
+
+    <span style="color: #66d9ef;">const</span> FMissionRow* MissionData = QuestManager-><span style="color: #a6e22e;">GetMissionData</span>(MissionID);
+    <span style="color: #f92672;">if</span> (!MissionData || !VerticalBox_MissionList) <span style="color: #f92672;">return</span>;
+
+    <span style="color: #75715e;">// 미션 타입에 매핑된 위젯 생성 </span>
+    UMissionBaseWidget* MissionWidget = UMissionBaseWidget::<span style="color: #a6e22e;">CreateMissionWidget</span>(<span style="color: #fd971f;">this</span>, MissionData->MissionType, MissionID);
+
+    <span style="color: #f92672;">if</span> (MissionWidget)
+    {
+        VerticalBox_MissionList-><span style="color: #a6e22e;">AddChildToVerticalBox</span>(MissionWidget);
+        MissionWidgets.<span style="color: #a6e22e;">Add</span>(MissionID, MissionWidget);
+    }
+}</pre>
+            </div>
+
+            <div style="margin-bottom: 50px;">
+                <h3 style="border-bottom: 1px solid #e0e0e0; font-size: 20px; padding-bottom: 8px; margin-bottom: 15px; color: #1a1a1a;">
+                    3-3. 네비게이션 시스템: 미션 타겟 추적
+                </h3>
+                <p style="color: #444; margin-bottom: 15px;">
+                    현재 완료되지 않은 미션 중 가장 우선순위가 높은 타겟을 찾아 월드 네비게이션 포인트를 표시합니다.
+                </p>
+
+                <pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', monospace; font-size: 13.5px; line-height: 1.6; border: 1px solid #3e3e3e;">
+<span style="color: #66d9ef;">void</span> <span style="color: #a6e22e;">UQuestTrackerItemWidget::OnNavigateButtonClicked</span>()
+{
+    <span style="color: #f92672;">if</span> (!QuestManager) <span style="color: #f92672;">return</span>;
+
+    <span style="color: #66d9ef;">const</span> FQuestInstance* QuestInstance = QuestManager-><span style="color: #a6e22e;">GetActiveQuest</span>(QuestID);
+    <span style="color: #f92672;">if</span> (!QuestInstance || QuestInstance->MissionInstances.<span style="color: #a6e22e;">Num</span>() == <span style="color: #ae81ff;">0</span>) <span style="color: #f92672;">return</span>;
+
+    <span style="color: #f92672;">for</span>(<span style="color: #66d9ef;">const auto</span>& Pair : QuestInstance->MissionInstances)
+    {
+        <span style="color: #66d9ef;">const</span> FMissionRow* MData = QuestManager-><span style="color: #a6e22e;">GetMissionData</span>(Pair.Key);
+        <span style="color: #75715e;">// 미달성 미션 중 네비게이션 데이터가 있는 경우 수행</span>
+        <span style="color: #f92672;">if</span>(MData && Pair.Value.CurrentCount < Pair.Value.RequiredCount)
+        {
+            <span style="color: #66d9ef;">auto</span> NavigatePointActor = QuestManager-><span style="color: #a6e22e;">GetQuestNavigatePointForID</span>(MData->NavigatePointTag);
+            <span style="color: #f92672;">if</span> (NavigatePointActor)
+            {
+                QuestManager-><span style="color: #a6e22e;">NavigateToQuestPoint</span>(MData->NavigatePointTag, MData->LocationHint, <span style="color: #a6e22e;">GetOwningPlayer</span>());
+            }
+            <span style="color: #f92672;">break</span>;
+        }
+    }
+}</pre>
+
+                <p style="color: #444; margin-top: 20px;">
+                    네비게이션 액터인 <code>BP_QuestNavigatePoint</code>는 레벨 배치 시 자신의 <strong>TargetTag</strong>를 서브시스템에 등록하여, 언제든 액터 포인터를 찾아낼 수 있게 설계되었습니다.
+                </p>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <img src="Images/네비게이트포인트.png" class="content-image" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #e0e0e0;">
+                    <p style="font-size: 13px; color: #888; margin-top: 10px;">[레벨 내 배치된 네비게이션 타겟 포인트]</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section style="margin-bottom: 80px;">
+    <h2 style="border-bottom: 1px solid #e0e0e0; background-color: #f5f5f5; padding: 10px 15px; font-size: 24px; font-weight: 600; margin-bottom: 30px;">
+        7. QuestJournal UI
+    </h2>
+
+    <div style="padding: 0 15px;">
+        <div style="display: flex; align-items: flex-start; gap: 25px; flex-wrap: wrap; margin-bottom: 30px;">
+            
+            <div style="flex: 1; min-width: 300px;">
+                <div style="width: 100%; background-color: #f8f9fa; border: 1px dashed #ced4da; display: flex; align-items: center; justify-content: center; border-radius: 8px; overflow: hidden;">
+                    <img src="Images/저널예시.png" class="content-image" style="width: 100%; height: auto; border-radius: 8px; border: 1px solid #e0e0e0;">
+                </div>
+            </div>
+
+            <div style="flex: 1.2; min-width: 300px;">
+                <p style="color: #444; margin-bottom: 20px; line-height: 1.8; margin-top: 0;">
+                    퀘스트 저널은 현재 진행 중인 퀘스트들을 <strong>카테고리(지역)별로 정리</strong>하고, 선택한 퀘스트의 상세 설명, 미션 목록, 보상을 보여주는 메인 UI입니다.
+                </p>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 40px; text-align: center;">
+            
+            <img src="Images/저널1.png" class="content-image" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #e0e0e0;">
+        </div>
+
+        <p style="color: #444; margin-bottom: 25px;">
+            리스트, 카테고리, 상세 패널은 모두 <strong>퀘스트 서브시스템</strong>을 통해 데이터를 조회하며, <code>OnQuestStarted</code> 등의 델리게이트를 구독하여 서버 상태와 실시간으로 동기화됩니다.
+        </p>
+
+        <div style="margin-bottom: 40px; text-align: center;">
+            <img src="Images/저널2.png" class="content-image" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #e0e0e0;">
+        </div>
+
+        <h3 style="border-bottom: 1px solid #e0e0e0; font-size: 20px; padding-bottom: 8px; margin-bottom: 15px; color: #1a1a1a;">
+            4-1. 루트 저널 위젯: 델리게이트 구독 및 패널 연결
+        </h3>
+        <pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', monospace; font-size: 13.5px; line-height: 1.6; margin-bottom: 30px;">
+<span style="color: #66d9ef;">void</span> <span style="color: #a6e22e;">UQuestJournalWidget::NativeConstruct</span>()
+{
+    Super::<span style="color: #a6e22e;">NativeConstruct</span>();
+    QuestManager = <span style="color: #a6e22e;">GetGameInstance</span>()-><span style="color: #a6e22e;">GetSubsystem</span>&lt;UQuestManageSubSystem&gt;();
+
+    <span style="color: #75715e;">// 서브시스템의 상태 변화 델리게이트 구독</span>
+    QuestManager->OnQuestStarted.<span style="color: #a6e22e;">AddDynamic</span>(<span style="color: #fd971f;">this</span>, &UQuestJournalWidget::OnQuestStarted);
+    QuestManager->OnQuestUpdated.<span style="color: #a6e22e;">AddDynamic</span>(<span style="color: #fd971f;">this</span>, &UQuestJournalWidget::OnQuestUpdated);
+    QuestManager->OnQuestCompleted.<span style="color: #a6e22e;">AddDynamic</span>(<span style="color: #fd971f;">this</span>, &UQuestJournalWidget::OnQuestCompleted);
+
+    <span style="color: #f92672;">if</span> (QuestJournal_List)
+    {
+        QuestJournal_List->OnQuestSelected.<span style="color: #a6e22e;">AddDynamic</span>(<span style="color: #fd971f;">this</span>, &UQuestJournalWidget::OnQuestSelected);
+    }
+}</pre>
+
+        <h3 style="border-bottom: 1px solid #e0e0e0; font-size: 20px; padding-bottom: 8px; margin-bottom: 15px; color: #1a1a1a;">
+            4-2. 카테고리별 리스트 구성 (Region 기반 그룹핑)
+        </h3>
+        <p style="color: #444; margin-bottom: 15px;">
+            리스트 위젯은 <code>QuestID</code>로 정적 데이터를 조회하여 <strong>Region(지역)</strong> 정보를 얻고, 이를 기준으로 카테고리를 동적 생성하거나 기존 카테고리에 아이템을 분류합니다.
+        </p>
+        <pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', monospace; font-size: 13.5px; line-height: 1.6; margin-bottom: 30px;">
+<span style="color: #66d9ef;">void</span> <span style="color: #a6e22e;">UQuestJournalListWidget::AddQuest</span>(FName QuestID)
+{
+    <span style="color: #66d9ef;">const</span> FQuestRow* QuestRow = QuestManager-><span style="color: #a6e22e;">GetQuestData</span>(QuestID);
+    <span style="color: #f92672;">if</span> (!QuestRow) <span style="color: #f92672;">return</span>;
+    
+    <span style="color: #75715e;">// 지역별 카테고리 맵핑 및 동적 위젯 생성</span>
+    <span style="color: #f92672;">if</span> (CategoryMap.<span style="color: #a6e22e;">Contains</span>(QuestRow->Region))
+    {
+        CategoryMap[QuestRow->Region]-><span style="color: #a6e22e;">AddCategoryItem</span>(QuestID);
+    }
+    <span style="color: #f92672;">else</span>
+    {
+        <span style="color: #66d9ef;">auto</span> NewCategory = <span style="color: #a6e22e;">CreateWidget</span>&lt;UQuestJournalListCategoryWidget&gt;(<span style="color: #fd971f;">this</span>, CategoryClass);
+        NewCategory-><span style="color: #a6e22e;">Setup</span>(QuestID, OnQuestSelected);
+        CategoryMap.<span style="color: #a6e22e;">Add</span>(QuestRow->Region, NewCategory);
+        VerticalBox_CategoryBox-><span style="color: #a6e22e;">AddChild</span>(NewCategory);
+    }
+    <span style="color: #a6e22e;">SortQuestItems</span>(); <span style="color: #75715e;">// 기획 데이터의 정렬 순서 적용</span>
+}</pre>
+
+        <h3 style="border-bottom: 1px solid #e0e0e0; font-size: 20px; padding-bottom: 8px; margin-bottom: 15px; color: #1a1a1a;">
+            4-3. 상세 패널: 정적 데이터와 런타임 상태의 결합
+        </h3>
+        <p style="color: #444; margin-bottom: 15px;">
+            상세 패널은 <code>DataTable</code>의 데이터와 <code>ActiveQuests</code>의 진행도 정보를 실시간으로 조합하여 출력합니다.
+        </p>
+        <pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', monospace; font-size: 13.5px; line-height: 1.6; border: 1px solid #3e3e3e; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);">
+<span style="color: #66d9ef;">void</span> <span style="color: #a6e22e;">UQuestJournalDetailWidget::ShowDetail</span>(FName QuestID)
+{
+    <span style="color: #f92672;">if</span> (CurrentQuestID == QuestID) <span style="color: #f92672;">return</span>;
+    
+    <span style="color: #66d9ef;">auto</span>* QuestManager = <span style="color: #a6e22e;">GetGameInstance</span>()-><span style="color: #a6e22e;">GetSubsystem</span>&lt;UQuestManageSubSystem&gt;();
+    <span style="color: #f92672;">if</span> (!QuestManager) <span style="color: #f92672;">return</span>;
+
+    <span style="color: #75715e;">// 1. 정적 기획 데이터(DataTable) 조회</span>
+    <span style="color: #66d9ef;">const</span> FQuestRow* SelectedQuestData = QuestManager-><span style="color: #a6e22e;">GetQuestData</span>(QuestID);
+    <span style="color: #f92672;">if</span> (!SelectedQuestData) <span style="color: #f92672;">return</span>;
+    
+    CurrentQuestID = QuestID;
+
+    <span style="color: #75715e;">// 2. 기본 정보 갱신 (아이콘, 타이틀, 설명)</span>
+    <span style="color: #f92672;">if</span> (<span style="color: #66d9ef;">const auto</span> Icon = QuestManager-><span style="color: #a6e22e;">GetQuestIcon</span>(SelectedQuestData->Type))
+    {
+        Image_QuestIcon-><span style="color: #a6e22e;">SetVisibility</span>(ESlateVisibility::Visible);
+        Image_QuestIcon-><span style="color: #a6e22e;">SetBrushFromAtlasInterface</span>(Icon);
+    }
+
+    TextBlock_QuestTitle-><span style="color: #a6e22e;">SetText</span>(SelectedQuestData->Title);
+    TextBlock_QuestDescription-><span style="color: #a6e22e;">SetText</span>(SelectedQuestData->Description);
+
+    <span style="color: #75715e;">// 3. 기존 리스트 클리어</span>
+    VerticalBox_MissionContainer-><span style="color: #a6e22e;">ClearChildren</span>();
+    HorizontalBox_RewardBox-><span style="color: #a6e22e;">ClearChildren</span>();
+
+    <span style="color: #75715e;">// 4. 서버로부터 동기화된 런타임 인스턴스 정보 조회</span>
+    <span style="color: #66d9ef;">const</span> FQuestInstance* ActiveQuest = QuestManager-><span style="color: #a6e22e;">GetActiveQuest</span>(QuestID);
+    <span style="color: #f92672;">if</span> (!ActiveQuest) <span style="color: #f92672;">return</span>;
+
+    <span style="color: #75715e;">// 5. 미션 위젯 동적 생성 및 진행도 반영</span>
+    <span style="color: #f92672;">for</span> (<span style="color: #66d9ef;">const auto</span>& MissionPair : ActiveQuest->MissionInstances)
+    {
+        <span style="color: #f92672;">if</span> (UJournalMissionWidget* MissionWidget = <span style="color: #a6e22e;">CreateWidget</span>&lt;UJournalMissionWidget&gt;(<span style="color: #fd971f;">this</span>, MissionWidgetClass))
+        {
+            <span style="color: #75715e;">// 정적 미션 데이터 + 서버의 진행 수치 전달</span>
+            <span style="color: #66d9ef;">const</span> FMissionRow* MData = QuestManager-><span style="color: #a6e22e;">GetMissionData</span>(MissionPair.Key);
+            MissionWidget-><span style="color: #a6e22e;">InitMission</span>(MData, MissionPair.Value.CurrentCount, MissionPair.Value.RequiredCount);
+            VerticalBox_MissionContainer-><span style="color: #a6e22e;">AddChildToVerticalBox</span>(MissionWidget);
+        }
+    }
+
+    <span style="color: #75715e;">// 6. 보상 정보 구성</span>
+    TArray&lt;FQuestRewardInfo&gt; Rewards = QuestManager-><span style="color: #a6e22e;">GetQuestRewardInfo</span>(QuestID);
+    <span style="color: #f92672;">for</span> (<span style="color: #66d9ef;">const</span> FQuestRewardInfo& Reward : Rewards)
+    {
+        <span style="color: #f92672;">if</span> (UQuestRewardItemWidget* RewardWidget = <span style="color: #a6e22e;">CreateWidget</span>&lt;UQuestRewardItemWidget&gt;(<span style="color: #fd971f;">this</span>, RewardWidgetClass))
+        {
+            RewardWidget-><span style="color: #a6e22e;">SetReward</span>(Reward);
+            HorizontalBox_RewardBox-><span style="color: #a6e22e;">AddChildToHorizontalBox</span>(RewardWidget);
+        }
+    }
+}</pre>
+    </div>
+
+    <br><br>
+<div style="padding: 0 15px;">
+
+    <h3 style="border-bottom: 1px solid #e0e0e0; font-size: 20px; padding-bottom: 8px; margin-bottom: 15px; color: #1a1a1a;">
+        4-4. 퀘스트 트래킹 상태 변경 (서버 ↔ 클라이언트 플로우) 
+    </h3>
+
+<p style="color: #444; margin-bottom: 20px; line-height: 1.8;">
+체크박스를 통한 트래킹 요청 시, 클라이언트가 즉시 UI를 변경하지 않고 <strong>서버의 판단을 기다립니다.</strong> 서버에서 트래킹 가능 여부를 판단해 패킷을 보내면, 서브시스템의 델리게이트를 통해 저널 아이콘과 트래커 리스트가 동시에 동기화됩니다.
+</p>
+
+<h4 style="font-size: 17px; color: #333; margin-bottom: 12px; font-weight: 600;">
+    1) 저널 아이템 위젯: 체크박스 바인딩 및 동기화
+</h4>
+<pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', monospace; font-size: 13.5px; line-height: 1.6; margin-bottom: 25px;">
+
+<span style="color: #66d9ef;">void</span> <span style="color: #a6e22e;">UQuestJournalListCategoryItemWidget::SetupItem</span>(FName QuestID)
+{
+<span style="color: #75715e;">// 1. 초기 트래킹 상태 설정</span>
+<span style="color: #66d9ef;">bool</span> bIsCurrentlyTracking = QuestManager-><span style="color: #a6e22e;">IsQuestTracking</span>(QuestID);
+CheckBox_IsTracking-><span style="color: #a6e22e;">SetCheckedState</span>(bIsCurrentlyTracking ? ECheckBoxState::Checked : ECheckBoxState::Unchecked);
+
+<span style="color: #75715e;">// 2. 사용자의 체크 조작 이벤트 바인딩</span>
+CheckBox_IsTracking->OnCheckStateChanged.<span style="color: #a6e22e;">AddDynamic</span>(<span style="color: #fd971f;">this</span>, &UQuestJournalListCategoryItemWidget::OnTrackingStateChanged);
+
+<span style="color: #75715e;">// 3. 서버 응답 시 UI를 갱신해줄 델리게이트 구독</span>
+<span style="color: #f92672;">if</span> (<span style="color: #66d9ef;">auto</span> QM = <span style="color: #a6e22e;">GetGameInstance</span>()-><span style="color: #a6e22e;">GetSubsystem</span>&lt;UQuestManageSubSystem&gt;())
+{
+    QM->OnQuestTrackingChanged.<span style="color: #a6e22e;">AddDynamic</span>(<span style="color: #fd971f;">this</span>, &UQuestJournalListCategoryItemWidget::SyncTrackingState);
+}
+
+}
+
+<span style="color: #75715e;">// [클라이언트 -> 서버 요청]</span>
+<span style="color: #66d9ef;">void</span> <span style="color: #a6e22e;">UQuestJournalListCategoryItemWidget::OnTrackingStateChanged</span>(<span style="color: #66d9ef;">bool</span> bIsChecked)
+{
+<span style="color: #75715e;">// 서버에 트래킹 상태 변경 패킷 요청 전송</span>
+    QuestManager-><span style="color: #a6e22e;">SetQuestTracking</span>(TargetQuestID, bIsChecked);
+}
+
+<span style="color: #75715e;">// [서버 패킷 도착 -> UI 갱신]</span>
+<span style="color: #66d9ef;">void</span> <span style="color: #a6e22e;">UQuestJournalListCategoryItemWidget::SyncTrackingState</span>(FName QuestID, <span style="color: #66d9ef;">bool</span> bIsTracking)
+{
+<span style="color: #f92672;">if</span> (QuestID == TargetQuestID)
+{
+CheckBox_IsTracking-><span style="color: #a6e22e;">SetCheckedState</span>(bIsTracking ? ECheckBoxState::Checked : ECheckBoxState::Unchecked);
+}
+}</pre>
+
+<h4 style="font-size: 17px; color: #333; margin-bottom: 12px; font-weight: 600;">
+    2) 퀘스트 트래커(HUD): 실시간 리스트 갱신
+</h4>
+<p style="color: #444; margin-bottom: 15px;">
+    저널뿐만 아니라 HUD에 항상 떠있는 <strong>QuestTracker</strong> 위젯도 동일한 델리게이트를 통해 리스트를 즉시 업데이트합니다.
+</p>
+<pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', monospace; font-size: 13.5px; line-height: 1.6;">
+
+<span style="color: #66d9ef;">void</span> <span style="color: #a6e22e;">UQuestTrackerWidget::OnQuestTracking</span>(FName QuestID, <span style="color: #66d9ef;">bool</span> bIsTracking)
+{
+    <span style="color: #f92672;">if</span> (bIsTracking)
+    {
+        <span style="color: #a6e22e;">AddQuestItem</span>(QuestID); <span style="color: #75715e;">// 트래커 리스트에 추가</span>
+    }
+    <span style="color: #f92672;">else</span>
+    {
+        <span style="color: #a6e22e;">RemoveQuestItem</span>(QuestID); <span style="color: #75715e;">// 트래커 리스트에서 제거</span>
+    }
+
+    <span style="color: #a6e22e;">SortQuestItems</span>(); <span style="color: #75715e;">// 트래킹 순서에 따른 리스트 재정렬</span>
+}</pre>
+
+
+</div>
+</section>
+
+<section style="margin-bottom: 80px;">
+    <h2 style="border-bottom: 1px solid #e0e0e0; background-color: #f5f5f5; padding: 10px 15px; font-size: 24px; font-weight: 600; margin-bottom: 30px;">
+        8. NPC 헤드 아이콘 시스템
+    </h2>
+
+    <div style="padding: 0 15px;">
+        <div style="display: flex; align-items: flex-start; gap: 25px; flex-wrap: wrap; margin-bottom: 30px;">
+            
+            <div style="flex: 1; min-width: 300px;">
+                <div style="width: 100%; background-color: #f8f9fa; border: 1px dashed #ced4da; border-radius: 8px; overflow: hidden;">
+                    <img src="Images/헤드아이콘예시.png" class="content-image" style="width: 100%; height: auto; display: block; border-radius: 8px; border: 1px solid #e0e0e0;">
+                </div>
+            </div>
+
+            <div style="flex: 1.2; min-width: 300px;">
+                <p style="color: #444; margin-bottom: 20px; line-height: 1.8; margin-top: 0;">
+                    NPC 머리 위에는 해당 NPC와 연관된 퀘스트 상태(수락 가능 / 완료 가능)를 표시하는 아이콘이 출력됩니다.<br><br>
+                    서버 패킷을 바탕으로 <strong>QuestManageSubSystem</strong>이 관리하는 상태 맵을 조회하여, 현재 NPC가 가져야 할 가장 우선순위가 높은 아이콘을 동적으로 결정합니다.
+                </p>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 40px; text-align: center;">
+            
+            <img src="Images/헤드아이콘1.png" class="content-image" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #e0e0e0;">
+            <p style="font-size: 13px; color: #888; margin-top: 10px;">[퀘스트 상태에 따른 NPC 헤드 UI 변화]</p>
+        </div>
+
+        <h3 style="border-bottom: 1px solid #e0e0e0; font-size: 20px; padding-bottom: 8px; margin-bottom: 15px; color: #1a1a1a;">
+            5-1. 상태 결정 로직
+        </h3>
+        <p style="color: #444; margin-bottom: 15px;">
+            한 NPC가 여러 퀘스트를 가질 수 있으므로, <strong>'완료 가능'</strong> 상태를 <strong>'수락 가능'</strong>보다 우선하여 표시하도록 설계했습니다.
+            <br>서버에서 받은 패킷을 바탕으로, 퀘스트 서브 시스템이 NpcToAcceptableQuestsMap, NpcToACompletableQuestsMap 을 업데이트합니다.
+        </p>
+
+        <pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', monospace; font-size: 13.5px; line-height: 1.6; margin-bottom: 30px;">
+EUEQuestState <span style="color: #a6e22e;">UQuestManageSubSystem::GetBestQuestStateForNPC</span>(FName NpcID)
+{
+    <span style="color: #75715e;">// 1순위: 완료 가능한 퀘스트가 있는지 확인</span>
+    <span style="color: #f92672;">if</span> (NpcToACompletableQuestsMap.<span style="color: #a6e22e;">Contains</span>(NpcID))
+    {
+        <span style="color: #f92672;">return</span> EUEQuestState::Completed;
+    }
+
+    <span style="color: #75715e;">// 2순위: 수락 가능한 퀘스트가 있는지 확인</span>
+    <span style="color: #f92672;">if</span> (NpcToAcceptableQuestsMap.<span style="color: #a6e22e;">Contains</span>(NpcID))
+    {
+        <span style="color: #f92672;">return</span> EUEQuestState::Acceptable;
+    }
+    
+    <span style="color: #f92672;">return</span> EUEQuestState::None;
+}</pre>
+
+        <h3 style="border-bottom: 1px solid #e0e0e0; font-size: 20px; padding-bottom: 8px; margin-bottom: 15px; color: #1a1a1a;">
+            5-2. NPC 액터: 이벤트 구독 및 상태 갱신
+        </h3>
+        <p style="color: #444; margin-bottom: 15px;">
+            NPC 액터는 퀘스트 시스템의 다양한 이벤트를 구독하며, 상태 변경이 감지될 때마다 <code>RefreshQuestIcon()</code>을 호출하여 자신의 헤드 UI를 동기화합니다.
+        </p>
+        <pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', monospace; font-size: 13.5px; line-height: 1.6; margin-bottom: 30px;">
+<span style="color: #66d9ef;">void</span> <span style="color: #a6e22e;">ANPCBase::RefreshQuestIcon</span>()
+{
+    <span style="color: #f92672;">if</span> (<span style="color: #66d9ef;">auto</span>* QM = <span style="color: #a6e22e;">GetQuestManager</span>())
+    {
+        <span style="color: #75715e;">// 최우선 상태를 계산하여 위젯 갱신</span>
+        EUEQuestState BestState = QM-><span style="color: #a6e22e;">GetBestQuestStateForNPC</span>(NpcID);
+        StatusWidget-><span style="color: #a6e22e;">UpdateStatus</span>(BestState);
+    }
+}</pre>
+
+        <h3 style="border-bottom: 1px solid #e0e0e0; font-size: 20px; padding-bottom: 8px; margin-bottom: 15px; color: #1a1a1a;">
+            5-3. 헤드 UI 위젯: 데이터 에셋 기반 비주얼라이징
+        </h3>
+        <p style="color: #444; margin-bottom: 15px;">
+            UI 위젯은 오직 서브시스템이 <strong>DataAsset(DA)</strong>으로부터 가져온 리소스를 화면에 그리는 역할만 수행합니다.
+        </p>
+        <pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', monospace; font-size: 13.5px; line-height: 1.6; margin-bottom: 15px;">
+<span style="color: #66d9ef;">void</span> <span style="color: #a6e22e;">UNPCStatusWidget::UpdateStatus</span>(EUEQuestState State)
+{
+    <span style="color: #f92672;">if</span> (State != EUEQuestState::None)
+    {
+        Image_QuestIcon-><span style="color: #a6e22e;">SetVisibility</span>(ESlateVisibility::Visible);
+        <span style="color: #75715e;">// 서브시스템을 통해 캐싱된 데이터 에셋의 아이콘 로드</span>
+        <span style="color: #66d9ef;">auto</span> Icon = QuestManager-><span style="color: #a6e22e;">GetQuestStateIcon</span>(State);
+        Image_QuestIcon-><span style="color: #a6e22e;">SetBrushFromAtlasInterface</span>(Icon);
+    }
+    <span style="color: #f92672;">else</span>
+    {
+        Image_QuestIcon-><span style="color: #a6e22e;">SetVisibility</span>(ESlateVisibility::Collapsed);
+    }
+}
+
+<span style="color: #75715e;">// [Subsystem] 데이터 에셋으로부터 스프라이트 조회</span>
+UPaperSprite* <span style="color: #a6e22e;">UQuestManageSubSystem::GetQuestStateIcon</span>(EUEQuestState State)
+{
+    <span style="color: #f92672;">if</span> (!CachedNPCVisualDataAsset) <span style="color: #f92672;">return</span> <span style="color: #66d9ef;">nullptr</span>;
+
+    <span style="color: #66d9ef;">auto</span> Icon = CachedNPCVisualDataAsset->QuestStateIconMap.<span style="color: #a6e22e;">FindRef</span>(State);
+    <span style="color: #f92672;">return</span> Icon.<span style="color: #a6e22e;">IsValid</span>() ? Icon.<span style="color: #a6e22e;">Get</span>() : Icon.<span style="color: #a6e22e;">LoadSynchronous</span>();
+}</pre>
+    </div>
+</section>
+
+<section style="margin-bottom: 60px;">
+    <h2 style="border-bottom: 1px solid #e0e0e0; background-color: #f5f5f5; padding: 10px 15px; font-size: 24px; font-weight: 600; margin-bottom: 20px;">
+        9. 현지화(Localization) 시스템
+    </h2>
+
+    <p style="color: #444; line-height: 1.8; margin-bottom: 25px; padding: 0 15px;">
+        글로벌 서비스를 고려하여 게임 내 모든 텍스트 리소스를 <strong>언리얼 엔진의 현지화 시스템</strong>에 대응하도록 설계했습니다.
+    </p>
+
+    <div style="padding: 0 15px;">
+        <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 15px; color: #1a1a1a; border-left: 4px solid #333; padding-left: 10px;">
+            6-1. FText 기반 설계 및 현지화
+        </h3>
+
+        <div style="margin-bottom: 20px;">
+            <div style="width: 100%; background-color: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
+                <img src="Images/현지화대시보드.png" class="content-image" style="width: 100%; height: auto; display: block;">
+            </div>
+            <p style="font-size: 12px; color: #888; text-align: center; margin-top: 8px;">[로컬라이제이션 대시보드를 통한 텍스트 수집 및 관리]</p>
+        </div>
+
+        <div style="margin-bottom: 25px; color: #444; line-height: 1.7;">
+            <p style="margin-bottom: 10px;">
+                사용자에게 노출되는 대사 및 UI 텍스트에 <strong>FText</strong> 타입을 사용해 현지화가 되도록 했습니다. 
+            </p>
+            <ul style="padding-left: 20px; margin-bottom: 0;">
+                <li><strong>자동 수집 대상:</strong> C++ 소스 코드, DataTable, DataAsset, UI 위젯 등</li>
+            </ul>
+        </div>
+
+  <div style="margin-bottom: 20px;">
+            <pre style="background-color: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', monospace; font-size: 13px; line-height: 1.5; margin: 0; width: 100%; box-sizing: border-box;">
+<span style="color: #75715e;">// 1. NPC 상호작용 데이터: NPC 이름 및 기본 대사</span>
+<span style="color: #66d9ef;">USTRUCT</span>(BlueprintType)
+<span style="color: #66d9ef;">struct</span> RPG_API <span style="color: #a6e22e;">FNPCInteractionRow</span> : <span style="color: #66d9ef;">public</span> FTableRowBase
+{
+    GENERATED_BODY()
+    
+<span style="color: #66d9ef;">public:</span>
+    <span style="color: #66d9ef;">UPROPERTY</span>(EditAnywhere, BlueprintReadWrite)
+    FName NPCID;
+    
+    <span style="color: #66d9ef;">UPROPERTY</span>(EditAnywhere, BlueprintReadWrite)
+    <span style="color: #a6e22e;">FText</span> NPCName;
+
+    <span style="color: #66d9ef;">UPROPERTY</span>(EditAnywhere, BlueprintReadWrite)
+    <span style="color: #a6e22e;">FText</span> DefaultDialog;
+};
+
+<span style="color: #75715e;">// 2. NPC 퀘스트 대화 데이터 구조체</span>
+<span style="color: #66d9ef;">USTRUCT</span>(BlueprintType)
+<span style="color: #66d9ef;">struct</span> RPG_API <span style="color: #a6e22e;">FNPCDialogRow</span> : <span style="color: #66d9ef;">public</span> FTableRowBase
+{
+    GENERATED_BODY()
+
+<span style="color: #66d9ef;">public:</span>
+    <span style="color: #66d9ef;">UPROPERTY</span>(EditAnywhere, BlueprintReadWrite)
+    FName DialogID;
+
+    <span style="color: #66d9ef;">UPROPERTY</span>(EditAnywhere, BlueprintReadWrite)
+    <span style="color: #a6e22e;">FText</span> DialogText;
+};</pre>
+        </div>
+    </div>
+
+        
+    </div>
+
+
+    
+</section>
+
+
+</div>
+
+</div>
+</body>
+</html>
